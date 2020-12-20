@@ -1,6 +1,5 @@
 package hu.zza.clim.parameter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -14,11 +13,11 @@ public class ParameterPattern
     private final int                 optionalCount;
     
     
-    public ParameterPattern(String delimiter, List<ParameterName> parameterNames, List<Parameter> parameters)
+    public ParameterPattern(String delimiter, List<ParameterName> parameterNames, Parameter... parameters)
     {
         this.delimiter      = delimiter;
-        this.parameterNames = new ArrayList<>(parameterNames);
-        this.parameters     = new ArrayList<>(parameters);
+        this.parameterNames = List.copyOf(parameterNames);
+        this.parameters     = List.of(parameters);
         this.optionalCount  = (int) this.parameters.stream().filter(Parameter::isOptional).count();
     }
     
@@ -31,7 +30,7 @@ public class ParameterPattern
     
     List<ParameterName> getParameterNames()
     {
-        return new ArrayList<>(parameterNames);
+        return List.copyOf(parameterNames);
     }
     
     
@@ -49,7 +48,7 @@ public class ParameterPattern
     
     static String getRegex(String delimiter, List<Parameter> parameterList)
     {
-        StringJoiner stringJoiner = new StringJoiner(delimiter);
+        var stringJoiner = new StringJoiner(delimiter);
         parameterList.stream().filter(Parameter::isPresent).map(Parameter::getRegex).forEach(stringJoiner::add);
         
         return stringJoiner.toString();
