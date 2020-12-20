@@ -1,8 +1,9 @@
 plugins {
     id 'java'
+    id 'maven'
 }
 
-group 'hu.zza'
+group 'com.github.hu-zza'
 version '0.0.1-SNAPSHOT'
 
 repositories {
