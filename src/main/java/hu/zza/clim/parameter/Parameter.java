@@ -25,9 +25,9 @@ public class Parameter<T>
     public Parameter(String regex, Function<CharSequence, T> parseFunction, Supplier<T> defaultValueSupplier
     )
     {
-        if ("".equals(regex))
+        if (regex == null || regex.isBlank())
         {
-            throw new IllegalArgumentException("Parameter 'pattern' can not be null or empty.");
+            throw new IllegalArgumentException("Parameter 'pattern' can not be null.");
         }
         
         if (parseFunction == null) throw new IllegalArgumentException("Parameter 'parseFunction' can not be null.");

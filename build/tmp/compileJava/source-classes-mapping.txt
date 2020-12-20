@@ -17,7 +17,6 @@ hu/zza/clim/ControlType.java
  hu.zza.clim.ControlType
 hu/zza/clim/MenuEntry.java
  hu.zza.clim.MenuEntry
- hu.zza.clim.MenuEntry$1
  hu.zza.clim.MenuEntry$Leaf
  hu.zza.clim.MenuEntry$Node
 hu/zza/clim/LeafPosition.java
