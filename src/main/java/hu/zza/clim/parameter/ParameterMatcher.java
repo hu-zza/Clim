@@ -4,9 +4,11 @@ import hu.zza.clim.Message;
 import hu.zza.clim.Position;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -60,9 +62,9 @@ public class ParameterMatcher
         
         if (matcher.find())
         {
-            var matchResult = matcher.toMatchResult();
+            MatchResult matchResult = matcher.toMatchResult();
             
-            var updateList = parameterList.stream().filter(Parameter::isPresent).collect(Collectors.toList());
+            List<Parameter> updateList = parameterList.stream().filter(Parameter::isPresent).collect(Collectors.toList());
             
             for (int i = 1; i <= matchResult.groupCount(); i++)
             {
@@ -132,7 +134,7 @@ public class ParameterMatcher
         {
             for (int[] selectedIndices : generateCombinations(optionalCount, i))
             {
-                var selectedOptional = new int[i];
+                int[] selectedOptional = new int[i];
                 for (int j = 0; j < i; j++)
                 {
                     selectedOptional[j] = positionsOfOptional[selectedIndices[j]];
@@ -181,8 +183,8 @@ public class ParameterMatcher
         }
         
         // PATCH...
-        if (r == 0) return List.of(new int[] {0});
-        if (r == n) return List.of(combination);
+        if (r == 0) return Arrays.asList(new int[] {0});
+        if (r == n) return Arrays.asList(combination);
         
         
         while (combination[r - 1] < n)

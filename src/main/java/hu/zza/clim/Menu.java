@@ -5,8 +5,10 @@ import hu.zza.clim.parameter.ParameterMatcher;
 import hu.zza.clim.parameter.ParameterName;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 
 public class Menu
@@ -35,18 +37,18 @@ public class Menu
         this.parameterMatcher = parameterMatcher;
         
         Map<String, NodePosition> tmpNodeMap = new HashMap<>();
-        for (var node : nodeEnum.getEnumConstants())
+        for (NodePosition node : nodeEnum.getEnumConstants())
         {
             tmpNodeMap.put(node.name(), node);
         }
-        this.nodeNameMap = Map.copyOf(tmpNodeMap);
+        this.nodeNameMap = new HashMap<>(tmpNodeMap);
         
         Map<String, LeafPosition> tmpLeafMap = new HashMap<>();
-        for (var leaf : leafEnum.getEnumConstants())
+        for (LeafPosition leaf : leafEnum.getEnumConstants())
         {
             tmpLeafMap.put(leaf.name(), leaf);
         }
-        this.leafNameMap = Map.copyOf(tmpLeafMap);
+        this.leafNameMap = new HashMap<>(tmpLeafMap);
         
         refreshOptions();
     }
@@ -106,8 +108,7 @@ public class Menu
     
     private static void warnAboutInput(String input, Exception e)
     {
-        System.out.printf(Message.PROCESSING_EXCEPTION.getMessage(), input, e.getMessage());
-        //System.err.printf(Message.PROCESSING_EXCEPTION.getMessage(), parameter, e.getMessage());
+        System.err.printf(Message.PROCESSING_EXCEPTION.getMessage(), input, e.getMessage());
     }
     
     
@@ -135,7 +136,7 @@ public class Menu
     
     public void chooseOption(String input)
     {
-        if (input == null || input.isBlank()) return;
+        if ("".equals(input)) return;
         
         refreshOptions();
         try
@@ -143,13 +144,13 @@ public class Menu
             switch (controlType)
             {
                 case NOMINAL:
-                    chooseOptionByNominal(getPositionByName(input), Map.of());
+                    chooseOptionByNominal(getPositionByName(input), Collections.emptyMap());
                     break;
                 
                 case ORDINAL:
                 case ORDINAL_TRAILING_ZERO:
                     int ordinal = Integer.parseInt(input);
-                    chooseOptionByOrdinal(ordinal, Map.of());
+                    chooseOptionByOrdinal(ordinal, Collections.emptyMap());
                     break;
                 
                 case PARAMETRIC:
@@ -233,12 +234,13 @@ public class Menu
     
     private void extractAndUpdateCommandField(String commandString)
     {
-        parameterMatcher
-                .getCommandRegex()
-                .matcher(commandString)
-                .results()
-                .findFirst()
-                .ifPresent(m -> command = getPositionByName(m.group(1)));
+        Matcher matcher = parameterMatcher.getCommandRegex().matcher(commandString);
+        
+        
+        if (matcher.find())
+        {
+            command = getPositionByName(matcher.group(1));
+        }
     }
     
     
