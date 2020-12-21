@@ -17,8 +17,7 @@ public class MenuStructure
     
     public MenuEntry put(MenuEntry menuEntry)
     {
-        if (!finalized) return menu.put(menuEntry.getPosition(), menuEntry);
-        return null;
+        return finalized ? null : menu.put(menuEntry.getPosition(), menuEntry);
     }
     
     

@@ -12,8 +12,8 @@ public class Parameter<T>
     private final Function<CharSequence, T> parseFunction;
     private final boolean                   optional;
     private final Supplier<T>               defaultValueSupplier;
-    private       T                         value;
     private       boolean                   present;
+    private       T                         value;
     
     
     public Parameter(String regex, Function<CharSequence, T> parseFunction)

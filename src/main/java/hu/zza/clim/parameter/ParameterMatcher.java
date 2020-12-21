@@ -51,7 +51,7 @@ public class ParameterMatcher
         ParameterPattern parameterPattern = patternMap.get(command);
         if (parameterPattern == null) throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage());
         
-        List<ParameterName> parameterNames = parameterPattern.getParameterNames();
+        List<ParameterName> parameterNames = parameterPattern.getParameterNameList();
         List<Parameter>     parameterList  = prepareParameterList(parameterPattern);
         
         String regex = ParameterPattern.getRegex(parameterPattern.getDelimiter(), parameterList);
@@ -97,40 +97,37 @@ public class ParameterMatcher
     private List<Parameter> prepareParameterList(ParameterPattern parameterPattern)
     {
         String          delimiter     = parameterPattern.getDelimiter();
-        int             optionalCount = parameterPattern.getOptionalCount();
         List<Parameter> parameterList = parameterPattern.getParameterClonesList();
-        if (optionalCount == 0) return parameterList;
         
-        
-        int   optionalIndex       = 0;
-        int   requiredIndex       = 0;
-        int[] positionsOfOptional = new int[optionalCount];
-        
-        for (int i = 0; i < parameterList.size(); i++)
+        int[] positionsOfOptional = parameterList
+                                            .stream()
+                                            .filter(Parameter::isOptional)
+                                            .mapToInt(parameterList::indexOf)
+                                            .toArray();
+    
+        if (positionsOfOptional.length == 0)
         {
-            if (parameterList.get(i).isOptional())
-            {
-                positionsOfOptional[optionalIndex++] = i;
-            }
+            return parameterList;
         }
-        
-        
-        return updateAndGetParameterList(delimiter, optionalCount, parameterList, positionsOfOptional);
+        else
+        {
+            return updateAndGetParameterList(delimiter, parameterList, positionsOfOptional);
+        }
+    
     }
     
     
     private List<Parameter> updateAndGetParameterList(String delimiter,
-                                                      int optionalCount,
                                                       List<Parameter> parameterList,
                                                       int[] positionsOfOptional
     )
     {
-        // First try to match with all (optionalCount) optionals ( + all non-optionals),
+        // First try to match with all (positionsOfOptional.length) optionals ( + all non-optionals),
         // then with optionalCount - 1, and so on... At least without any optional (all non-optionals only).
         // The inner cycle iterates through all combinations with given count (i) of optionals.
-        for (int i = optionalCount; 0 <= i; i--)
+        for (int i = positionsOfOptional.length; 0 <= i; i--)
         {
-            for (int[] selectedIndices : generateCombinations(optionalCount, i))
+            for (int[] selectedIndices : generateCombinations(positionsOfOptional.length, i))
             {
                 var selectedOptional = new int[i];
                 for (int j = 0; j < i; j++)

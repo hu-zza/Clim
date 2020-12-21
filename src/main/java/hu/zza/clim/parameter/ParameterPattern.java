@@ -8,17 +8,15 @@ import java.util.stream.Collectors;
 public class ParameterPattern
 {
     private final String              delimiter;
-    private final List<ParameterName> parameterNames;
-    private final List<Parameter>     parameters;
-    private final int                 optionalCount;
+    private final List<ParameterName> parameterNameList;
+    private final List<Parameter>     parameterList;
     
     
-    public ParameterPattern(String delimiter, List<ParameterName> parameterNames, Parameter... parameters)
+    public ParameterPattern(String delimiter, List<ParameterName> parameterNameList, Parameter... parameters)
     {
-        this.delimiter      = delimiter;
-        this.parameterNames = List.copyOf(parameterNames);
-        this.parameters     = List.of(parameters);
-        this.optionalCount  = (int) this.parameters.stream().filter(Parameter::isOptional).count();
+        this.delimiter         = delimiter;
+        this.parameterNameList = List.copyOf(parameterNameList);
+        this.parameterList     = List.of(parameters);
     }
     
     
@@ -28,21 +26,15 @@ public class ParameterPattern
     }
     
     
-    List<ParameterName> getParameterNames()
+    List<ParameterName> getParameterNameList()
     {
-        return List.copyOf(parameterNames);
+        return List.copyOf(parameterNameList);
     }
     
     
     List<Parameter> getParameterClonesList()
     {
-        return parameters.stream().map(Parameter::clone).collect(Collectors.toList());
-    }
-    
-    
-    int getOptionalCount()
-    {
-        return optionalCount;
+        return parameterList.stream().map(Parameter::clone).collect(Collectors.toList());
     }
     
     

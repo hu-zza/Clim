@@ -118,7 +118,7 @@ public class Menu
         {
             case ORDINAL:
             case ORDINAL_TRAILING_ZERO:
-                printMenu();
+                printOrdinalMenu();
                 break;
             
             case NOMINAL:
@@ -169,6 +169,40 @@ public class Menu
     }
     
     
+    private void refreshOptions()
+    {
+        options = menuStructure.get(position).getLinks();
+    }
+    
+    
+    private void printOrdinalMenu()
+    {
+        boolean trailingZero = controlType == ControlType.ORDINAL_TRAILING_ZERO;
+        
+        int i = trailingZero ? 1 : 0;
+        
+        for (; i < options.length; i++) printMenuEntry(menuStructure.get(options[i]), i);
+        
+        if (trailingZero) printMenuEntry(menuStructure.get(options[0]), 0);
+    }
+    
+    
+    private void printMenuEntry(MenuEntry menuEntry, Integer ordinal)
+    {
+        if (menuEntry != null)
+        {
+            if (ordinal != null)
+            {
+                System.out.printf("%d. %s%n", ordinal, menuEntry.getName());
+            }
+            else
+            {
+                System.out.printf("%s%n", menuEntry.getName());
+            }
+        }
+    }
+    
+    
     private Position getPositionByName(String name)
     {
         String upperCaseName = name.toUpperCase();
@@ -188,15 +222,14 @@ public class Menu
     }
     
     
-    private void printMenu()
+    private void extractAndUpdateCommandField(String commandString)
     {
-        boolean trailingZero = controlType == ControlType.ORDINAL_TRAILING_ZERO;
-        
-        int i = trailingZero ? 1 : 0;
-        
-        for (; i < options.length; i++) printMenuEntry(menuStructure.get(options[i]), i);
-        
-        if (trailingZero) printMenuEntry(menuStructure.get(options[0]), 0);
+        parameterMatcher
+                .getCommandRegex()
+                .matcher(commandString)
+                .results()
+                .findFirst()
+                .ifPresent(m -> command = getPositionByName(m.group(1)));
     }
     
     
@@ -220,39 +253,6 @@ public class Menu
         else
         {
             throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage());
-        }
-    }
-    
-    
-    private void refreshOptions()
-    {
-        options = menuStructure.get(position).getLinks();
-    }
-    
-    
-    private void extractAndUpdateCommandField(String commandString)
-    {
-        parameterMatcher
-                .getCommandRegex()
-                .matcher(commandString)
-                .results()
-                .findFirst()
-                .ifPresent(m -> command = getPositionByName(m.group(1)));
-    }
-    
-    
-    private void printMenuEntry(MenuEntry menuEntry, Integer ordinal)
-    {
-        if (menuEntry != null)
-        {
-            if (ordinal != null)
-            {
-                System.out.printf("%d. %s%n", ordinal, menuEntry.getName());
-            }
-            else
-            {
-                System.out.printf("%s%n", menuEntry.getName());
-            }
         }
     }
     
