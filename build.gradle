@@ -3,7 +3,7 @@ plugins {
     id 'maven'
 }
 
-group 'hu.zza'
+group 'com.github.hu-zza'
 version '1.0.0-SNAPSHOT'
 sourceCompatibility = '11'
 
