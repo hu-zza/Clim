@@ -1,28 +1,24 @@
 package hu.zza.clim.parameter;
 
-import hu.zza.clim.Message;
-
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 
-public class Parameter<T>
+public class Parameter
 {
-    private final String                    regex;
-    private final Function<CharSequence, T> parseFunction;
-    private final boolean                   optional;
-    private final Supplier<T>               defaultValueSupplier;
-    private       boolean                   present;
-    private       T                         value;
+    private final String           regex;
+    private final boolean          optional;
+    private final Supplier<String> defaultValueSupplier;
+    private       boolean          present;
+    private       String           value;
     
     
-    public Parameter(String regex, Function<CharSequence, T> parseFunction)
+    public Parameter(String regex)
     {
-        this(regex, parseFunction, null);
+        this(regex, null);
     }
     
     
-    public Parameter(String regex, Function<CharSequence, T> parseFunction, Supplier<T> defaultValueSupplier
+    public Parameter(String regex, Supplier<String> defaultValueSupplier
     )
     {
         if (regex == null || regex.isBlank())
@@ -30,10 +26,8 @@ public class Parameter<T>
             throw new IllegalArgumentException("Parameter 'pattern' can not be null.");
         }
         
-        if (parseFunction == null) throw new IllegalArgumentException("Parameter 'parseFunction' can not be null.");
         
         this.regex                = regex;
-        this.parseFunction        = parseFunction;
         this.optional             = defaultValueSupplier != null;
         this.defaultValueSupplier = defaultValueSupplier;
         this.present              = true;
@@ -64,9 +58,15 @@ public class Parameter<T>
     }
     
     
-    public T getValue()
+    public String getValue()
     {
         return value;
+    }
+    
+    
+    void setValue(String value)
+    {
+        this.value = value;
     }
     
     
@@ -74,46 +74,25 @@ public class Parameter<T>
      * It returns the field <code>value</code> of the <code>Parameter</code> or an object by its <code>defaultValueSupplier</code>
      * if the former is null. (For optional <code>Parameter</code> objects.)
      * <p>
-     * If this Parameter is not optional, the <code>defaultValueSupplier</code> is null, so it returns <code>(T) new Object()</code>.
+     * If this Parameter is not optional, the <code>defaultValueSupplier</code> is null, so it returns an empty string.
      *
-     * @return An object of type T: The value of the Parameter / defaultValueSupplier / new Object().
+     * @return A String object: The value of the Parameter / by the defaultValueSupplier / "".
      */
-    @SuppressWarnings("unchecked")
-    public T getOrDefault()
+    public String getOrDefault()
     {
-        return value != null ? value : defaultValueSupplier != null ? defaultValueSupplier.get() : (T) new Object();
+        return value != null ? value : defaultValueSupplier != null ? defaultValueSupplier.get() : "";
     }
     
     
-    public Parameter<T> with(Supplier<T> defaultValueSupplier)
+    public Parameter with(Supplier<String> defaultValueSupplier)
     {
-        return new Parameter<T>(regex, parseFunction, defaultValueSupplier);
+        return new Parameter(regex, defaultValueSupplier);
     }
     
     
     @Override
-    protected Parameter<T> clone()
+    protected Parameter clone()
     {
-        return new Parameter<T>(regex, parseFunction, defaultValueSupplier);
-    }
-    
-    
-    void parse(CharSequence text)
-    {
-        try
-        {
-            value = parseFunction.apply(text);
-        }
-        catch (Exception e)
-        {
-            if (optional)
-            {
-                value = defaultValueSupplier.get();
-            }
-            else
-            {
-                throw new IllegalArgumentException(String.format(Message.PARSING_EXCEPTION.getMessage(), text, "%s"));
-            }
-        }
+        return new Parameter(regex, defaultValueSupplier);
     }
 }

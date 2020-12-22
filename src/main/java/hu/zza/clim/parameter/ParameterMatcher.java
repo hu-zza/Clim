@@ -68,7 +68,7 @@ public class ParameterMatcher
             {
                 try
                 {
-                    updateList.get(i - 1).parse(matchResult.group(i));
+                    updateList.get(i - 1).setValue(matchResult.group(i));
                 }
                 catch (IllegalArgumentException exception)
                 {

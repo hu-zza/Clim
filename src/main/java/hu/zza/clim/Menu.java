@@ -93,8 +93,7 @@ public class Menu
         try
         {
             if (initialPosition == null) initialPosition = nodeEnum.getEnumConstants()[0];
-            Menu menu = new Menu(menuStructure, controlType, nodeEnum, leafEnum, initialPosition, parameterMatcher);
-            return menu;
+            return new Menu(menuStructure, controlType, nodeEnum, leafEnum, initialPosition, parameterMatcher);
         }
         catch (Exception e)
         {
