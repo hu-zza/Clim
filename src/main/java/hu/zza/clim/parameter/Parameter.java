@@ -97,6 +97,12 @@ public class Parameter
     }
     
     
+    public static Parameter of(String regex, Supplier<String> defaultValueSupplier)
+    {
+        return new Parameter(regex, null, defaultValueSupplier);
+    }
+    
+    
     public static Parameter of(String regex,
                                UnaryOperator<String> parsingOperator,
                                Supplier<String> defaultValueSupplier
