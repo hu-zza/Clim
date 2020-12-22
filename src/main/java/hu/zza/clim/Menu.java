@@ -11,7 +11,6 @@ import java.util.Map;
 import static hu.zza.clim.Message.INITIALIZATION_FAILED;
 import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
 import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
-import static hu.zza.clim.Message.INVALID_POSITION;
 import static hu.zza.clim.Message.MISSING_MENU_ENTRY;
 import static hu.zza.clim.Message.PROCESSING_FAILED;
 import static hu.zza.clim.Message.UNKNOWN_COMMAND;
@@ -199,19 +198,21 @@ public final class Menu
             switch (controlType)
             {
                 case NOMINAL:
-                    chooseOptionByNominal(getPositionByName(input), Map.of());
+                    Position nominal = getPositionByName(input);
+                    setMenuPosition(getValidatedPositionOrThrow(nominal), Map.of());
                     break;
                 
                 case ORDINAL:
                 case ORDINAL_TRAILING_ZERO:
                     int ordinal = Integer.parseInt(input);
-                    chooseOptionByOrdinal(ordinal, Map.of());
+                    setMenuPosition(getValidatedPositionOrThrow(ordinal), Map.of());
                     break;
                 
                 case PARAMETRIC:
                     extractAndUpdateCommandField(input);
+                    getValidatedPositionOrThrow(command);
                     parameterMatcher.setText(input);
-                    chooseOptionByNominal(command, parameterMatcher.processText(command));
+                    setMenuPosition(command, parameterMatcher.processText(command));
                     break;
                 
                 default:
@@ -290,27 +291,35 @@ public final class Menu
     }
     
     
-    private void chooseOptionByOrdinal(int ordinal, Map<ParameterName, Parameter> parameterMap)
+    private Position getValidatedPositionOrThrow(Object choosenOption)
     {
-        if (ordinal < 0 || options.length <= ordinal)
-        {
-            throw new IllegalArgumentException(INVALID_POSITION.getMessage(ordinal));
-        }
+        String notValid = "";
         
-        setMenuPosition(options[ordinal], parameterMap);
-    }
-    
-    
-    private void chooseOptionByNominal(Position nominal, Map<ParameterName, Parameter> parameterMap)
-    {
-        if (Arrays.asList(options).contains(nominal))
+        switch (controlType)
         {
-            setMenuPosition(nominal, parameterMap);
+            case ORDINAL:
+            case ORDINAL_TRAILING_ZERO:
+                int ordinal = (Integer) choosenOption;
+                
+                if (0 <= ordinal || ordinal < options.length) {
+                    return options[ordinal];
+                } else {
+                    notValid = String.valueOf(ordinal);
+                }
+                break;
+                
+            case NOMINAL:
+            case PARAMETRIC:
+                Position nominal = (Position) choosenOption;
+                if (Arrays.asList(options).contains(nominal)) {
+                    return nominal;
+                } else {
+                    notValid = String.valueOf(nominal);
+                }
+                break;
         }
-        else
-        {
-            throw new IllegalArgumentException(INVALID_POSITION.getMessage(position));
-        }
+
+        throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage(notValid));
     }
     
     

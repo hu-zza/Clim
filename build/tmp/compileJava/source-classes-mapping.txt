@@ -8,14 +8,14 @@ hu/zza/clim/LeafPosition.java
  hu.zza.clim.LeafPosition
 hu/zza/clim/ControlType.java
  hu.zza.clim.ControlType
+hu/zza/clim/MenuStructure.java
+ hu.zza.clim.MenuStructure
 hu/zza/clim/Message.java
  hu.zza.clim.Message
 hu/zza/clim/parameter/ParameterMatcher.java
  hu.zza.clim.parameter.ParameterMatcher
 hu/zza/clim/parameter/ParameterPattern.java
  hu.zza.clim.parameter.ParameterPattern
-hu/zza/clim/MenuStructure.java
- hu.zza.clim.MenuStructure
 hu/zza/clim/parameter/Parameter.java
  hu.zza.clim.parameter.Parameter
 hu/zza/clim/Menu.java
