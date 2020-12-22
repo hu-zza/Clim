@@ -12,13 +12,7 @@ public class Parameter
     private       String           value;
     
     
-    public Parameter(String regex)
-    {
-        this(regex, null);
-    }
-    
-    
-    public Parameter(String regex, Supplier<String> defaultValueSupplier
+    private Parameter(String regex, Supplier<String> defaultValueSupplier
     )
     {
         if (regex == null || regex.isBlank())
@@ -84,7 +78,19 @@ public class Parameter
     }
     
     
-    public Parameter with(Supplier<String> defaultValueSupplier)
+    public static Parameter of(String regex)
+    {
+        return new Parameter(regex, null);
+    }
+    
+    
+    public static Parameter of(String regex, String defaultValue)
+    {
+        return new Parameter(regex, () -> defaultValue);
+    }
+    
+    
+    public static Parameter of(String regex, Supplier<String> defaultValueSupplier)
     {
         return new Parameter(regex, defaultValueSupplier);
     }
