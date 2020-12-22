@@ -6,6 +6,9 @@ import hu.zza.clim.parameter.ParameterName;
 import java.util.Map;
 import java.util.function.Function;
 
+import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
+
 
 public abstract class MenuEntry
 {
@@ -24,6 +27,31 @@ public abstract class MenuEntry
                       NodePosition... functionLinks
     )
     {
+        if (position == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("position"));
+        }
+        
+        if (name == null || name.isBlank())
+        {
+            throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("name"));
+        }
+
+        if (links == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("links"));
+        }
+    
+        if (function == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("function"));
+        }
+    
+        if (functionLinks == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("functionLinks"));
+        }
+        
         this.position      = position;
         this.name          = name;
         this.links         = links.clone();
@@ -83,7 +111,7 @@ public abstract class MenuEntry
     // INNER STATIC SUBCLASSES
     
     
-    public static class Node extends MenuEntry
+    public static final class Node extends MenuEntry
     {
         public Node(NodePosition position, String name, Position... links)
         {
@@ -102,7 +130,7 @@ public abstract class MenuEntry
     }
     
     
-    public static class Leaf extends MenuEntry
+    public static final class Leaf extends MenuEntry
     {
         public Leaf(LeafPosition position,
                     String name,

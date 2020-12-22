@@ -1,6 +1,5 @@
 package hu.zza.clim.parameter;
 
-import hu.zza.clim.Message;
 import hu.zza.clim.Position;
 
 import java.util.ArrayList;
@@ -11,8 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static hu.zza.clim.Message.INVALID_ARGUMENT;
+import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.Message.INVALID_NONEMPTY_FIELD;
 
-public class ParameterMatcher
+
+public final class ParameterMatcher
 {
     private final Pattern                             commandRegex;
     private final HashMap<Position, ParameterPattern> patternMap;
@@ -21,13 +24,23 @@ public class ParameterMatcher
     
     public ParameterMatcher(String commandRegex, HashMap<Position, ParameterPattern> patternMap)
     {
-        this(commandRegex, 0, "", patternMap);
+        this(commandRegex, 0, null, patternMap);
     }
     
     
     public ParameterMatcher(String commandRegex, int flags, String text, HashMap<Position, ParameterPattern> patternMap
     )
     {
+        if (commandRegex == null || commandRegex.isBlank())
+        {
+            throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("commandRegex"));
+        }
+        
+        if (patternMap == null || patternMap.isEmpty())
+        {
+            throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("patternMap"));
+        }
+        
         this.commandRegex = Pattern.compile(commandRegex, flags);
         this.text         = text;
         this.patternMap   = patternMap;
@@ -46,13 +59,22 @@ public class ParameterMatcher
     }
     
     
+    public boolean containsKeyInPatternMap(Position position)
+    {
+        return patternMap.containsKey(position);
+    }
+    
+    
     public Map<ParameterName, Parameter> processText(Position command)
     {
-        ParameterPattern parameterPattern = patternMap.get(command);
-        if (parameterPattern == null) throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage());
+        if (text == null || text.isEmpty())
+        {
+            throw new IllegalStateException(INVALID_NONEMPTY_FIELD.getMessage("text", "processText"));
+        }
         
-        List<ParameterName> parameterNames = parameterPattern.getParameterNameList();
-        List<Parameter>     parameterList  = prepareParameterList(parameterPattern);
+        ParameterPattern    parameterPattern = patternMap.get(command);
+        List<ParameterName> parameterNames   = parameterPattern.getParameterNameList();
+        List<Parameter>     parameterList    = getAndPrepareParameterList(parameterPattern);
         
         String regex = ParameterPattern.getRegex(parameterPattern.getDelimiter(), parameterList);
         
@@ -80,7 +102,7 @@ public class ParameterMatcher
         }
         else
         {
-            throw new IllegalArgumentException(Message.INVALID_ARGUMENT.getMessage());
+            throw new IllegalArgumentException(INVALID_ARGUMENT.getMessage());
         }
         
         Map<ParameterName, Parameter> result = new HashMap<>();
@@ -94,7 +116,7 @@ public class ParameterMatcher
     }
     
     
-    private List<Parameter> prepareParameterList(ParameterPattern parameterPattern)
+    private List<Parameter> getAndPrepareParameterList(ParameterPattern parameterPattern)
     {
         String          delimiter     = parameterPattern.getDelimiter();
         List<Parameter> parameterList = parameterPattern.getParameterClonesList();
@@ -104,22 +126,22 @@ public class ParameterMatcher
                                             .filter(Parameter::isOptional)
                                             .mapToInt(parameterList::indexOf)
                                             .toArray();
-    
+        
         if (positionsOfOptional.length == 0)
         {
             return parameterList;
         }
         else
         {
-            return updateAndGetParameterList(delimiter, parameterList, positionsOfOptional);
+            return getFittingParameterListVariant(delimiter, parameterList, positionsOfOptional);
         }
-    
+        
     }
     
     
-    private List<Parameter> updateAndGetParameterList(String delimiter,
-                                                      List<Parameter> parameterList,
-                                                      int[] positionsOfOptional
+    private List<Parameter> getFittingParameterListVariant(String delimiter,
+                                                           List<Parameter> parameterList,
+                                                           int[] positionsOfOptional
     )
     {
         // First try to match with all (positionsOfOptional.length) optionals ( + all non-optionals),
@@ -140,7 +162,7 @@ public class ParameterMatcher
                 if (Pattern.matches(ParameterPattern.getRegex(delimiter, parameterList), text)) return parameterList;
             }
         }
-        throw new IllegalArgumentException(Message.INVALID_ARGUMENT.getMessage());
+        throw new IllegalArgumentException(INVALID_ARGUMENT.getMessage());
     }
     
     

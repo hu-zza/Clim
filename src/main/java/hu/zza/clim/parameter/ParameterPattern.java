@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
 
-public class ParameterPattern
+
+public final class ParameterPattern
 {
     private final String              delimiter;
     private final List<ParameterName> parameterNameList;
@@ -14,6 +17,21 @@ public class ParameterPattern
     
     public ParameterPattern(String delimiter, List<ParameterName> parameterNameList, Parameter... parameters)
     {
+        if (delimiter == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("delimiter"));
+        }
+        
+        if (parameterNameList == null || parameterNameList.isEmpty())
+        {
+            throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("parameterNameList"));
+        }
+        
+        if (parameters == null || parameters.length == 0)
+        {
+            throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("parameters"));
+        }
+        
         this.delimiter         = delimiter;
         this.parameterNameList = List.copyOf(parameterNameList);
         this.parameterList     = List.of(parameters);
@@ -45,5 +63,4 @@ public class ParameterPattern
         
         return stringJoiner.toString();
     }
-    
 }

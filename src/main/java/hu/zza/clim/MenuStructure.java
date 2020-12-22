@@ -3,7 +3,7 @@ package hu.zza.clim;
 import java.util.HashMap;
 
 
-public class MenuStructure
+public final class MenuStructure
 {
     private final HashMap<Position, MenuEntry> menu = new HashMap<>();
     private       boolean                      finalized;
@@ -24,6 +24,12 @@ public class MenuStructure
     boolean containsKey(Position position)
     {
         return menu.containsKey(position);
+    }
+    
+    
+    boolean isEmpty()
+    {
+        return menu.isEmpty();
     }
     
     

@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.hu-zza'
-version '1.0.0-SNAPSHOT'
+version '0.1.0-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {

@@ -8,8 +8,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static hu.zza.clim.Message.INITIALIZATION_FAILED;
+import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
+import static hu.zza.clim.Message.INVALID_POSITION;
+import static hu.zza.clim.Message.MISSING_MENU_ENTRY;
+import static hu.zza.clim.Message.PROCESSING_FAILED;
+import static hu.zza.clim.Message.UNKNOWN_COMMAND;
 
-public class Menu
+
+public final class Menu
 {
     private final MenuStructure             menuStructure;
     private final ControlType               controlType;
@@ -29,24 +37,74 @@ public class Menu
                  ParameterMatcher parameterMatcher
     )
     {
+        
+        if (menuStructure == null || menuStructure.isEmpty())
+        {
+            throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("menuStructure"));
+        }
+    
+        if (controlType == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("controlType"));
+        }
+        
+        if (nodeEnum == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("nodeEnum"));
+        }
+        
+        if (leafEnum == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("leafEnum"));
+        }
+        
+        if (initialPosition == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("initialPosition"));
+        }
+        
+        if (controlType == ControlType.PARAMETRIC && parameterMatcher == null)
+        {
+            throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("parameterMatcher"));
+        }
+    
+        
         this.menuStructure    = menuStructure;
         this.controlType      = controlType;
         this.position         = initialPosition;
         this.parameterMatcher = parameterMatcher;
         
+        
         Map<String, NodePosition> tmpNodeMap = new HashMap<>();
         for (var node : nodeEnum.getEnumConstants())
         {
+            if (!menuStructure.containsKey(node))
+            {
+                throw new IllegalStateException(MISSING_MENU_ENTRY.getMessage("MenuStructure", node.name()));
+            }
+            
             tmpNodeMap.put(node.name(), node);
         }
         this.nodeNameMap = Map.copyOf(tmpNodeMap);
         
+        
         Map<String, LeafPosition> tmpLeafMap = new HashMap<>();
         for (var leaf : leafEnum.getEnumConstants())
         {
+            if (!menuStructure.containsKey(leaf))
+            {
+                throw new IllegalStateException(MISSING_MENU_ENTRY.getMessage("MenuStructure", leaf.name()));
+            }
+            
+            if (!parameterMatcher.containsKeyInPatternMap(leaf))
+            {
+                throw new IllegalArgumentException(MISSING_MENU_ENTRY.getMessage("PatternMap", leaf.name()));
+            }
+            
             tmpLeafMap.put(leaf.name(), leaf);
         }
         this.leafNameMap = Map.copyOf(tmpLeafMap);
+        
         
         refreshOptions();
     }
@@ -97,7 +155,7 @@ public class Menu
         }
         catch (Exception e)
         {
-            throw new IllegalArgumentException(Message.INITIALIZATION_EXCEPTION.getMessage());
+            throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()));
         }
         
     }
@@ -105,7 +163,7 @@ public class Menu
     
     private static void warnAboutInput(String input, Exception e)
     {
-        System.err.printf(Message.PROCESSING_EXCEPTION.getMessage(), input, e.getMessage());
+        System.err.print(PROCESSING_FAILED.getMessage(input, e.getMessage()));
     }
     
     
@@ -216,7 +274,7 @@ public class Menu
         }
         else
         {
-            throw new IllegalArgumentException(Message.INVALID_COMMAND.getMessage());
+            throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(name));
         }
     }
     
@@ -236,7 +294,7 @@ public class Menu
     {
         if (ordinal < 0 || options.length <= ordinal)
         {
-            throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage());
+            throw new IllegalArgumentException(INVALID_POSITION.getMessage(ordinal));
         }
         
         setMenuPosition(options[ordinal], parameterMap);
@@ -251,20 +309,13 @@ public class Menu
         }
         else
         {
-            throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage());
+            throw new IllegalArgumentException(INVALID_POSITION.getMessage(position));
         }
     }
     
     
     private void setMenuPosition(Position key, Map<ParameterName, Parameter> parameterMap)
     {
-        if (menuStructure.containsKey(key))
-        {
-            position = menuStructure.get(key).select(parameterMap);
-        }
-        else
-        {
-            throw new IllegalArgumentException(Message.INVALID_COMMAND.getMessage());
-        }
+        position = menuStructure.get(key).select(parameterMap);
     }
 }

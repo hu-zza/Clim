@@ -3,12 +3,13 @@ package hu.zza.clim.parameter;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
 
-public class Parameter
+
+public final class Parameter implements Cloneable
 {
     private final String                regex;
     private final UnaryOperator<String> parsingOperator;
-    private final boolean               optional;
     private final Supplier<String>      defaultValueSupplier;
     private       boolean               present;
     private       String                value;
@@ -16,14 +17,13 @@ public class Parameter
     
     private Parameter(String regex, UnaryOperator<String> parsingOperator, Supplier<String> defaultValueSupplier)
     {
-        if (regex == null || regex.isBlank())
+        if (regex == null || regex.isEmpty())
         {
-            throw new IllegalArgumentException("Parameter 'pattern' can not be null.");
+            throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("regex"));
         }
         
         this.regex                = regex;
         this.parsingOperator      = parsingOperator;
-        this.optional             = defaultValueSupplier != null;
         this.defaultValueSupplier = defaultValueSupplier;
         this.present              = true;
     }
@@ -37,7 +37,7 @@ public class Parameter
     
     boolean isOptional()
     {
-        return optional;
+        return defaultValueSupplier != null;
     }
     
     
@@ -81,25 +81,25 @@ public class Parameter
     
     public static Parameter of(String regex)
     {
-        return new Parameter(regex, null, null);
-    }
-    
-    
-    public static Parameter of(String regex, String defaultValue)
-    {
-        return new Parameter(regex, null, () -> defaultValue);
+        return of(regex, null, null);
     }
     
     
     public static Parameter of(String regex, UnaryOperator<String> parsingOperator)
     {
-        return new Parameter(regex, parsingOperator, null);
+        return of(regex, parsingOperator, null);
+    }
+    
+    
+    public static Parameter of(String regex, String defaultValue)
+    {
+        return of(regex, null, () -> defaultValue);
     }
     
     
     public static Parameter of(String regex, Supplier<String> defaultValueSupplier)
     {
-        return new Parameter(regex, null, defaultValueSupplier);
+        return of(regex, null, defaultValueSupplier);
     }
     
     
@@ -112,9 +112,34 @@ public class Parameter
     }
     
     
+    public Parameter with(UnaryOperator<String> parsingOperator)
+    {
+        return of(regex, parsingOperator, defaultValueSupplier);
+    }
+    
+    
+    public Parameter with(String defaultValue)
+    {
+        return of(regex, parsingOperator, () -> defaultValue);
+    }
+    
+    
+    public Parameter with(Supplier<String> defaultValueSupplier)
+    {
+        return of(regex, parsingOperator, defaultValueSupplier);
+    }
+    
+    
     @Override
     protected Parameter clone()
     {
-        return new Parameter(regex, parsingOperator, defaultValueSupplier);
+        try
+        {
+            return (Parameter) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            return new Parameter(regex, parsingOperator, defaultValueSupplier);
+        }
     }
 }
