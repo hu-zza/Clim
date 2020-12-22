@@ -1,2 +1,4 @@
 jdk:
   - openjdk11
+env:
+  VERSION: "0.1.0"

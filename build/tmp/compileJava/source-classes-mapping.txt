@@ -6,10 +6,6 @@ hu/zza/clim/parameter/ParameterName.java
  hu.zza.clim.parameter.ParameterName
 hu/zza/clim/LeafPosition.java
  hu.zza.clim.LeafPosition
-hu/zza/clim/MenuEntry.java
- hu.zza.clim.MenuEntry
- hu.zza.clim.MenuEntry$Leaf
- hu.zza.clim.MenuEntry$Node
 hu/zza/clim/ControlType.java
  hu.zza.clim.ControlType
 hu/zza/clim/Message.java
@@ -25,3 +21,7 @@ hu/zza/clim/parameter/Parameter.java
 hu/zza/clim/Menu.java
  hu.zza.clim.Menu
  hu.zza.clim.Menu$1
+hu/zza/clim/MenuEntry.java
+ hu.zza.clim.MenuEntry
+ hu.zza.clim.MenuEntry$Leaf
+ hu.zza.clim.MenuEntry$Node
