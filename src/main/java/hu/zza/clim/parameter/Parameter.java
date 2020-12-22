@@ -1,27 +1,28 @@
 package hu.zza.clim.parameter;
 
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 
 public class Parameter
 {
-    private final String           regex;
-    private final boolean          optional;
-    private final Supplier<String> defaultValueSupplier;
-    private       boolean          present;
-    private       String           value;
+    private final String                regex;
+    private final UnaryOperator<String> parsingOperator;
+    private final boolean               optional;
+    private final Supplier<String>      defaultValueSupplier;
+    private       boolean               present;
+    private       String                value;
     
     
-    private Parameter(String regex, Supplier<String> defaultValueSupplier
-    )
+    private Parameter(String regex, UnaryOperator<String> parsingOperator, Supplier<String> defaultValueSupplier)
     {
         if (regex == null || regex.isBlank())
         {
             throw new IllegalArgumentException("Parameter 'pattern' can not be null.");
         }
         
-        
         this.regex                = regex;
+        this.parsingOperator      = parsingOperator;
         this.optional             = defaultValueSupplier != null;
         this.defaultValueSupplier = defaultValueSupplier;
         this.present              = true;
@@ -60,7 +61,7 @@ public class Parameter
     
     void setValue(String value)
     {
-        this.value = value;
+        this.value = parsingOperator == null ? value : parsingOperator.apply(value);
     }
     
     
@@ -80,25 +81,34 @@ public class Parameter
     
     public static Parameter of(String regex)
     {
-        return new Parameter(regex, null);
+        return new Parameter(regex, null, null);
     }
     
     
     public static Parameter of(String regex, String defaultValue)
     {
-        return new Parameter(regex, () -> defaultValue);
+        return new Parameter(regex, null, () -> defaultValue);
     }
     
     
-    public static Parameter of(String regex, Supplier<String> defaultValueSupplier)
+    public static Parameter of(String regex, UnaryOperator<String> parsingOperator)
     {
-        return new Parameter(regex, defaultValueSupplier);
+        return new Parameter(regex, parsingOperator, null);
+    }
+    
+    
+    public static Parameter of(String regex,
+                               UnaryOperator<String> parsingOperator,
+                               Supplier<String> defaultValueSupplier
+    )
+    {
+        return new Parameter(regex, parsingOperator, defaultValueSupplier);
     }
     
     
     @Override
     protected Parameter clone()
     {
-        return new Parameter(regex, defaultValueSupplier);
+        return new Parameter(regex, parsingOperator, defaultValueSupplier);
     }
 }
