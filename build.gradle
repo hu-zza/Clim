@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.hu-zza'
-project.version = '0.1.0-RELEASE'
+project.version = '0.1.2-RELEASE'
 sourceCompatibility = '11'
 
 repositories {
