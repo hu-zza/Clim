@@ -1,2 +1,4 @@
 # clim
-Command Line Interface Menu [![Release](https://jitpack.io/v/hu.zza/clim.svg)](https://jitpack.io/#hu.zza/clim)
+[![Release](https://jitpack.io/v/hu.zza/clim.svg)](https://jitpack.io/#hu.zza/clim)
+
+Command Line Interface Menu
