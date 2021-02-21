@@ -1,14 +1,16 @@
 /*
  *     clim   // Command Line Interface Menu
  *
- *     Copyright (C) 2020-2021 Szabó László András
+ *     Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>
  *
- *     This program is free software: you can redistribute it and/or modify
+ *     This file is part of clim.
+ *
+ *     clim is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
+ *     clim is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
@@ -28,6 +30,12 @@ public final class MenuStructure
     private       boolean                      finalized;
     
     
+    boolean isEmpty()
+    {
+        return menu.isEmpty();
+    }
+    
+    
     public void setFinalized()
     {
         finalized = true;
@@ -43,12 +51,6 @@ public final class MenuStructure
     boolean containsKey(Position position)
     {
         return menu.containsKey(position);
-    }
-    
-    
-    boolean isEmpty()
-    {
-        return menu.isEmpty();
     }
     
     

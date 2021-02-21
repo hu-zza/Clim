@@ -1,14 +1,16 @@
 /*
  *     clim   // Command Line Interface Menu
  *
- *     Copyright (C) 2020-2021 Szabó László András
+ *     Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>
  *
- *     This program is free software: you can redistribute it and/or modify
+ *     This file is part of clim.
+ *
+ *     clim is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
+ *     clim is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
@@ -55,17 +57,17 @@ public abstract class MenuEntry
         {
             throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("name"));
         }
-
+        
         if (links == null)
         {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("links"));
         }
-    
+        
         if (function == null)
         {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("function"));
         }
-    
+        
         if (functionLinks == null)
         {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("functionLinks"));

@@ -1,14 +1,16 @@
 /*
  *     clim   // Command Line Interface Menu
  *
- *     Copyright (C) 2020-2021 Szabó László András
+ *     Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>
  *
- *     This program is free software: you can redistribute it and/or modify
+ *     This file is part of clim.
+ *
+ *     clim is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
+ *     clim is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
@@ -25,8 +27,10 @@ import hu.zza.clim.parameter.ParameterName;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static hu.zza.clim.Message.GNU_GPL;
 import static hu.zza.clim.Message.INITIALIZATION_FAILED;
 import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
 import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
@@ -37,6 +41,18 @@ import static hu.zza.clim.Message.UNKNOWN_COMMAND;
 
 public final class Menu
 {
+    private static final List<String> licenseCommands = List.of(
+            "license",
+            "warranty",
+            "liability",
+            "about license",
+            "about warranty",
+            "about liability",
+            "show license",
+            "show warranty",
+            "show liability"
+    );
+    
     private final MenuStructure             menuStructure;
     private final ControlType               controlType;
     private final Map<String, NodePosition> nodeNameMap;
@@ -60,7 +76,7 @@ public final class Menu
         {
             throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("menuStructure"));
         }
-    
+        
         if (controlType == null)
         {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("controlType"));
@@ -85,7 +101,7 @@ public final class Menu
         {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("parameterMatcher"));
         }
-    
+        
         
         this.menuStructure    = menuStructure;
         this.controlType      = controlType;
@@ -187,22 +203,40 @@ public final class Menu
     
     public void listOptions()
     {
+        listOptions(true);
+    }
+    
+    
+    public void listOptions(boolean showLicense)
+    {
         refreshOptions();
-        if (options.length == 0) return;
-        switch (controlType)
+        if (options.length != 0)
         {
-            case ORDINAL:
-            case ORDINAL_TRAILING_ZERO:
-                printOrdinalMenu();
-                break;
-            
-            case NOMINAL:
-            case PARAMETRIC:
-                Arrays.stream(options).map(menuStructure::get).map(MenuEntry::getName).forEach(System.out::println);
-                break;
-            
-            default:
-                break;
+            switch (controlType)
+            {
+                case ORDINAL:
+                case ORDINAL_TRAILING_ZERO:
+                    printOrdinalMenu();
+                    break;
+                
+                case NOMINAL:
+                case PARAMETRIC:
+                    Arrays.stream(options).map(menuStructure::get).map(MenuEntry::getName).forEach(System.out::println);
+                    break;
+                
+                default:
+                    break;
+            }
+        }
+        
+        if (showLicense)
+        {
+            System.out.println("\n\n"
+                               + "    clim   // Command Line Interface Menu\n\n"
+                               + "    Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>\n\n"
+                               + "    This program comes with ABSOLUTELY NO WARRANTY; for details type \"license\".\n"
+                               + "    This is free software, and you are welcome to redistribute it\n"
+                               + "    under certain conditions; type \"license\" for details.\n");
         }
     }
     
@@ -211,37 +245,45 @@ public final class Menu
     {
         if (input == null || input.isBlank()) return;
         
-        refreshOptions();
-        try
+        
+        if (licenseCommands.contains(input.toLowerCase()))
         {
-            switch (controlType)
-            {
-                case NOMINAL:
-                    Position nominal = getPositionByName(input);
-                    setMenuPosition(getValidatedPositionOrThrow(nominal), Map.of());
-                    break;
-                
-                case ORDINAL:
-                case ORDINAL_TRAILING_ZERO:
-                    int ordinal = Integer.parseInt(input);
-                    setMenuPosition(getValidatedPositionOrThrow(ordinal), Map.of());
-                    break;
-                
-                case PARAMETRIC:
-                    extractAndUpdateCommandField(input);
-                    getValidatedPositionOrThrow(command);
-                    parameterMatcher.setText(input);
-                    setMenuPosition(command, parameterMatcher.processText(command));
-                    break;
-                
-                default:
-                    break;
-            }
-            refreshOptions();
+            System.out.println(GNU_GPL.getMessage());
         }
-        catch (Exception e)
+        else
         {
-            warnAboutInput(input, e);
+            refreshOptions();
+            try
+            {
+                switch (controlType)
+                {
+                    case NOMINAL:
+                        Position nominal = getPositionByName(input);
+                        setMenuPosition(getValidatedPositionOrThrow(nominal), Map.of());
+                        break;
+                    
+                    case ORDINAL:
+                    case ORDINAL_TRAILING_ZERO:
+                        int ordinal = Integer.parseInt(input);
+                        setMenuPosition(getValidatedPositionOrThrow(ordinal), Map.of());
+                        break;
+                    
+                    case PARAMETRIC:
+                        extractAndUpdateCommandField(input);
+                        getValidatedPositionOrThrow(command);
+                        parameterMatcher.setText(input);
+                        setMenuPosition(command, parameterMatcher.processText(command));
+                        break;
+                    
+                    default:
+                        break;
+                }
+                refreshOptions();
+            }
+            catch (Exception e)
+            {
+                warnAboutInput(input, e);
+            }
         }
     }
     
@@ -320,24 +362,30 @@ public final class Menu
             case ORDINAL_TRAILING_ZERO:
                 int ordinal = (Integer) choosenOption;
                 
-                if (0 <= ordinal || ordinal < options.length) {
+                if (0 <= ordinal || ordinal < options.length)
+                {
                     return options[ordinal];
-                } else {
+                }
+                else
+                {
                     notValid = String.valueOf(ordinal);
                 }
                 break;
-                
+            
             case NOMINAL:
             case PARAMETRIC:
                 Position nominal = (Position) choosenOption;
-                if (Arrays.asList(options).contains(nominal)) {
+                if (Arrays.asList(options).contains(nominal))
+                {
                     return nominal;
-                } else {
+                }
+                else
+                {
                     notValid = String.valueOf(nominal);
                 }
                 break;
         }
-
+        
         throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage(notValid));
     }
     
