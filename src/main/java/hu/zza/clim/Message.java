@@ -34,8 +34,8 @@ public enum Message
     UNKNOWN_COMMAND("Unknown command: '%s'"), INVALID_ARGUMENT("Invalid command arguments."),
     INVALID_POSITION("Invalid or unavailable menu position: '%s'"),
     
-    GNU_GPL("                clim   // Command Line Interface Menu\n"
-            + "    Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>\n\n"
+    GNU_GPL(  "               clim   // Command Line Interface Menu\n"
+            + "      Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>\n\n"
             + "    This program is free software: you can redistribute it and/or modify\n"
             + "    it under the terms of the GNU General Public License as published by\n"
             + "    the Free Software Foundation, either version 3 of the License, or\n"
