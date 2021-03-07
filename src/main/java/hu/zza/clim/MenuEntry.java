@@ -31,8 +31,7 @@ import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
 import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
 
 
-public abstract class MenuEntry
-{
+public abstract class MenuEntry {
     private final String                                           name;
     private final Position                                         position;
     private final Position[]                                       links;
@@ -45,31 +44,24 @@ public abstract class MenuEntry
                       String name,
                       Position[] links,
                       Function<Map<ParameterName, Parameter>, Integer> function,
-                      NodePosition... functionLinks
-    )
-    {
-        if (position == null)
-        {
+                      NodePosition... functionLinks) {
+        if (position == null) {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("position"));
         }
         
-        if (name == null || name.isBlank())
-        {
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("name"));
         }
         
-        if (links == null)
-        {
+        if (links == null) {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("links"));
         }
         
-        if (function == null)
-        {
+        if (function == null) {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("function"));
         }
         
-        if (functionLinks == null)
-        {
+        if (functionLinks == null) {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("functionLinks"));
         }
         
@@ -85,32 +77,27 @@ public abstract class MenuEntry
     // GETTERS ONLY FOR THE PACKAGE-PRIVATE PROCESSING
     
     
-    String getName()
-    {
+    String getName() {
         return name;
     }
     
     
-    Position getPosition()
-    {
+    Position getPosition() {
         return position;
     }
     
     
-    Position[] getLinks()
-    {
+    Position[] getLinks() {
         return links;
     }
     
     
-    Function<Map<ParameterName, Parameter>, Integer> getFunction()
-    {
+    Function<Map<ParameterName, Parameter>, Integer> getFunction() {
         return function;
     }
     
     
-    Position[] getFunctionLinks()
-    {
+    Position[] getFunctionLinks() {
         return functionLinks;
     }
     
@@ -122,8 +109,7 @@ public abstract class MenuEntry
      *
      * @return The Position where the Menu redirects itself after selecting a MenuEntry.
      */
-    Position select(Map<ParameterName, Parameter> parameterMap)
-    {
+    Position select(Map<ParameterName, Parameter> parameterMap) {
         return getFunctionLinks()[getFunction().apply(parameterMap)];
     }
     
@@ -132,10 +118,8 @@ public abstract class MenuEntry
     // INNER STATIC SUBCLASSES
     
     
-    public static final class Node extends MenuEntry
-    {
-        public Node(NodePosition position, String name, Position... links)
-        {
+    public static final class Node extends MenuEntry {
+        public Node(NodePosition position, String name, Position... links) {
             /*
             Constructor parameters in order:
             
@@ -151,14 +135,11 @@ public abstract class MenuEntry
     }
     
     
-    public static final class Leaf extends MenuEntry
-    {
+    public static final class Leaf extends MenuEntry {
         public Leaf(LeafPosition position,
                     String name,
                     Function<Map<ParameterName, Parameter>, Integer> function,
-                    NodePosition... functionLinks
-        )
-        {
+                    NodePosition... functionLinks) {
             /*
             Constructor parameters in order:
 

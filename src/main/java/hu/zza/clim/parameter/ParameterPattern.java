@@ -29,27 +29,22 @@ import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
 import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
 
 
-public final class ParameterPattern
-{
+public final class ParameterPattern {
     private final String              delimiter;
     private final List<ParameterName> parameterNameList;
     private final List<Parameter>     parameterList;
     
     
-    public ParameterPattern(String delimiter, List<ParameterName> parameterNameList, Parameter... parameters)
-    {
-        if (delimiter == null)
-        {
+    public ParameterPattern(String delimiter, List<ParameterName> parameterNameList, Parameter... parameters) {
+        if (delimiter == null) {
             throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("delimiter"));
         }
         
-        if (parameterNameList == null || parameterNameList.isEmpty())
-        {
+        if (parameterNameList == null || parameterNameList.isEmpty()) {
             throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("parameterNameList"));
         }
         
-        if (parameters == null || parameters.length == 0)
-        {
+        if (parameters == null || parameters.length == 0) {
             throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("parameters"));
         }
         
@@ -59,28 +54,29 @@ public final class ParameterPattern
     }
     
     
-    String getDelimiter()
-    {
+    String getDelimiter() {
         return delimiter;
     }
     
     
-    List<ParameterName> getParameterNameList()
-    {
+    List<ParameterName> getParameterNameList() {
         return List.copyOf(parameterNameList);
     }
     
     
-    List<Parameter> getParameterClonesList()
-    {
-        return parameterList.stream().map(Parameter::clone).collect(Collectors.toList());
+    List<Parameter> getParameterClonesList() {
+        return parameterList.stream()
+                            .map(Parameter::clone)
+                            .collect(Collectors.toList());
     }
     
     
-    static String getRegex(String delimiter, List<Parameter> parameterList)
-    {
+    static String getRegex(String delimiter, List<Parameter> parameterList) {
         var stringJoiner = new StringJoiner(delimiter);
-        parameterList.stream().filter(Parameter::isPresent).map(Parameter::getRegex).forEach(stringJoiner::add);
+        parameterList.stream()
+                     .filter(Parameter::isPresent)
+                     .map(Parameter::getRegex)
+                     .forEach(stringJoiner::add);
         
         return stringJoiner.toString();
     }

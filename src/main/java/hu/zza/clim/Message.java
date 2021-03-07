@@ -21,8 +21,7 @@
 
 package hu.zza.clim;
 
-public enum Message
-{
+public enum Message {
     PROCESSING_FAILED("The menu can not process the given input: '%s'%nCause: %s%n%n"),
     INITIALIZATION_FAILED("Object initialization fails because of parameter invalidity:%n%s%n%n"),
     
@@ -31,10 +30,11 @@ public enum Message
     INVALID_NONEMPTY_FIELD("Field '%s' can not be null or empty. Method '%s' failed."),
     MISSING_MENU_ENTRY("%s does not contain MenuEntry '%s'."),
     
-    UNKNOWN_COMMAND("Unknown command: '%s'"), INVALID_ARGUMENT("Invalid command arguments."),
+    UNKNOWN_COMMAND("Unknown command: '%s'"),
+    INVALID_ARGUMENT("Invalid command arguments."),
     INVALID_POSITION("Invalid or unavailable menu position: '%s'"),
     
-    GNU_GPL(  "               clim   // Command Line Interface Menu\n"
+    GNU_GPL("               clim   // Command Line Interface Menu\n"
             + "      Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>\n\n"
             + "    This program is free software: you can redistribute it and/or modify\n"
             + "    it under the terms of the GNU General Public License as published by\n"
@@ -528,14 +528,12 @@ public enum Message
     private final String message;
     
     
-    Message(String message)
-    {
+    Message(String message) {
         this.message = message;
     }
     
     
-    public String getMessage(Object... context)
-    {
+    public String getMessage(Object... context) {
         return String.format(message, context);
     }
 }

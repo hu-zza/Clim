@@ -27,7 +27,6 @@ package hu.zza.clim;
  * A position could symbolize a node or a leaf.
  */
 
-public interface Position
-{
+public interface Position {
     String name();
 }
