@@ -39,13 +39,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public final class Menu {
 
-  private static final List<String> licenseCommands = List
-      .of("license", "warranty", "liability", "about license",
-          "about warranty", "about liability", "show license",
-          "show warranty", "show liability");
+  private static final List<String> licenseCommands =
+      List.of(
+          "license",
+          "warranty",
+          "liability",
+          "about license",
+          "about warranty",
+          "about liability",
+          "show license",
+          "show warranty",
+          "show liability");
 
   private final MenuStructure menuStructure;
   private final ControlType controlType;
@@ -56,8 +62,8 @@ public final class Menu {
   private Position command;
   private Position[] options;
 
-
-  private Menu(MenuStructure menuStructure,
+  private Menu(
+      MenuStructure menuStructure,
       ControlType controlType,
       Class<? extends NodePosition> nodeEnum,
       Class<? extends LeafPosition> leafEnum,
@@ -123,23 +129,27 @@ public final class Menu {
     refreshOptions();
   }
 
+  private void refreshOptions() {
+    options = menuStructure.get(position).getLinks();
+  }
 
-  public static Menu of(MenuStructure menuStructure,
+  public static Menu of(
+      MenuStructure menuStructure,
       Class<? extends NodePosition> nodeEnum,
       Class<? extends LeafPosition> leafEnum) {
     return of(menuStructure, ControlType.ORDINAL, nodeEnum, leafEnum);
   }
 
-
-  public static Menu of(MenuStructure menuStructure,
+  public static Menu of(
+      MenuStructure menuStructure,
       ControlType controlType,
       Class<? extends NodePosition> nodeEnum,
       Class<? extends LeafPosition> leafEnum) {
     return of(menuStructure, controlType, nodeEnum, leafEnum, null);
   }
 
-
-  public static Menu of(MenuStructure menuStructure,
+  public static Menu of(
+      MenuStructure menuStructure,
       ControlType controlType,
       Class<? extends NodePosition> nodeEnum,
       Class<? extends LeafPosition> leafEnum,
@@ -147,8 +157,8 @@ public final class Menu {
     return of(menuStructure, controlType, nodeEnum, leafEnum, null, parameterMatcher);
   }
 
-
-  public static Menu of(MenuStructure menuStructure,
+  public static Menu of(
+      MenuStructure menuStructure,
       ControlType controlType,
       Class<? extends NodePosition> nodeEnum,
       Class<? extends LeafPosition> leafEnum,
@@ -158,24 +168,16 @@ public final class Menu {
       if (initialPosition == null) {
         initialPosition = nodeEnum.getEnumConstants()[0];
       }
-      return new Menu(menuStructure, controlType, nodeEnum, leafEnum, initialPosition,
-          parameterMatcher);
+      return new Menu(
+          menuStructure, controlType, nodeEnum, leafEnum, initialPosition, parameterMatcher);
     } catch (Exception e) {
       throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()));
     }
-
   }
-
-
-  private static void warnAboutInput(String input, Exception e) {
-    System.err.print(PROCESSING_FAILED.getMessage(input, e.getMessage()));
-  }
-
 
   public void listOptions() {
     listOptions(true);
   }
-
 
   public void listOptions(boolean showLicense) {
     refreshOptions();
@@ -200,14 +202,39 @@ public final class Menu {
     }
 
     if (showLicense) {
-      System.out.println("\n\n" + "    clim   // Command Line Interface Menu\n\n"
-          + "    Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>\n\n"
-          + "    This program comes with ABSOLUTELY NO WARRANTY; for details type \"license\".\n"
-          + "    This is free software, and you are welcome to redistribute it\n"
-          + "    under certain conditions; type \"license\" for details.\n");
+      System.out.println(
+          "\n\n"
+              + "    clim   // Command Line Interface Menu\n\n"
+              + "    Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>\n\n"
+              + "    This program comes with ABSOLUTELY NO WARRANTY; for details type \"license\".\n"
+              + "    This is free software, and you are welcome to redistribute it\n"
+              + "    under certain conditions; type \"license\" for details.\n");
     }
   }
 
+  private void printOrdinalMenu() {
+    boolean trailingZero = controlType == ControlType.ORDINAL_TRAILING_ZERO;
+
+    int i = trailingZero ? 1 : 0;
+
+    for (; i < options.length; i++) {
+      printMenuEntry(menuStructure.get(options[i]), i);
+    }
+
+    if (trailingZero) {
+      printMenuEntry(menuStructure.get(options[0]), 0);
+    }
+  }
+
+  private void printMenuEntry(MenuEntry menuEntry, Integer ordinal) {
+    if (menuEntry != null) {
+      if (ordinal != null) {
+        System.out.printf("%d. %s%n", ordinal, menuEntry.getName());
+      } else {
+        System.out.printf("%s%n", menuEntry.getName());
+      }
+    }
+  }
 
   public void chooseOption(String input) {
     if (input == null || input.isBlank()) {
@@ -248,39 +275,6 @@ public final class Menu {
     }
   }
 
-
-  private void refreshOptions() {
-    options = menuStructure.get(position)
-        .getLinks();
-  }
-
-
-  private void printOrdinalMenu() {
-    boolean trailingZero = controlType == ControlType.ORDINAL_TRAILING_ZERO;
-
-    int i = trailingZero ? 1 : 0;
-
-    for (; i < options.length; i++) {
-      printMenuEntry(menuStructure.get(options[i]), i);
-    }
-
-    if (trailingZero) {
-      printMenuEntry(menuStructure.get(options[0]), 0);
-    }
-  }
-
-
-  private void printMenuEntry(MenuEntry menuEntry, Integer ordinal) {
-    if (menuEntry != null) {
-      if (ordinal != null) {
-        System.out.printf("%d. %s%n", ordinal, menuEntry.getName());
-      } else {
-        System.out.printf("%s%n", menuEntry.getName());
-      }
-    }
-  }
-
-
   private Position getPositionByName(String name) {
     String upperCaseName = name.toUpperCase();
 
@@ -293,15 +287,9 @@ public final class Menu {
     }
   }
 
-
-  private void extractAndUpdateCommandField(String commandString) {
-    parameterMatcher.getCommandRegex()
-        .matcher(commandString)
-        .results()
-        .findFirst()
-        .ifPresent(m -> command = getPositionByName(m.group(1)));
+  private void setMenuPosition(Position key, Map<ParameterName, Parameter> parameterMap) {
+    position = menuStructure.get(key).select(parameterMap);
   }
-
 
   private Position getValidatedPositionOrThrow(Object choosenOption) {
     String notValid = "";
@@ -321,8 +309,7 @@ public final class Menu {
       case NOMINAL:
       case PARAMETRIC:
         Position nominal = (Position) choosenOption;
-        if (Arrays.asList(options)
-            .contains(nominal)) {
+        if (Arrays.asList(options).contains(nominal)) {
           return nominal;
         } else {
           notValid = String.valueOf(nominal);
@@ -333,9 +320,16 @@ public final class Menu {
     throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage(notValid));
   }
 
+  private void extractAndUpdateCommandField(String commandString) {
+    parameterMatcher
+        .getCommandRegex()
+        .matcher(commandString)
+        .results()
+        .findFirst()
+        .ifPresent(m -> command = getPositionByName(m.group(1)));
+  }
 
-  private void setMenuPosition(Position key, Map<ParameterName, Parameter> parameterMap) {
-    position = menuStructure.get(key)
-        .select(parameterMap);
+  private static void warnAboutInput(String input, Exception e) {
+    System.err.print(PROCESSING_FAILED.getMessage(input, e.getMessage()));
   }
 }

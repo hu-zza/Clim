@@ -30,16 +30,14 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-
 public final class ParameterPattern {
 
   private final String delimiter;
   private final List<ParameterName> parameterNameList;
   private final List<Parameter> parameterList;
 
-
-  public ParameterPattern(String delimiter, List<ParameterName> parameterNameList,
-      Parameter... parameters) {
+  public ParameterPattern(
+      String delimiter, List<ParameterName> parameterNameList, Parameter... parameters) {
     if (delimiter == null) {
       throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("delimiter"));
     }
@@ -76,8 +74,6 @@ public final class ParameterPattern {
   }
 
   List<Parameter> getParameterClonesList() {
-    return parameterList.stream()
-        .map(Parameter::clone)
-        .collect(Collectors.toList());
+    return parameterList.stream().map(Parameter::clone).collect(Collectors.toList());
   }
 }

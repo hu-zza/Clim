@@ -28,7 +28,6 @@ import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-
 public final class Parameter implements Cloneable {
 
   private final String regex;
@@ -37,9 +36,8 @@ public final class Parameter implements Cloneable {
   private boolean present;
   private String value;
 
-
-  private Parameter(String regex, UnaryOperator<String> parsingOperator,
-      Supplier<String> defaultValueSupplier) {
+  private Parameter(
+      String regex, UnaryOperator<String> parsingOperator, Supplier<String> defaultValueSupplier) {
     if (regex == null || regex.isEmpty()) {
       throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("regex"));
     }
@@ -54,6 +52,11 @@ public final class Parameter implements Cloneable {
     return of(regex, null, null);
   }
 
+  public static Parameter of(
+      String regex, UnaryOperator<String> parsingOperator, Supplier<String> defaultValueSupplier) {
+    return new Parameter(regex, parsingOperator, defaultValueSupplier);
+  }
+
   public static Parameter of(String regex, UnaryOperator<String> parsingOperator) {
     return of(regex, parsingOperator, null);
   }
@@ -66,22 +69,16 @@ public final class Parameter implements Cloneable {
     return of(regex, null, defaultValueSupplier);
   }
 
-  public static Parameter of(String regex,
-      UnaryOperator<String> parsingOperator,
-      Supplier<String> defaultValueSupplier) {
-    return new Parameter(regex, parsingOperator, defaultValueSupplier);
-  }
-
   String getRegex() {
     return regex;
   }
 
-  boolean isOptional() {
-    return defaultValueSupplier != null;
-  }
-
   boolean isPresent() {
     return !isOptional() || present; // = isOptional() ? present : true
+  }
+
+  boolean isOptional() {
+    return defaultValueSupplier != null;
   }
 
   void setPresent(boolean present) {
@@ -100,9 +97,9 @@ public final class Parameter implements Cloneable {
    * It returns the field <code>value</code> of the <code>Parameter</code> or an object by its
    * <code>defaultValueSupplier</code> if the former is null. (For optional <code>Parameter</code>
    * objects.)
-   * <p>
-   * If this Parameter is not optional, the <code>defaultValueSupplier</code> is null, so it returns
-   * an empty string.
+   *
+   * <p>If this Parameter is not optional, the <code>defaultValueSupplier</code> is null, so it
+   * returns an empty string.
    *
    * @return A String object: The value of the Parameter / by the defaultValueSupplier / "".
    */
@@ -114,16 +111,13 @@ public final class Parameter implements Cloneable {
     return of(regex, parsingOperator, defaultValueSupplier);
   }
 
-
   public Parameter with(String defaultValue) {
     return of(regex, parsingOperator, () -> defaultValue);
   }
 
-
   public Parameter with(Supplier<String> defaultValueSupplier) {
     return of(regex, parsingOperator, defaultValueSupplier);
   }
-
 
   @Override
   protected Parameter clone() {
