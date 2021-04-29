@@ -58,7 +58,7 @@ public final class Menu {
   private final Map<String, NodePosition> nodeNameMap;
   private final Map<String, LeafPosition> leafNameMap;
   private final ParameterMatcher parameterMatcher;
-  private Position position;
+  private NodePosition position;
   private Position command;
   private Position[] options;
 
@@ -67,7 +67,7 @@ public final class Menu {
       ControlType controlType,
       Class<? extends NodePosition> nodeEnum,
       Class<? extends LeafPosition> leafEnum,
-      Position initialPosition,
+      NodePosition initialPosition,
       ParameterMatcher parameterMatcher) {
 
     if (menuStructure == null || menuStructure.isEmpty()) {
@@ -162,7 +162,7 @@ public final class Menu {
       ControlType controlType,
       Class<? extends NodePosition> nodeEnum,
       Class<? extends LeafPosition> leafEnum,
-      Position initialPosition,
+      NodePosition initialPosition,
       ParameterMatcher parameterMatcher) {
     try {
       if (initialPosition == null) {

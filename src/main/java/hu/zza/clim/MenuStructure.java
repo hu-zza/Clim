@@ -25,19 +25,35 @@ package hu.zza.clim;
 
 import java.util.HashMap;
 
+/** Represents the structure of a {@link Menu}. */
 public final class MenuStructure {
 
   private final HashMap<Position, MenuEntry> menu = new HashMap<>();
   private boolean finalized;
 
+  /**
+   * Returns {@code true} if this structure contains no entry.
+   *
+   * @return {@code true} if this structure contains no entry.
+   */
   boolean isEmpty() {
     return menu.isEmpty();
   }
 
+  /** Sets {@link MenuStructure} finalized, so {@link MenuStructure#put} will be disabled. */
   public void setFinalized() {
     finalized = true;
   }
 
+  /**
+   * Add the specified {@link MenuEntry} to the {@link MenuStructure}. If this structure contains a
+   * {@link MenuEntry} with the same {@link Position}, it is replaced.
+   *
+   * @param menuEntry the {@link MenuEntry} object to be add to
+   * @return the previous {@link MenuEntry} if the current overrides it, or {@code null} if there
+   *     was no replacement. (A {@code null} return can also indicate that the structure is
+   *     finalized.)
+   */
   public MenuEntry put(MenuEntry menuEntry) {
     return finalized ? null : menu.put(menuEntry.getPosition(), menuEntry);
   }

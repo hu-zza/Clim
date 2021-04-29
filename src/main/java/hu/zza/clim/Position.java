@@ -23,7 +23,11 @@
 
 package hu.zza.clim;
 
-/** Object that represents menu's current position. A position could symbolize a node or a leaf. */
+/**
+ * Represents positions that construct the structure of a {@link Menu} object: It can symbolize a
+ * {@link NodePosition node} or a {@link LeafPosition leaf} by its subinterfaces. This and its
+ * subtypes are marker interfaces for user defined enums. These enums function as ID collections.
+ */
 public interface Position {
 
   String name();

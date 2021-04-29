@@ -73,8 +73,7 @@ public abstract class MenuEntry {
     this.functionLinks = functionLinks.clone();
   }
 
-  ///////////////////////////////////////////////////
-  // GETTERS ONLY FOR THE PACKAGE-PRIVATE PROCESSING
+  // Getters only for the package-private processing
 
   String getName() {
     return name;
@@ -89,18 +88,19 @@ public abstract class MenuEntry {
   }
 
   /**
-   * Menu performs this method on every selected MenuEntry, then redirects itself to the returning
-   * Position. Nodes returns only with the Position of themselves, because selecting a Node means
-   * only this (navigating). Leaves performs a function, the returning Position depends on the
-   * returning value of its function.
+   * {@link Menu} performs this method on every selected {@link MenuEntry}, then redirects itself to
+   * the returning {@link NodePosition}. <p>{@link Node Nodes} returns only with the position of
+   * themselves, because selecting a Node means only this (navigating). {@link Leaf Leaves} performs
+   * a function, the returning position depends on the returning value of its function.</p>
    *
-   * @return The Position where the Menu redirects itself after selecting a MenuEntry.
+   * @return The {@link NodePosition} where the {@link Menu} redirects itself after selecting a
+   *     {@link MenuEntry}.
    */
-  Position select(Map<ParameterName, Parameter> parameterMap) {
+  NodePosition select(Map<ParameterName, Parameter> parameterMap) {
     return getFunctionLinks()[getFunction().apply(parameterMap)];
   }
 
-  Position[] getFunctionLinks() {
+  NodePosition[] getFunctionLinks() {
     return functionLinks;
   }
 
@@ -108,11 +108,17 @@ public abstract class MenuEntry {
     return function;
   }
 
-  ///////////////////////////
-  // INNER STATIC SUBCLASSES
-
   public static final class Node extends MenuEntry {
 
+    /**
+     * Represents a "walkable" point of the menu without complex functionality. The main purpose of
+     * this class to provide navigation. Each Node contains a {@link hu.zza.clim.Position} array
+     * about adjacent {@link hu.zza.clim.NodePosition} and {@link hu.zza.clim.LeafPosition} objects.
+     *
+     * @param position
+     * @param name
+     * @param links
+     */
     public Node(NodePosition position, String name, Position... links) {
       /*
       Constructor parameters in order:
@@ -121,6 +127,7 @@ public abstract class MenuEntry {
       name            -   Human-friendly name of this MenuEntry.
       links           -   An array of Positions of other reachable MenuEntries (Nodes and Leaves).
 
+      Navigating to another Node with MenuEntry::select in a functional style:
       function        -   "Placeholder" function, always returns 0.
       functionLinks   -   An array of Positions with only one element: The Position of this MenuEntry.
        */
@@ -130,6 +137,15 @@ public abstract class MenuEntry {
 
   public static final class Leaf extends MenuEntry {
 
+    /**
+     * Represents a single function, but it is not a "walkable" point of the menu. It is callable
+     * from a Node, and you will be redirected to one.
+     *
+     * @param position
+     * @param name
+     * @param function
+     * @param functionLinks
+     */
     public Leaf(
         LeafPosition position,
         String name,

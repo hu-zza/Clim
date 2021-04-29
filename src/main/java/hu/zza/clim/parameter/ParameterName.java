@@ -23,4 +23,7 @@
 
 package hu.zza.clim.parameter;
 
+/**
+ * Marker interface.
+ */
 public interface ParameterName {}
