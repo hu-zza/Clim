@@ -31,6 +31,10 @@ import hu.zza.clim.parameter.ParameterName;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * The abstract form of a menu item which provides the same interface for {@link Node nodes} and
+ * {@link Leaf leaves}.
+ */
 public abstract class MenuEntry {
 
   private final String name;
@@ -89,9 +93,11 @@ public abstract class MenuEntry {
 
   /**
    * {@link Menu} performs this method on every selected {@link MenuEntry}, then redirects itself to
-   * the returning {@link NodePosition}. <p>{@link Node Nodes} returns only with the position of
-   * themselves, because selecting a Node means only this (navigating). {@link Leaf Leaves} performs
-   * a function, the returning position depends on the returning value of its function.</p>
+   * the returning {@link NodePosition}.
+   *
+   * <p>{@link Node Nodes} returns only with the position of themselves, because selecting a Node
+   * means only this (navigating). {@link Leaf Leaves} performs a function, the returning position
+   * depends on the returning value of its function.
    *
    * @return The {@link NodePosition} where the {@link Menu} redirects itself after selecting a
    *     {@link MenuEntry}.
@@ -108,16 +114,17 @@ public abstract class MenuEntry {
     return function;
   }
 
+  /**
+   * Represents a "walkable" point of the menu without complex functionality. The main purpose of
+   * this class to provide navigation. Each Node contains a {@link Position} array about adjacent
+   * {@link NodePosition} and {@link LeafPosition} objects.
+   */
   public static final class Node extends MenuEntry {
 
     /**
-     * Represents a "walkable" point of the menu without complex functionality. The main purpose of
-     * this class to provide navigation. Each Node contains a {@link hu.zza.clim.Position} array
-     * about adjacent {@link hu.zza.clim.NodePosition} and {@link hu.zza.clim.LeafPosition} objects.
-     *
-     * @param position
-     * @param name
-     * @param links
+     * @param position unique position identifier
+     * @param name human-friendly name of this node
+     * @param links adjacent {@link Node nodes} and {@link Leaf leaves}
      */
     public Node(NodePosition position, String name, Position... links) {
       /*
@@ -135,16 +142,18 @@ public abstract class MenuEntry {
     }
   }
 
+  /**
+   * Represents a single function, but it is not a "walkable" point of the menu. It is callable from
+   * a Node, and you will be redirected to one.
+   */
   public static final class Leaf extends MenuEntry {
 
     /**
-     * Represents a single function, but it is not a "walkable" point of the menu. It is callable
-     * from a Node, and you will be redirected to one.
-     *
-     * @param position
-     * @param name
-     * @param function
-     * @param functionLinks
+     * @param position unique position identifier
+     * @param name human-friendly name of this leaf
+     * @param function the essence of a {@link Leaf}
+     * @param functionLinks {@link NodePosition} objects for forwarding, from which the returning
+     *     int value of the {@code function} is chosen
      */
     public Leaf(
         LeafPosition position,

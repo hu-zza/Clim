@@ -22,6 +22,7 @@
  */
 
 package hu.zza.clim;
+
 /**
  * Marker interface for the user defined enum which contains leaf IDs. {@link LeafPosition} is not a
  * real, "walkable" point instead of {@link NodePosition}: The inner position of the {@link Menu}

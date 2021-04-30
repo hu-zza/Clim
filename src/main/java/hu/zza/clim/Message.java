@@ -23,6 +23,8 @@
 
 package hu.zza.clim;
 
+/** This will be replaced by a ResourceBundle in the near future. */
+@Deprecated
 public enum Message {
   PROCESSING_FAILED("The menu can not process the given input: '%s'%nCause: %s%n%n"),
   INITIALIZATION_FAILED("Object initialization fails because of parameter invalidity:%n%s%n%n"),
