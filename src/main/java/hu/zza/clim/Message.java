@@ -23,8 +23,10 @@
 
 package hu.zza.clim;
 
-/** This will be replaced by a ResourceBundle in the near future. */
-@Deprecated
+/**
+ * Message pool for the whole module. This will be refactored with a ResourceBundle in the near
+ * future.
+ */
 public enum Message {
   PROCESSING_FAILED("The menu can not process the given input: '%s'%nCause: %s%n%n"),
   INITIALIZATION_FAILED("Object initialization fails because of parameter invalidity:%n%s%n%n"),
@@ -581,6 +583,12 @@ public enum Message {
     this.message = message;
   }
 
+  /**
+   * Returns the message complemented with the {@code context}.
+   *
+   * @param context vararg to add more detail for the message
+   * @return the message complemented with the {@code context}
+   */
   public String getMessage(Object... context) {
     return String.format(message, context);
   }

@@ -30,12 +30,25 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a complex pattern of {@link Parameter parameters} that is used for evaluating user
+ * input.
+ */
 public final class ParameterPattern {
 
   private final String delimiter;
   private final List<ParameterName> parameterNameList;
   private final List<Parameter> parameterList;
 
+  /**
+   * Creates a {@link ParameterPattern}. A {@link ParameterPattern} object has only {@code
+   * delimiter}, but no regex. The reason is that every {@link Parameter} has its own, so only a
+   * delimiter is needed to concatenate them.
+   *
+   * @param delimiter character sequence delimiter
+   * @param parameterNameList names of {@link Parameter parameters} in sequential order
+   * @param parameters {@link Parameter} objects
+   */
   public ParameterPattern(
       String delimiter, List<ParameterName> parameterNameList, Parameter... parameters) {
     if (delimiter == null) {

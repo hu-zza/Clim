@@ -43,7 +43,6 @@ public abstract class MenuEntry {
   private final Function<Map<ParameterName, Parameter>, Integer> function;
   private final NodePosition[] functionLinks;
 
-  // Full-fledged, low-level constructor
   private MenuEntry(
       Position position,
       String name,
@@ -76,8 +75,6 @@ public abstract class MenuEntry {
     this.function = function;
     this.functionLinks = functionLinks.clone();
   }
-
-  // Getters only for the package-private processing
 
   String getName() {
     return name;

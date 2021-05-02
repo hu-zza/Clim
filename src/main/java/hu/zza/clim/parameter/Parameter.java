@@ -28,6 +28,7 @@ import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+/** Represents a single parameter which can be concrete or optional. */
 public final class Parameter implements Cloneable {
 
   private final String regex;
@@ -48,23 +49,62 @@ public final class Parameter implements Cloneable {
     this.present = true;
   }
 
+  /**
+   * Returns a concrete, non-parser {@link Parameter}.
+   *
+   * @param regex the regex pattern for value extraction from the raw input
+   * @return the concrete, non-parser {@link Parameter}
+   */
   public static Parameter of(String regex) {
     return of(regex, null, null);
   }
 
+  /**
+   * Returns an optional, parser {@link Parameter}.
+   *
+   * @param regex the regex pattern for value extraction from the raw input
+   * @param parsingOperator the preprocessor before saving the extracted as the value of the {@link
+   *     Parameter}
+   * @param defaultValueSupplier the source of the value of the {@link Parameter} if it is null
+   * @return the optional, parser {@link Parameter}
+   */
   public static Parameter of(
       String regex, UnaryOperator<String> parsingOperator, Supplier<String> defaultValueSupplier) {
     return new Parameter(regex, parsingOperator, defaultValueSupplier);
   }
 
+  /**
+   * Returns a concrete, parser {@link Parameter}.
+   *
+   * @param regex the regex pattern for value extraction from the raw input
+   * @param parsingOperator the preprocessor before saving the extracted as the value of the {@link
+   *     Parameter}
+   * @return the concrete, parser {@link Parameter}
+   */
   public static Parameter of(String regex, UnaryOperator<String> parsingOperator) {
     return of(regex, parsingOperator, null);
   }
 
+  /**
+   * Returns an optional, non-parser {@link Parameter}. Works same as {@link Parameter#of(String,
+   * Supplier)} is called with constant {@link Supplier}: {@code Parameter.of(<regex>, () ->
+   * <defaultValue>)}
+   *
+   * @param regex the regex pattern for value extraction from the raw input
+   * @param defaultValue the {@link String} value of the {@link Parameter} if its value is null
+   * @return the optional, non-parser {@link Parameter}
+   */
   public static Parameter of(String regex, String defaultValue) {
     return of(regex, null, () -> defaultValue);
   }
 
+  /**
+   * Returns an optional, non-parser {@link Parameter}.
+   *
+   * @param regex the regex pattern for value extraction from the raw input
+   * @param defaultValueSupplier the source of the value of the {@link Parameter} if it is null
+   * @return the optional, non-parser {@link Parameter}
+   */
   public static Parameter of(String regex, Supplier<String> defaultValueSupplier) {
     return of(regex, null, defaultValueSupplier);
   }
@@ -85,6 +125,11 @@ public final class Parameter implements Cloneable {
     this.present = present;
   }
 
+  /**
+   * Returns the {@link Parameter parameters} value as a {@link String}.
+   *
+   * @return the {@link Parameter parameters} value as a {@link String}
+   */
   public String getValue() {
     return value;
   }
@@ -94,27 +139,48 @@ public final class Parameter implements Cloneable {
   }
 
   /**
-   * It returns the field <code>value</code> of the <code>Parameter</code> or an object by its
-   * <code>defaultValueSupplier</code> if the former is null. (For optional <code>Parameter</code>
-   * objects.)
+   * It returns the field {@code value} of the {@link Parameter} or an object by its {@code
+   * defaultValueSupplier} if the former is null. (For optional {@code Parameter} objects.)
    *
-   * <p>If this Parameter is not optional, the <code>defaultValueSupplier</code> is null, so it
+   * <p>If this {@link Parameter} is not optional, the {@code defaultValueSupplier} is null, so it
    * returns an empty string.
    *
-   * @return A String object: The value of the Parameter / by the defaultValueSupplier / "".
+   * @return a {@link String}: The value of the {@link Parameter} / by the {@code
+   *     defaultValueSupplier} / "".
    */
   public String getOrDefault() {
     return value != null ? value : defaultValueSupplier != null ? defaultValueSupplier.get() : "";
   }
 
+  /**
+   * Returns a copy of this {@link Parameter} with the specified {@code parsingOperator}.
+   *
+   * @param parsingOperator the {@link UnaryOperator} to use
+   * @return a {@link Parameter} based on this instance with the specified {@code parsingOperator}
+   */
   public Parameter with(UnaryOperator<String> parsingOperator) {
     return of(regex, parsingOperator, defaultValueSupplier);
   }
 
+  /**
+   * Returns a copy of this {@link Parameter} with the specified {@code defaultValue}. Works same as
+   * {@link Parameter#with(Supplier)} is called with constant {@link Supplier}: {@code
+   * Parameter.with(() -> <defaultValue>)}
+   *
+   * @param defaultValue the {@link String} to use
+   * @return a {@link Parameter} based on this instance with the specified {@code defaultValue}
+   */
   public Parameter with(String defaultValue) {
     return of(regex, parsingOperator, () -> defaultValue);
   }
 
+  /**
+   * Returns a copy of this {@link Parameter} with the specified {@code defaultValueSupplier}.
+   *
+   * @param defaultValueSupplier the {@link Supplier} to use
+   * @return a {@link Parameter} based on this instance with the specified {@code
+   *     defaultValueSupplier}
+   */
   public Parameter with(Supplier<String> defaultValueSupplier) {
     return of(regex, parsingOperator, defaultValueSupplier);
   }

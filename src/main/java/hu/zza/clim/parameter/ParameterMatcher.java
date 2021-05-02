@@ -36,18 +36,43 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * {@link ParameterMatcher} executes text processing based on the given {@link ParameterPattern
+ * patterns}.
+ */
 public final class ParameterMatcher {
 
   private final Pattern commandRegex;
-  private final HashMap<Position, ParameterPattern> patternMap;
+  private final Map<Position, ParameterPattern> patternMap;
   private String text;
 
-  public ParameterMatcher(String commandRegex, HashMap<Position, ParameterPattern> patternMap) {
+  /**
+   * Creates a {@link ParameterMatcher} object with simple {@code commandRegex} (without flags) and
+   * without setting processable text initially.
+   *
+   * <p>While many different input regexes can be set using different {@link ParameterPattern}
+   * objects, the command regex should be uniform and universal.
+   *
+   * @param commandRegex same as {@code regex} in {@link Pattern#compile(String)}
+   * @param patternMap {@link Map} of {@link Position} - {@link ParameterPattern} bindings
+   */
+  public ParameterMatcher(String commandRegex, Map<Position, ParameterPattern> patternMap) {
     this(commandRegex, 0, null, patternMap);
   }
 
+  /**
+   * Creates a {@link ParameterMatcher} object.
+   *
+   * <p>While many different input regexes can be set using different {@link ParameterPattern}
+   * objects, the command regex should be uniform and universal.
+   *
+   * @param commandRegex same as {@code regex} in {@link Pattern#compile(String, int)}
+   * @param flags same as {@code flags} in {@link Pattern#compile(String, int)}
+   * @param text processable input which stored internally
+   * @param patternMap {@link Map} of {@link Position} - {@link ParameterPattern} bindings
+   */
   public ParameterMatcher(
-      String commandRegex, int flags, String text, HashMap<Position, ParameterPattern> patternMap) {
+      String commandRegex, int flags, String text, Map<Position, ParameterPattern> patternMap) {
     if (commandRegex == null || commandRegex.isBlank()) {
       throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("commandRegex"));
     }
@@ -61,18 +86,42 @@ public final class ParameterMatcher {
     this.patternMap = patternMap;
   }
 
+  /**
+   * Returns with the command regex, which universally points to the command in the input strings.
+   *
+   * @return the command regex.
+   */
   public Pattern getCommandRegex() {
     return commandRegex;
   }
 
+  /**
+   * Sets the processable text for {@link ParameterMatcher}.
+   *
+   * @param text input that {@link ParameterMatcher} should process
+   */
   public void setText(String text) {
     this.text = text;
   }
 
+  /**
+   * Checks the existence of the specified {@link Position} as a key in the {@code patternMap}
+   * defined at construction.
+   *
+   * @param position the key {@link Position} looking for
+   * @return true if {@code patternMap} contains it
+   */
   public boolean containsKeyInPatternMap(Position position) {
     return patternMap.containsKey(position);
   }
 
+  /**
+   * Processing the internally stored {@code text} (set by {@link ParameterMatcher#setText}), and
+   * returns with the extracted parameter list.
+   *
+   * @param command the directive by which the {@link ParameterMatcher} processes the {@code text}
+   * @return a {@link Map} object with {@link ParameterName} - {@link Parameter} bindings
+   */
   public Map<ParameterName, Parameter> processText(Position command) {
     if (text == null || text.isEmpty()) {
       throw new IllegalStateException(INVALID_NONEMPTY_FIELD.getMessage("text", "processText"));
@@ -154,12 +203,11 @@ public final class ParameterMatcher {
   }
 
   /**
-   * Generates all <code>r</code> sized combinations for range 0..<code>n</code> (included,
-   * excluded).
+   * Generates all {@code r} sized combinations for range 0..{@code n} (included, excluded).
    *
-   * @param n Upper boundary for the generation. (excluded)
-   * @param r Size of a generated set.
-   * @return Combinations in lexicographic order.
+   * @param n upper boundary for the generation (excluded)
+   * @param r size of a generated set
+   * @return combinations in lexicographic order
    */
   private List<int[]> generateCombinations(int n, int r) {
     List<int[]> combinations = new ArrayList<>();

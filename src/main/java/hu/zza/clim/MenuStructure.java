@@ -31,11 +31,6 @@ public final class MenuStructure {
   private final HashMap<Position, MenuEntry> menu = new HashMap<>();
   private boolean finalized;
 
-  /**
-   * Returns {@code true} if this structure contains no entry.
-   *
-   * @return {@code true} if this structure contains no entry.
-   */
   boolean isEmpty() {
     return menu.isEmpty();
   }
