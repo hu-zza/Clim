@@ -21,24 +21,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id 'java'
-    id 'maven'
-}
+import hu.zza.clim.ClimPosition;
 
-group 'hu.zza'
-project.version = '0.2.0'
-sourceCompatibility = '11'
+public class ClimPositionTest {
+  public static void main(String[] args) {
+    var a = NodeEnumTest.N1;
+    var b = LeafEnumTest.L1;
 
-repositories {
-    mavenCentral()
-}
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
+    System.out.println(a.getClass().isAnnotationPresent(ClimPosition.class));
+    System.out.println(b.getClass().isAnnotationPresent(ClimPosition.class));
+    System.out.println();
 
-test {
-    useJUnitPlatform()
+    for (var e : a.getClass().getAnnotations()) {
+      System.out.println(e);
+      System.out.println(((ClimPosition) e).value());
+      System.out.println(((ClimPosition) e).id());
+    }
+
+    for (var e : b.getClass().getAnnotations()) {
+      System.out.println(e);
+      System.out.println(((ClimPosition) e).value());
+      System.out.println(((ClimPosition) e).id());
+    }
+
+  }
 }

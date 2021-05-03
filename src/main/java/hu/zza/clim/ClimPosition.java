@@ -21,24 +21,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id 'java'
-    id 'maven'
-}
+package hu.zza.clim;
 
-group 'hu.zza'
-project.version = '0.2.0'
-sourceCompatibility = '11'
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-repositories {
-    mavenCentral()
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ClimPosition {
+  Type value() default Type.LEAF;
+  Id id() default Id.NAME;
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
-
-test {
-    useJUnitPlatform()
+  enum Type {NODE, LEAF}
+  enum Id {NAME, TO_STRING}
 }

@@ -21,24 +21,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id 'java'
-    id 'maven'
-}
+import hu.zza.clim.ClimPosition;
 
-group 'hu.zza'
-project.version = '0.2.0'
-sourceCompatibility = '11'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
-
-test {
-    useJUnitPlatform()
+@ClimPosition()
+public enum LeafEnumTest {
+  L1, L2, L3
 }
