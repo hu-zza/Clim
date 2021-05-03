@@ -21,12 +21,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim;
+import hu.zza.clim.Menu;
+import hu.zza.clim.MenuEntry;
+import hu.zza.clim.MenuStructure;
+import hu.zza.clim.Position;
 
-/**
- * Marker interface for the user defined enum which contains leaf IDs. {@link LeafPosition} is not a
- * real, "walkable" point instead of {@link NodePosition}: The inner position of the {@link Menu}
- * never points to a {@link LeafPosition}. (After calling the function of the leaf, according to the
- * result, the menu redirects itself to the proper {@link NodePosition}.)
- */
-public interface LeafPosition extends Position {}
+public class MenuTest implements Position {
+  public static void main(String[] args) {
+    MenuStructure menuStructure = new MenuStructure();
+    menuStructure.put(new MenuEntry.Node(NodeEnumTest.NODE, "...", NodeEnumTest.NODE));
+
+    Menu.of(menuStructure, LeafEnumTest.class, NodeEnumTest.class);
+  }
+
+  @Override
+  public String name() {
+    return null;
+  }
+}

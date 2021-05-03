@@ -28,12 +28,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface ClimPosition {
-  Type value() default Type.LEAF;
-  Id id() default Id.NAME;
+@Retention(RetentionPolicy.RUNTIME)
+public @interface IdPolicy {
+  Id value() default Id.NAME;
 
-  enum Type {NODE, LEAF}
   enum Id {NAME, TO_STRING}
 }

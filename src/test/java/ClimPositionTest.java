@@ -21,28 +21,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.ClimPosition;
-
 public class ClimPositionTest {
   public static void main(String[] args) {
-    var a = NodeEnumTest.N1;
-    var b = LeafEnumTest.L1;
+    var node = NodeEnumTest.NODE;
+    var leaf = LeafEnumTest.LEAF;
 
+    for (var a : node.getClass().getAnnotations()) {
+      System.out.println(a);
+    }
+    for (var a : leaf.getClass().getAnnotations()) {
+      System.out.println(a);
+    }    System.out.println();
 
-    System.out.println(a.getClass().isAnnotationPresent(ClimPosition.class));
-    System.out.println(b.getClass().isAnnotationPresent(ClimPosition.class));
+    System.out.println(node);
+    for (var e : node.getClass().getInterfaces()) {
+      for (var a : e.getAnnotations()) {
+        System.out.println(a);
+      }
+    }
     System.out.println();
 
-    for (var e : a.getClass().getAnnotations()) {
-      System.out.println(e);
-      System.out.println(((ClimPosition) e).value());
-      System.out.println(((ClimPosition) e).id());
-    }
-
-    for (var e : b.getClass().getAnnotations()) {
-      System.out.println(e);
-      System.out.println(((ClimPosition) e).value());
-      System.out.println(((ClimPosition) e).id());
+    System.out.println(leaf);
+    for (var e : leaf.getClass().getInterfaces()) {
+      for (var a : e.getAnnotations()) {
+          System.out.println(a);
+      }
     }
 
   }

@@ -41,14 +41,14 @@ public abstract class MenuEntry {
   private final Position position;
   private final Position[] links;
   private final Function<Map<ParameterName, Parameter>, Integer> function;
-  private final NodePosition[] functionLinks;
+  private final Position[] functionLinks;
 
   private MenuEntry(
       Position position,
       String name,
       Position[] links,
       Function<Map<ParameterName, Parameter>, Integer> function,
-      NodePosition... functionLinks) {
+      Position... functionLinks) {
     if (position == null) {
       throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("position"));
     }
@@ -90,20 +90,20 @@ public abstract class MenuEntry {
 
   /**
    * {@link Menu} performs this method on every selected {@link MenuEntry}, then redirects itself to
-   * the returning {@link NodePosition}.
+   * the returning {@link Node_Position}.
    *
    * <p>{@link Node Nodes} returns only with the position of themselves, because selecting a Node
    * means only this (navigating). {@link Leaf Leaves} performs a function, the returning position
    * depends on the returning value of its function.
    *
-   * @return The {@link NodePosition} where the {@link Menu} redirects itself after selecting a
+   * @return The {@link Node_Position} where the {@link Menu} redirects itself after selecting a
    *     {@link MenuEntry}.
    */
-  NodePosition select(Map<ParameterName, Parameter> parameterMap) {
+  Position select(Map<ParameterName, Parameter> parameterMap) {
     return getFunctionLinks()[getFunction().apply(parameterMap)];
   }
 
-  NodePosition[] getFunctionLinks() {
+  Position[] getFunctionLinks() {
     return functionLinks;
   }
 
@@ -114,7 +114,7 @@ public abstract class MenuEntry {
   /**
    * Represents a "walkable" point of the menu without complex functionality. The main purpose of
    * this class to provide navigation. Each Node contains a {@link Position} array about adjacent
-   * {@link NodePosition} and {@link LeafPosition} objects.
+   * {@link Node_Position} and {@link Leaf_Position} objects.
    */
   public static final class Node extends MenuEntry {
 
@@ -123,7 +123,7 @@ public abstract class MenuEntry {
      * @param name human-friendly name of this node
      * @param links adjacent {@link Node nodes} and {@link Leaf leaves}
      */
-    public Node(NodePosition position, String name, Position... links) {
+    public Node(Position position, String name, Position... links) {
       /*
       Constructor parameters in order:
 
@@ -149,14 +149,14 @@ public abstract class MenuEntry {
      * @param position unique position identifier
      * @param name human-friendly name of this leaf
      * @param function the essence of a {@link Leaf}
-     * @param functionLinks {@link NodePosition} objects for forwarding, from which the returning
+     * @param functionLinks {@link Node_Position} objects for forwarding, from which the returning
      *     int value of the {@code function} is chosen
      */
     public Leaf(
-        LeafPosition position,
+        Position position,
         String name,
         Function<Map<ParameterName, Parameter>, Integer> function,
-        NodePosition... functionLinks) {
+        Position... functionLinks) {
       /*
       Constructor parameters in order:
 

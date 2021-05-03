@@ -21,9 +21,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.ClimPosition;
+import hu.zza.clim.Position;
+import hu.zza.clim.PositionType;
+import hu.zza.clim.PositionType.Type;
 
-@ClimPosition()
-public enum LeafEnumTest {
-  L1, L2, L3
+@PositionType(Type.LEAF)
+public enum LeafEnumTest implements Position {
+  LEAF
 }
