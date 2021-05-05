@@ -23,16 +23,22 @@
 
 package hu.zza.clim;
 
-import static hu.zza.clim.Message.GNU_GPL;
-import static hu.zza.clim.Message.INITIALIZATION_FAILED;
-import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
-import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
-import static hu.zza.clim.Message.MISSING_MENU_ENTRY;
-import static hu.zza.clim.Message.PROCESSING_FAILED;
-import static hu.zza.clim.Message.UNKNOWN_COMMAND;
+import static hu.zza.clim.menu.Message.GNU_GPL;
+import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
+import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_NONNULL_ARGUMENT;
+import static hu.zza.clim.menu.Message.MISSING_MENU_ENTRY;
+import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
+import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
-import hu.zza.clim.MenuEntry.Leaf;
-import hu.zza.clim.MenuEntry.Node;
+import hu.zza.clim.menu.LeafPosition;
+import hu.zza.clim.menu.MenuEntry;
+import hu.zza.clim.menu.MenuEntry.Leaf;
+import hu.zza.clim.menu.MenuEntry.Node;
+import hu.zza.clim.menu.MenuStructure;
+import hu.zza.clim.menu.Message;
+import hu.zza.clim.menu.NodePosition;
+import hu.zza.clim.menu.Position;
 import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterMatcher;
 import hu.zza.clim.parameter.ParameterName;

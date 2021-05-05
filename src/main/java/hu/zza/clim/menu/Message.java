@@ -21,7 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim;
+package hu.zza.clim.menu;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

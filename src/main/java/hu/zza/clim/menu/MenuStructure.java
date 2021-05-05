@@ -21,8 +21,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim;
+package hu.zza.clim.menu;
 
+import hu.zza.clim.Menu;
 import java.util.HashMap;
 
 /** Represents the structure of a {@link Menu}. */
@@ -31,7 +32,7 @@ public final class MenuStructure {
   private final HashMap<Position, MenuEntry> menu = new HashMap<>();
   private boolean finalized;
 
-  boolean isEmpty() {
+  public boolean isEmpty() {
     return menu.isEmpty();
   }
 
@@ -53,11 +54,11 @@ public final class MenuStructure {
     return finalized ? null : menu.put(menuEntry.getPosition(), menuEntry);
   }
 
-  boolean containsKey(Position position) {
+  public boolean containsKey(Position position) {
     return menu.containsKey(position);
   }
 
-  MenuEntry get(Position position) {
+  public MenuEntry get(Position position) {
     return menu.get(position);
   }
 }

@@ -23,7 +23,7 @@
 
 package hu.zza.clim.parameter;
 
-import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
 
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;

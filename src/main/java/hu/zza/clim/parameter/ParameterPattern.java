@@ -23,8 +23,8 @@
 
 package hu.zza.clim.parameter;
 
-import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
-import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_NONNULL_ARGUMENT;
 
 import java.util.List;
 import java.util.StringJoiner;

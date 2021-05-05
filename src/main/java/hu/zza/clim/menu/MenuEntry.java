@@ -21,11 +21,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim;
+package hu.zza.clim.menu;
 
-import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
-import static hu.zza.clim.Message.INVALID_NONNULL_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_NONNULL_ARGUMENT;
 
+import hu.zza.clim.Menu;
 import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterName;
 import java.util.Map;
@@ -76,7 +77,7 @@ public abstract class MenuEntry {
     this.functionLinks = functionLinks.clone();
   }
 
-  String getName() {
+  public String getName() {
     return name;
   }
 
@@ -84,7 +85,7 @@ public abstract class MenuEntry {
     return position;
   }
 
-  Position[] getLinks() {
+  public Position[] getLinks() {
     return links;
   }
 
@@ -99,7 +100,7 @@ public abstract class MenuEntry {
    * @return The {@link NodePosition} where the {@link Menu} redirects itself after selecting a
    *     {@link MenuEntry}.
    */
-  NodePosition select(Map<ParameterName, Parameter> parameterMap) {
+  public NodePosition select(Map<ParameterName, Parameter> parameterMap) {
     return getFunctionLinks()[getFunction().apply(parameterMap)];
   }
 

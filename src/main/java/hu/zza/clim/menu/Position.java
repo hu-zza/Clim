@@ -21,7 +21,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim;
+package hu.zza.clim.menu;
+
+import hu.zza.clim.Menu;
 
 /**
  * Represents positions that construct the structure of a {@link Menu} object: It can symbolize a

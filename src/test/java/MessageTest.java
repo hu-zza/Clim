@@ -21,7 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.Message;
+import hu.zza.clim.menu.Message;
 
 public class MessageTest {
   public static void main(String[] args) {

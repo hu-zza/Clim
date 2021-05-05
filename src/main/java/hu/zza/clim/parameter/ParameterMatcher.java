@@ -23,11 +23,11 @@
 
 package hu.zza.clim.parameter;
 
-import static hu.zza.clim.Message.INVALID_ARGUMENT;
-import static hu.zza.clim.Message.INVALID_NONEMPTY_ARGUMENT;
-import static hu.zza.clim.Message.INVALID_NONEMPTY_FIELD;
+import static hu.zza.clim.menu.Message.INVALID_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_FIELD;
 
-import hu.zza.clim.Position;
+import hu.zza.clim.menu.Position;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
