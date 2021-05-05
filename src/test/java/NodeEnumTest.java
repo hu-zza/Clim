@@ -21,9 +21,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.Position;
+import hu.zza.clim.ClimPosition;
+import hu.zza.clim.ClimPosition.Type;
 
-//@PositionType(Type.NODE)
-public enum NodeEnumTest implements Position {
-  NODE
+@ClimPosition(Type.NODE)
+public enum NodeEnumTest {
+  N1, N2
 }

@@ -25,10 +25,9 @@ package hu.zza.clim;
 
 /**
  * Represents positions that construct the structure of a {@link Menu} object: It can symbolize a
- * {@link NodePosition node} or a {@link Leaf_Position leaf} by its subinterfaces. This and its
+ * {@link NodePosition node} or a {@link LeafPosition leaf} by its subinterfaces. This and its
  * subtypes are marker interfaces for user defined enums. These enums function as ID collections.
  */
-@IdPolicy
 public interface Position {
 
   String name();

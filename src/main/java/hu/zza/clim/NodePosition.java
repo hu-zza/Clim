@@ -23,15 +23,9 @@
 
 package hu.zza.clim;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface PositionType {
-  Type value() default Type.LEAF;
-
-  enum Type {NODE, LEAF}
-}
+/**
+ * Marker interface for the user defined enum which contains node IDs. {@link NodePosition} is a
+ * real, "walkable" point instead of {@link LeafPosition}: The inner position of the {@link Menu}
+ * always points to a {@link NodePosition}.
+ */
+public interface NodePosition extends Position {}
