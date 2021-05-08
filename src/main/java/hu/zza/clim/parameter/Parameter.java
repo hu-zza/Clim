@@ -37,7 +37,7 @@ public final class Parameter implements Cloneable {
   private boolean present;
   private String value;
 
-  private Parameter(
+  Parameter(
       String regex, UnaryOperator<String> parsingOperator, Supplier<String> defaultValueSupplier) {
     if (regex == null || regex.isEmpty()) {
       throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("regex"));
@@ -47,66 +47,6 @@ public final class Parameter implements Cloneable {
     this.parsingOperator = parsingOperator;
     this.defaultValueSupplier = defaultValueSupplier;
     this.present = true;
-  }
-
-  /**
-   * Returns a concrete, non-parser {@link Parameter}.
-   *
-   * @param regex the regex pattern for value extraction from the raw input
-   * @return the concrete, non-parser {@link Parameter}
-   */
-  public static Parameter of(String regex) {
-    return of(regex, null, null);
-  }
-
-  /**
-   * Returns an optional, parser {@link Parameter}.
-   *
-   * @param regex the regex pattern for value extraction from the raw input
-   * @param parsingOperator the preprocessor before saving the extracted as the value of the {@link
-   *     Parameter}
-   * @param defaultValueSupplier the source of the value of the {@link Parameter} if it is null
-   * @return the optional, parser {@link Parameter}
-   */
-  public static Parameter of(
-      String regex, UnaryOperator<String> parsingOperator, Supplier<String> defaultValueSupplier) {
-    return new Parameter(regex, parsingOperator, defaultValueSupplier);
-  }
-
-  /**
-   * Returns a concrete, parser {@link Parameter}.
-   *
-   * @param regex the regex pattern for value extraction from the raw input
-   * @param parsingOperator the preprocessor before saving the extracted as the value of the {@link
-   *     Parameter}
-   * @return the concrete, parser {@link Parameter}
-   */
-  public static Parameter of(String regex, UnaryOperator<String> parsingOperator) {
-    return of(regex, parsingOperator, null);
-  }
-
-  /**
-   * Returns an optional, non-parser {@link Parameter}. Works same as {@link Parameter#of(String,
-   * Supplier)} is called with constant {@link Supplier}: {@code Parameter.of(<regex>, () ->
-   * <defaultValue>)}
-   *
-   * @param regex the regex pattern for value extraction from the raw input
-   * @param defaultValue the {@link String} value of the {@link Parameter} if its value is null
-   * @return the optional, non-parser {@link Parameter}
-   */
-  public static Parameter of(String regex, String defaultValue) {
-    return of(regex, null, () -> defaultValue);
-  }
-
-  /**
-   * Returns an optional, non-parser {@link Parameter}.
-   *
-   * @param regex the regex pattern for value extraction from the raw input
-   * @param defaultValueSupplier the source of the value of the {@link Parameter} if it is null
-   * @return the optional, non-parser {@link Parameter}
-   */
-  public static Parameter of(String regex, Supplier<String> defaultValueSupplier) {
-    return of(regex, null, defaultValueSupplier);
   }
 
   String getRegex() {
@@ -159,7 +99,7 @@ public final class Parameter implements Cloneable {
    * @return a {@link Parameter} based on this instance with the specified {@code parsingOperator}
    */
   public Parameter with(UnaryOperator<String> parsingOperator) {
-    return of(regex, parsingOperator, defaultValueSupplier);
+    return new Parameter(regex, parsingOperator, defaultValueSupplier);
   }
 
   /**
@@ -171,7 +111,7 @@ public final class Parameter implements Cloneable {
    * @return a {@link Parameter} based on this instance with the specified {@code defaultValue}
    */
   public Parameter with(String defaultValue) {
-    return of(regex, parsingOperator, () -> defaultValue);
+    return new Parameter(regex, parsingOperator, () -> defaultValue);
   }
 
   /**
@@ -182,7 +122,7 @@ public final class Parameter implements Cloneable {
    *     defaultValueSupplier}
    */
   public Parameter with(Supplier<String> defaultValueSupplier) {
-    return of(regex, parsingOperator, defaultValueSupplier);
+    return new Parameter(regex, parsingOperator, defaultValueSupplier);
   }
 
   @Override

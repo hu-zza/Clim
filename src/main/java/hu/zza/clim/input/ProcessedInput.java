@@ -21,27 +21,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim;
+package hu.zza.clim.input;
 
-import hu.zza.clim.parameter.ParameterMatcher;
+public class ProcessedInput {
 
-/** Represents the {@link Menu} main behavior and controlling capabilities. */
-public enum ControlType {
-  /** Simple menu, navigating with nominals (names of options). */
-  NOMINAL,
-
-  /** Simple menu, navigating with ordinals (serial numbers of options). */
-  ORDINAL,
-
-  /**
-   * Simple menu, navigating with ordinals (serial numbers of options). Exactly same as {@link
-   * ControlType#ORDINAL}, but the first option (index and ordinal: 0) is displayed last.
-   */
-  ORDINAL_TRAILING_ZERO,
-
-  /**
-   * Complex menu, navigating with nominals (names of options) and parameters. In order to use this,
-   * a {@link ParameterMatcher} is needed.
-   */
-  PARAMETRIC
 }

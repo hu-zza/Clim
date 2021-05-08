@@ -23,45 +23,95 @@
 
 package hu.zza.clim;
 
-import hu.zza.clim.parameter.ParameterMatcher;
+import hu.zza.clim.input.ProcessedInput;
+import hu.zza.clim.parameter.Parameter;
+import hu.zza.clim.parameter.ParameterName;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.json.JSONObject;
 
 public class MenuBuilder {
-
-  private final Map<String, JSONObject> declarations = new HashMap<>();
   private JSONObject menuStructure;
+  private JSONObject hiddenStructure;
+  private Class<? extends ParameterName> parameterNameEnum;
+  private final Map<String, Leaf> leafMap = new HashMap<>();
+  private final Map<String, String> delimiterMap = new HashMap<>();
+  private final Map<String, Map<ParameterName, Parameter>> parametersMap = new HashMap<>();
   private ControlType controlType;
-  private ParameterMatcher parameterMatcher;
   private String initialPosition;
+  private String commandRegex;
 
   public Menu build() {
-    //return Menu.of(menuStructure, controlType, parameterMatcher, initialPosition);
+    // return Menu.of(menuStructure, controlType, parameterMatcher, initialPosition);
     return null;
   }
 
-  public  MenuBuilder clear() {
+  public MenuBuilder clear() {
+    menuStructure = null;
+    hiddenStructure = null;
+    parameterNameEnum = null;
+    leafMap.clear();
+    delimiterMap.clear();
+    parametersMap.clear();
+    controlType = null;
+    initialPosition = null;
+    commandRegex = null;
     return this;
   }
 
-  public MenuBuilder setStructure(JSONObject menuStructure) {
+  public MenuBuilder setMenuStructure(JSONObject menuStructure) {
+    this.menuStructure = menuStructure;
     return this;
   }
 
-  public MenuBuilder setDeclaration(JSONObject... declarations) {
+  public MenuBuilder setHiddenStructure(JSONObject hiddenStructure) {
+    this.hiddenStructure = hiddenStructure;
+    return this;
+  }
+
+  public MenuBuilder setParameterNameEnum(Class<? extends ParameterName> parameterNameEnum) {
+    this.parameterNameEnum = parameterNameEnum;
+    return this;
+  }
+
+  public MenuBuilder setLeaf(
+      String name, Function<ProcessedInput, Integer> function, String... links) {
+    leafMap.put(name, new Leaf(name, function, links));
+    return this;
+  }
+
+  public MenuBuilder setLeafParameters(
+      String leafName, String delimiter, Map<ParameterName, Parameter> parameters) {
+    delimiterMap.put(leafName, delimiter);
+    parametersMap.put(leafName, parameters);
     return this;
   }
 
   public MenuBuilder setControlType(ControlType controlType) {
-    return this;
-  }
-
-  public MenuBuilder setParameterMatcher(ParameterMatcher parameterMatcher) {
+    this.controlType = controlType;
     return this;
   }
 
   public MenuBuilder setInitialPosition(String initialPosition) {
+    this.initialPosition = initialPosition;
     return this;
+  }
+
+  public MenuBuilder setCommandRegex(String commandRegex) {
+    this.commandRegex = commandRegex;
+    return this;
+  }
+
+  private class Leaf {
+    private final String name;
+    private final Function<ProcessedInput, Integer> function;
+    private final String[] links;
+
+    public Leaf(String name, Function<ProcessedInput, Integer> function, String[] links) {
+      this.name = name;
+      this.function = function;
+      this.links = links.clone();
+    }
   }
 }
