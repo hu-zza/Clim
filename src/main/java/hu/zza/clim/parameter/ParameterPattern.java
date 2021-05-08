@@ -26,9 +26,11 @@ package hu.zza.clim.parameter;
 import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
 import static hu.zza.clim.menu.Message.INVALID_NONNULL_ARGUMENT;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 /**
  * Represents a complex pattern of {@link Parameter parameters} that is used for evaluating user
@@ -37,8 +39,7 @@ import java.util.stream.Collectors;
 public final class ParameterPattern {
 
   private final String delimiter;
-  private final List<ParameterName> parameterNameList;
-  private final List<Parameter> parameterList;
+  private final Map<ParameterName, Parameter> parameters = new LinkedHashMap<>();
 
   /**
    * Creates a {@link ParameterPattern}. A {@link ParameterPattern} object has only {@code
@@ -46,26 +47,28 @@ public final class ParameterPattern {
    * delimiter is needed to concatenate them.
    *
    * @param delimiter character sequence delimiter
-   * @param parameterNameList names of {@link Parameter parameters} in sequential order
+   * @param parameterNames names of {@link Parameter parameters} in sequential order
    * @param parameters {@link Parameter} objects
    */
-  public ParameterPattern(
-      String delimiter, List<ParameterName> parameterNameList, Parameter... parameters) {
+  ParameterPattern(
+      String delimiter, List<ParameterName> parameterNames, List<Parameter> parameters) {
     if (delimiter == null) {
       throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("delimiter"));
     }
 
-    if (parameterNameList == null || parameterNameList.isEmpty()) {
-      throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("parameterNameList"));
+    if (parameterNames == null || parameterNames.isEmpty()) {
+      throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("parameterNames"));
     }
 
-    if (parameters == null || parameters.length == 0) {
+    if (parameters == null || parameters.isEmpty()) {
       throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("parameters"));
     }
 
     this.delimiter = delimiter;
-    this.parameterNameList = List.copyOf(parameterNameList);
-    this.parameterList = List.of(parameters);
+
+    for(int i = 0; i < parameterNames.size(); i++) {
+      this.parameters.put(parameterNames.get(i), parameters.get(i));
+    }
   }
 
   static String getRegex(String delimiter, List<Parameter> parameterList) {
@@ -83,10 +86,10 @@ public final class ParameterPattern {
   }
 
   List<ParameterName> getParameterNameList() {
-    return List.copyOf(parameterNameList);
+    return new ArrayList<>(parameters.keySet());
   }
 
   List<Parameter> getParameterClonesList() {
-    return parameterList.stream().map(Parameter::clone).collect(Collectors.toList());
+    return new ArrayList<>(parameters.values());
   }
 }

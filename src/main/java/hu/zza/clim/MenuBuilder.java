@@ -27,6 +27,7 @@ import hu.zza.clim.input.ProcessedInput;
 import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterName;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import org.json.JSONObject;
@@ -35,14 +36,17 @@ public class MenuBuilder {
   private JSONObject menuStructure;
   private JSONObject hiddenStructure;
   private Class<? extends ParameterName> parameterNameEnum;
-  private final Map<String, Leaf> leafMap = new HashMap<>();
-  private final Map<String, String> delimiterMap = new HashMap<>();
-  private final Map<String, Map<ParameterName, Parameter>> parametersMap = new HashMap<>();
   private ControlType controlType;
   private String initialPosition;
   private String commandRegex;
+  private final Map<String, Leaf> leafMap = new HashMap<>();
+  private final Map<String, String> delimiterMap = new HashMap<>();
+  private final Map<String, List<ParameterName>> parameterNameMap = new HashMap<>();
+  private final Map<String, List<Parameter>> parameterMap = new HashMap<>();
+
 
   public Menu build() {
+    System.out.println("" + leafMap + delimiterMap + parameterNameMap + parameterMap);
     // return Menu.of(menuStructure, controlType, parameterMatcher, initialPosition);
     return null;
   }
@@ -51,12 +55,13 @@ public class MenuBuilder {
     menuStructure = null;
     hiddenStructure = null;
     parameterNameEnum = null;
-    leafMap.clear();
-    delimiterMap.clear();
-    parametersMap.clear();
     controlType = null;
     initialPosition = null;
     commandRegex = null;
+    leafMap.clear();
+    delimiterMap.clear();
+    parameterNameMap.clear();
+    parameterMap.clear();
     return this;
   }
 
@@ -75,19 +80,6 @@ public class MenuBuilder {
     return this;
   }
 
-  public MenuBuilder setLeaf(
-      String name, Function<ProcessedInput, Integer> function, String... links) {
-    leafMap.put(name, new Leaf(name, function, links));
-    return this;
-  }
-
-  public MenuBuilder setLeafParameters(
-      String leafName, String delimiter, Map<ParameterName, Parameter> parameters) {
-    delimiterMap.put(leafName, delimiter);
-    parametersMap.put(leafName, parameters);
-    return this;
-  }
-
   public MenuBuilder setControlType(ControlType controlType) {
     this.controlType = controlType;
     return this;
@@ -103,7 +95,21 @@ public class MenuBuilder {
     return this;
   }
 
-  private class Leaf {
+  public MenuBuilder setLeaf(
+      String name, Function<ProcessedInput, Integer> function, String... links) {
+    leafMap.put(name, new Leaf(name, function, links));
+    return this;
+  }
+
+  public MenuBuilder setLeafParameters(
+      String leafName, String delimiter, List<ParameterName> parameterNames, List<Parameter> parameters) {
+    delimiterMap.put(leafName, delimiter);
+    parameterNameMap.put(leafName, parameterNames);
+    parameterMap.put(leafName, parameters);
+    return this;
+  }
+
+  private static class Leaf {
     private final String name;
     private final Function<ProcessedInput, Integer> function;
     private final String[] links;

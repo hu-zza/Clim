@@ -23,6 +23,7 @@
 
 package hu.zza.clim.parameter;
 
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -64,7 +65,7 @@ public interface Parameters {
   }
 
   /**
-   * Returns an optional, non-parser {@link Parameter}. Works same as {@link Parameter#of(String,
+   * Returns an optional, non-parser {@link Parameter}. Works same as {@link Parameters#of(String,
    * Supplier)} is called with constant {@link Supplier}: {@code Parameter.of(<regex>, () ->
    * <defaultValue>)}
    *
@@ -85,5 +86,19 @@ public interface Parameters {
    */
   static Parameter of(String regex, Supplier<String> defaultValueSupplier) {
     return new Parameter(regex, null, defaultValueSupplier);
+  }
+
+  /**
+   * Creates a {@link ParameterPattern}. A {@link ParameterPattern} object has only {@code *
+   * delimiter}, but no regex. The reason is that every {@link Parameter} has its own, so only a *
+   * delimiter is needed to concatenate them.
+   *
+   * @param delimiter character sequence delimiter
+   * @param parameters {@link ParameterName} and {@link Parameter} bindings in sequential order
+   * @return a {@link ParameterPattern} object
+   */
+  static ParameterPattern makePattern(
+      String delimiter, List<ParameterName> parameterNames, List<Parameter> parameters) {
+    return new ParameterPattern(delimiter, parameterNames, parameters);
   }
 }
