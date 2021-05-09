@@ -24,6 +24,7 @@
 package hu.zza.clim.menu;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -47,8 +48,7 @@ public enum Message {
 
   private final String message;
 
-  ResourceBundle resourceBundle =
-      ResourceBundle.getBundle("MessageTemplate", Locale.ENGLISH);
+  ResourceBundle resourceBundle = ResourceBundle.getBundle("MessageTemplate", Locale.ENGLISH);
 
   Message() {
     this.message =
@@ -63,5 +63,21 @@ public enum Message {
    */
   public String getMessage(Object... context) {
     return String.format(message, context);
+  }
+
+  // TODO: 2021. 05. 09. javadoc
+  public static void assertNonNull(String parameterName, Object parameter) {
+    if (parameter == null) {
+      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage(parameterName));
+    }
+  }
+
+  // TODO: 2021. 05. 09. javadoc
+  public static void assertNonNull(Map<String, Object> parameters) {
+    for (var entry : parameters.entrySet()) {
+      if (entry.getValue() == null) {
+        throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage(entry.getKey()));
+      }
+    }
   }
 }
