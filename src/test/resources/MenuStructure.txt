@@ -1,0 +1,36 @@
+{
+	"root":
+	[
+    {
+      "node1": ["leaf1", "leaf2"]
+    },
+    {
+      "node2":
+      [
+        "leaf3",
+        {"node3": "leaf4"},
+        "leaf5"
+      ]
+    },
+    "leaf6",
+    "leaf7"
+  ],
+  "node4":
+  [
+    {
+    "node5": ["leaf8", "leaf9"],
+    "node6":
+    [
+      {
+        "node7": "leaf10",
+        "node8":
+        {
+          "node9": ["leaf11"],
+          "node10": []
+        }
+      },
+      "leaf12"
+    ]
+    }
+  ]
+}
