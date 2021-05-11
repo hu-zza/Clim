@@ -6,33 +6,37 @@ hu/zza/clim/parameter/ParameterName.java
  hu.zza.clim.parameter.ParameterName
 hu/zza/clim/parameter/Parameters.java
  hu.zza.clim.parameter.Parameters
+hu/zza/clim/ControlType.java
+ hu.zza.clim.ControlType
+hu/zza/clim/input/ProcessedInput.java
+ hu.zza.clim.input.ProcessedInput
 hu/zza/clim/parameter/ParameterPattern.java
  hu.zza.clim.parameter.ParameterPattern
 hu/zza/clim/parameter/Parameter.java
  hu.zza.clim.parameter.Parameter
-hu/zza/clim/ControlType.java
- hu.zza.clim.ControlType
-hu/zza/clim/menu/MenuEntry.java
- hu.zza.clim.menu.MenuEntry
- hu.zza.clim.menu.MenuEntry$Leaf
- hu.zza.clim.menu.MenuEntry$Node
-hu/zza/clim/menu/LeafPosition.java
- hu.zza.clim.menu.LeafPosition
+hu/zza/clim/menu/Util.java
+ hu.zza.clim.menu.Util
+hu/zza/clim/MenuBuilder.java
+ hu.zza.clim.MenuBuilder
+ hu.zza.clim.MenuBuilder$Leaf
+hu/zza/clim/menu/Message.java
+ hu.zza.clim.menu.Message
 hu/zza/clim/menu/Position.java
  hu.zza.clim.menu.Position
 hu/zza/clim/parameter/ParameterMatcher.java
  hu.zza.clim.parameter.ParameterMatcher
-hu/zza/clim/menu/Message.java
- hu.zza.clim.menu.Message
-hu/zza/clim/input/ProcessedInput.java
- hu.zza.clim.input.ProcessedInput
 hu/zza/clim/Menu.java
  hu.zza.clim.Menu
  hu.zza.clim.Menu$1
 hu/zza/clim/menu/MenuStructure.java
  hu.zza.clim.menu.MenuStructure
+hu/zza/clim/menu/LeafPosition.java
+ hu.zza.clim.menu.LeafPosition
 hu/zza/clim/menu/NodePosition.java
  hu.zza.clim.menu.NodePosition
-hu/zza/clim/MenuBuilder.java
- hu.zza.clim.MenuBuilder
- hu.zza.clim.MenuBuilder$Leaf
+hu/zza/clim/menu/MenuEntry.java
+ hu.zza.clim.menu.MenuEntry
+ hu.zza.clim.menu.MenuEntry$Leaf
+ hu.zza.clim.menu.MenuEntry$Node
+hu/zza/clim/menu/MenuStructureBuilder.java
+ hu.zza.clim.menu.MenuStructureBuilder

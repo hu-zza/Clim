@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,17 +69,7 @@ public class MenuStructureBuilder {
               "MenuStructureBuilder#build", "RawMenuStructure can not be null."));
     }
 
-    JSONObject obj = rawMenuStructure;
-    Set<NodePosition> nodePositions = new HashSet<>();
-    TreeSet<String> forProcessing = new TreeSet<>(rawMenuStructure.keySet());
-    String key;
-
-    while (!forProcessing.isEmpty()) {
-      key = forProcessing.pollFirst();
-      nodePositions.add(new NodePosition(key));
-
-      // forProcessing.addAll()
-    }
+    extractNodesAndLeaves(rawMenuStructure);
   }
 
   private void buildLeafMap() {}
@@ -113,31 +102,41 @@ public class MenuStructureBuilder {
   }
 
   private void extractNodesAndLeaves(JSONObject jsonObject) throws JSONException {
-
+    String currentKey;
+    String currentClass;
     JSONArray keys = jsonObject.names();
+    if (keys == null) return;
+
     for (int i = 0; i < keys.length(); i++) {
-      String currentKey = keys.get(i).toString();
-      if (jsonObject.get(currentKey).getClass().getName().equals("org.json.JSONObject")) {
-        nodePositions.add(new NodePosition(currentKey));
+      currentKey = keys.get(i).toString();
+      currentClass = jsonObject.get(currentKey).getClass().getName();
+      nodePositions.add(new NodePosition(currentKey));
+
+      if ("org.json.JSONObject".equals(currentClass)) {
         extractNodesAndLeaves((JSONObject) jsonObject.get(currentKey));
-      } else if (jsonObject
-          .get(currentKey)
-          .getClass()
-          .getName()
-          .equals("org.json.JSONArray")) {
-        for (int j = 0; j < ((JSONArray) jsonObject.get(currentKey)).length(); j++) {
-          if (((JSONArray) jsonObject.get(currentKey))
-              .get(j)
-              .getClass()
-              .getName()
-              .equals("org.json.JSONObject")) {
+
+      } else if ("org.json.JSONArray".equals(currentClass)) {
+        JSONArray array = (JSONArray) jsonObject.get(currentKey);
+
+
+        for (int j = 0; j < array.length(); j++) {
+          currentClass = array.get(j).getClass().getName();
+          if ("org.json.JSONObject".equals(currentClass)) {
             nodePositions.add(new NodePosition(currentKey));
-            extractNodesAndLeaves((JSONObject) ((JSONArray) jsonObject.get(currentKey)).get(j));
+            extractNodesAndLeaves((JSONObject) array.get(j));
           }
         }
-      } else {
-        nodePositions.add(new NodePosition(currentKey));
       }
     }
+  }
+
+  // TODO: 2021. 05. 11. delete after tests
+  public Set<NodePosition> getNodePositions() {
+    return nodePositions;
+  }
+
+  // TODO: 2021. 05. 11. delete after tests
+  public Set<NodePosition> getLeafPositions() {
+    return leafPositions;
   }
 }

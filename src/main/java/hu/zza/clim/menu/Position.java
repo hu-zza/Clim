@@ -24,6 +24,7 @@
 package hu.zza.clim.menu;
 
 import hu.zza.clim.Menu;
+import java.util.Objects;
 
 /**
  * Represents positions that construct the structure of a {@link Menu} object: It can symbolize a
@@ -39,5 +40,22 @@ public abstract class Position {
 
   public String getName() {
     return name;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Position position = (Position) o;
+    return name.equals(position.name);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name);
   }
 }
