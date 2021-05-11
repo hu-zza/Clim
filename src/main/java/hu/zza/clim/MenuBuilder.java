@@ -24,7 +24,7 @@
 package hu.zza.clim;
 
 import hu.zza.clim.input.ProcessedInput;
-import hu.zza.clim.menu.Message;
+import hu.zza.clim.menu.Util;
 import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterName;
 import java.util.HashMap;
@@ -64,38 +64,38 @@ public class MenuBuilder {
   }
 
   public MenuBuilder setControlType(ControlType controlType) {
-    Message.assertNonNull("controlType", controlType);
+    Util.assertNonNull("controlType", controlType);
     this.controlType = controlType;
     return this;
   }
 
   // TODO: 2021. 05. 09. check validity at build()
   public MenuBuilder setInitialPosition(String initialPosition) {
-    Message.assertNonNull("initialPosition", initialPosition);
+    Util.assertNonNull("initialPosition", initialPosition);
     this.initialPosition = initialPosition;
     return this;
   }
 
   public MenuBuilder setCommandRegex(String commandRegex) {
-    Message.assertNonNull("commandRegex", commandRegex);
+    Util.assertNonNull("commandRegex", commandRegex);
     this.commandRegex = commandRegex;
     return this;
   }
 
   public MenuBuilder setMenuStructure(String menuStructureJSON) throws JSONException {
-    Message.assertNonNull("menuStructureJSON", menuStructureJSON);
+    Util.assertNonNull("menuStructureJSON", menuStructureJSON);
     this.menuStructure = new JSONObject(menuStructureJSON);
     return this;
   }
 
   public MenuBuilder setMenuStructure(JSONObject menuStructure) {
-    Message.assertNonNull("menuStructure", menuStructure);
+    Util.assertNonNull("menuStructure", menuStructure);
     this.menuStructure = menuStructure;
     return this;
   }
 
   public MenuBuilder setParameterNameEnum(Class<? extends ParameterName> parameterNameEnum) {
-    Message.assertNonNull("parameterNameEnum", parameterNameEnum);
+    Util.assertNonNull("parameterNameEnum", parameterNameEnum);
     this.parameterNameEnum = parameterNameEnum;
     return this;
   }
@@ -103,7 +103,7 @@ public class MenuBuilder {
   public MenuBuilder setLeaf(
       String name, Function<ProcessedInput, Integer> function, String... links) {
 
-    Message.assertNonNull(
+    Util.assertNonNull(
         Map.of(
             "name",
             name,
@@ -122,7 +122,7 @@ public class MenuBuilder {
       List<ParameterName> parameterNames,
       List<Parameter> parameters) {
 
-    Message.assertNonNull(
+    Util.assertNonNull(
         Map.of(
             "leafName",
             leafName,
@@ -140,7 +140,7 @@ public class MenuBuilder {
   }
 
   public MenuBuilder clearLeafParameters(String leafName) {
-    Message.assertNonNull("leafName", leafName);
+    Util.assertNonNull("leafName", leafName);
     parameterNameMap.remove(leafName);
     parameterMap.remove(leafName);
     delimiterMap.remove(leafName);
