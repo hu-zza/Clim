@@ -61,4 +61,8 @@ public final class MenuStructure {
   public MenuEntry get(Position position) {
     return menu.get(position);
   }
+
+  public void clear() {
+    menu.clear();
+  }
 }
