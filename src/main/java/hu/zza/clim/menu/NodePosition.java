@@ -29,15 +29,8 @@ import hu.zza.clim.Menu;
  * {@link NodePosition} is a real, "walkable" point instead of {@link LeafPosition}: The inner
  * position of the {@link Menu} always points to a {@link NodePosition}.
  */
-public class NodePosition implements Position {
-  private String name;
-
+public final class NodePosition extends Position {
   public NodePosition(String name) {
-    this.name = name;
-  }
-
-  @Override
-  public String getName() {
-    return name;
+    super(name);
   }
 }

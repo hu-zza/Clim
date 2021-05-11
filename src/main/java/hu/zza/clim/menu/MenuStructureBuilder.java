@@ -26,10 +26,17 @@ package hu.zza.clim.menu;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MenuStructureBuilder {
+  private final Set<NodePosition> nodePositions = new HashSet<>();
+  private final Set<NodePosition> leafPositions = new HashSet<>();
   private final Map<Position, Node> nodePositionMap = new HashMap<>();
   private final Map<Position, Leaf> leafPositionMap = new HashMap<>();
   private final Map<Position, Node> nodeMap = new HashMap<>();
@@ -47,6 +54,8 @@ public class MenuStructureBuilder {
   }
 
   private void clearBuilt() {
+    nodePositions.clear();
+    leafPositions.clear();
     nodePositionMap.clear();
     leafPositionMap.clear();
     nodeMap.clear();
@@ -54,7 +63,25 @@ public class MenuStructureBuilder {
     menuStructure.clear();
   }
 
-  private void buildDraftStructure() {}
+  private void buildDraftStructure() {
+    if (rawMenuStructure == null) {
+      throw new IllegalStateException(
+          Message.INVALID_STATE.getMessage(
+              "MenuStructureBuilder#build", "RawMenuStructure can not be null."));
+    }
+
+    JSONObject obj = rawMenuStructure;
+    Set<NodePosition> nodePositions = new HashSet<>();
+    TreeSet<String> forProcessing = new TreeSet<>(rawMenuStructure.keySet());
+    String key;
+
+    while (!forProcessing.isEmpty()) {
+      key = forProcessing.pollFirst();
+      nodePositions.add(new NodePosition(key));
+
+      // forProcessing.addAll()
+    }
+  }
 
   private void buildLeafMap() {}
 
@@ -68,17 +95,49 @@ public class MenuStructureBuilder {
   }
 
   public MenuStructureBuilder setRawMenuStructure(JSONObject rawMenuStructure) {
+    Util.assertNonNull("rawMenuStructure", rawMenuStructure);
     this.rawMenuStructure = rawMenuStructure;
     return this;
   }
 
   public MenuStructureBuilder setInitialPosition(String initialPosition) {
+    Util.assertNonNull("initialPosition", initialPosition);
     this.initialPosition = initialPosition;
     return this;
   }
 
   public MenuStructureBuilder putLeaf(Leaf leaf) {
+    Util.assertNonNull("leaf", leaf);
     leafMap.put(leaf.getPosition(), leaf);
     return this;
+  }
+
+  private void extractNodesAndLeaves(JSONObject jsonObject) throws JSONException {
+
+    JSONArray keys = jsonObject.names();
+    for (int i = 0; i < keys.length(); i++) {
+      String currentKey = keys.get(i).toString();
+      if (jsonObject.get(currentKey).getClass().getName().equals("org.json.JSONObject")) {
+        nodePositions.add(new NodePosition(currentKey));
+        extractNodesAndLeaves((JSONObject) jsonObject.get(currentKey));
+      } else if (jsonObject
+          .get(currentKey)
+          .getClass()
+          .getName()
+          .equals("org.json.JSONArray")) {
+        for (int j = 0; j < ((JSONArray) jsonObject.get(currentKey)).length(); j++) {
+          if (((JSONArray) jsonObject.get(currentKey))
+              .get(j)
+              .getClass()
+              .getName()
+              .equals("org.json.JSONObject")) {
+            nodePositions.add(new NodePosition(currentKey));
+            extractNodesAndLeaves((JSONObject) ((JSONArray) jsonObject.get(currentKey)).get(j));
+          }
+        }
+      } else {
+        nodePositions.add(new NodePosition(currentKey));
+      }
+    }
   }
 }

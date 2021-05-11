@@ -30,6 +30,14 @@ import hu.zza.clim.Menu;
  * {@link NodePosition node} or a {@link LeafPosition leaf} by its subinterfaces. This and its
  * subtypes are marker interfaces for user defined enums. These enums function as ID collections.
  */
-public interface Position {
-  String getName();
+public abstract class Position {
+  private final String name;
+
+  public Position(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return name;
+  }
 }

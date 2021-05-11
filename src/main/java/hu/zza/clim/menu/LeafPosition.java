@@ -31,15 +31,8 @@ import hu.zza.clim.Menu;
  * of the leaf, according to the result, the menu redirects itself to the proper {@link
  * NodePosition}.)
  */
-public class LeafPosition implements Position {
-  private String name;
-
+public final class LeafPosition extends Position {
   public LeafPosition(String name) {
-    this.name = name;
-  }
-
-  @Override
-  public String getName() {
-    return name;
+    super(name);
   }
 }
