@@ -112,10 +112,10 @@ public final class Menu {
     for (var node : nodeEnum.getEnumConstants()) {
       if (!menuStructure.containsKey(node)) {
         throw new IllegalStateException(
-            MISSING_MENU_ENTRY.getMessage("MenuStructure", node.name()));
+            MISSING_MENU_ENTRY.getMessage("MenuStructure", node.getName()));
       }
 
-      tmpNodeMap.put(node.name(), node);
+      tmpNodeMap.put(node.getName(), node);
     }
     this.nodeNameMap = Map.copyOf(tmpNodeMap);
 
@@ -123,15 +123,15 @@ public final class Menu {
     for (var leaf : leafEnum.getEnumConstants()) {
       if (!menuStructure.containsKey(leaf)) {
         throw new IllegalStateException(
-            MISSING_MENU_ENTRY.getMessage("MenuStructure", leaf.name()));
+            MISSING_MENU_ENTRY.getMessage("MenuStructure", leaf.getName()));
       }
 
       if (!parameterMatcher.containsKeyInPatternMap(leaf)) {
         throw new IllegalArgumentException(
-            MISSING_MENU_ENTRY.getMessage("PatternMap", leaf.name()));
+            MISSING_MENU_ENTRY.getMessage("PatternMap", leaf.getName()));
       }
 
-      tmpLeafMap.put(leaf.name(), leaf);
+      tmpLeafMap.put(leaf.getName(), leaf);
     }
     this.leafNameMap = Map.copyOf(tmpLeafMap);
 

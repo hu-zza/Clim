@@ -26,9 +26,20 @@ package hu.zza.clim.menu;
 import hu.zza.clim.Menu;
 
 /**
- * Marker interface for the user defined enum which contains leaf IDs. {@link LeafPosition} is not a
- * real, "walkable" point instead of {@link NodePosition}: The inner position of the {@link Menu}
- * never points to a {@link LeafPosition}. (After calling the function of the leaf, according to the
- * result, the menu redirects itself to the proper {@link NodePosition}.)
+ * {@link LeafPosition} is not a real, "walkable" point instead of {@link NodePosition}: The inner
+ * position of the {@link Menu} never points to a {@link LeafPosition}. (After calling the function
+ * of the leaf, according to the result, the menu redirects itself to the proper {@link
+ * NodePosition}.)
  */
-public interface LeafPosition extends Position {}
+public class LeafPosition implements Position {
+  private String name;
+
+  public LeafPosition(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+}

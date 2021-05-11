@@ -24,30 +24,47 @@
 package hu.zza.clim.menu;
 
 import hu.zza.clim.menu.MenuEntry.Leaf;
+import hu.zza.clim.menu.MenuEntry.Node;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONObject;
 
 public class MenuStructureBuilder {
-  private String initialPosition = "root";
-  private JSONObject rawMenuStructure;
+  private final Map<Position, Node> nodePositionMap = new HashMap<>();
+  private final Map<Position, Leaf> leafPositionMap = new HashMap<>();
+  private final Map<Position, Node> nodeMap = new HashMap<>();
   private final Map<Position, Leaf> leafMap = new HashMap<>();
   private final MenuStructure menuStructure = new MenuStructure();
-
+  private String initialPosition = "root";
+  private JSONObject rawMenuStructure;
 
   public MenuStructure build() {
-    menuStructure.clear();
+    clearBuilt();
     buildDraftStructure();
     buildLeafMap();
     buildStructure();
     return menuStructure;
   }
 
+  private void clearBuilt() {
+    nodePositionMap.clear();
+    leafPositionMap.clear();
+    nodeMap.clear();
+    leafMap.clear();
+    menuStructure.clear();
+  }
+
+  private void buildDraftStructure() {}
+
+  private void buildLeafMap() {}
+
+  private void buildStructure() {}
+
   public void clear() {
     initialPosition = "root";
     rawMenuStructure = null;
     leafMap.clear();
-    menuStructure.clear();
+    clearBuilt();
   }
 
   public MenuStructureBuilder setRawMenuStructure(JSONObject rawMenuStructure) {
@@ -60,20 +77,8 @@ public class MenuStructureBuilder {
     return this;
   }
 
-  public MenuStructureBuilder setLeaf(Leaf leaf) {
+  public MenuStructureBuilder putLeaf(Leaf leaf) {
     leafMap.put(leaf.getPosition(), leaf);
     return this;
   }
-
-  private void buildDraftStructure() {
-  }
-
-  private void buildLeafMap() {
-  }
-
-  private void buildStructure() {
-  }
-
-
-
 }

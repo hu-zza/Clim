@@ -26,8 +26,18 @@ package hu.zza.clim.menu;
 import hu.zza.clim.Menu;
 
 /**
- * Marker interface for the user defined enum which contains node IDs. {@link NodePosition} is a
- * real, "walkable" point instead of {@link LeafPosition}: The inner position of the {@link Menu}
- * always points to a {@link NodePosition}.
+ * {@link NodePosition} is a real, "walkable" point instead of {@link LeafPosition}: The inner
+ * position of the {@link Menu} always points to a {@link NodePosition}.
  */
-public interface NodePosition extends Position {}
+public class NodePosition implements Position {
+  private String name;
+
+  public NodePosition(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+}

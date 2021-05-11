@@ -31,6 +31,5 @@ import hu.zza.clim.Menu;
  * subtypes are marker interfaces for user defined enums. These enums function as ID collections.
  */
 public interface Position {
-
-  String name();
+  String getName();
 }
