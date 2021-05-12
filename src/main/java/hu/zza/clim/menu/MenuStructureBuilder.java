@@ -35,7 +35,7 @@ import org.json.JSONObject;
 
 public class MenuStructureBuilder {
   private final Set<NodePosition> nodePositions = new HashSet<>();
-  private final Set<NodePosition> leafPositions = new HashSet<>();
+  private final Set<LeafPosition> leafPositions = new HashSet<>();
   private final Map<Position, Node> nodePositionMap = new HashMap<>();
   private final Map<Position, Leaf> leafPositionMap = new HashMap<>();
   private final Map<Position, Node> nodeMap = new HashMap<>();
@@ -112,20 +112,30 @@ public class MenuStructureBuilder {
       currentClass = jsonObject.get(currentKey).getClass().getName();
       nodePositions.add(new NodePosition(currentKey));
 
-      if ("org.json.JSONObject".equals(currentClass)) {
-        extractNodesAndLeaves((JSONObject) jsonObject.get(currentKey));
+      switch (currentClass) {
+        case "org.json.JSONObject":
+          extractNodesAndLeaves((JSONObject) jsonObject.get(currentKey));
+          break;
+        case "org.json.JSONArray":
+          JSONArray array = (JSONArray) jsonObject.get(currentKey);
 
-      } else if ("org.json.JSONArray".equals(currentClass)) {
-        JSONArray array = (JSONArray) jsonObject.get(currentKey);
-
-
-        for (int j = 0; j < array.length(); j++) {
-          currentClass = array.get(j).getClass().getName();
-          if ("org.json.JSONObject".equals(currentClass)) {
-            nodePositions.add(new NodePosition(currentKey));
-            extractNodesAndLeaves((JSONObject) array.get(j));
+          for (int j = 0; j < array.length(); j++) {
+            currentClass = array.get(j)
+                .getClass()
+                .getName();
+            if ("org.json.JSONObject".equals(currentClass)) {
+              nodePositions.add(new NodePosition(currentKey));
+              extractNodesAndLeaves((JSONObject) array.get(j));
+            } else if ("java.lang.String".equals(currentClass)) {
+              leafPositions.add(new LeafPosition(array.get(j)
+                  .toString()));
+            }
           }
-        }
+          break;
+        case "java.lang.String":
+          leafPositions.add(new LeafPosition(jsonObject.get(currentKey)
+              .toString()));
+          break;
       }
     }
   }
@@ -136,7 +146,7 @@ public class MenuStructureBuilder {
   }
 
   // TODO: 2021. 05. 11. delete after tests
-  public Set<NodePosition> getLeafPositions() {
+  public Set<LeafPosition> getLeafPositions() {
     return leafPositions;
   }
 }
