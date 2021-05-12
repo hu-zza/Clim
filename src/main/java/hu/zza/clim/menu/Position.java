@@ -24,6 +24,8 @@
 package hu.zza.clim.menu;
 
 import hu.zza.clim.Menu;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -33,13 +35,23 @@ import java.util.Objects;
  */
 public abstract class Position {
   private final String name;
+  private final static Map<String, Position> instances = new HashMap<>();
 
-  public Position(String name) {
+  Position(String name) {
     this.name = name;
+    instances.put(name, this);
   }
 
   public String getName() {
     return name;
+  }
+
+  public static boolean isPositionExists(String name) {
+    return instances.containsKey(name);
+  }
+
+  public static Position getInstanceCalled(String name) {
+    return instances.get(name);
   }
 
   @Override

@@ -24,64 +24,21 @@
 package hu.zza.clim.menu;
 
 import hu.zza.clim.menu.MenuEntry.Leaf;
-import hu.zza.clim.menu.MenuEntry.Node;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MenuStructureBuilder {
-  private final Set<NodePosition> nodePositions = new HashSet<>();
-  private final Set<LeafPosition> leafPositions = new HashSet<>();
-  private final Map<Position, Node> nodePositionMap = new HashMap<>();
-  private final Map<Position, Leaf> leafPositionMap = new HashMap<>();
-  private final Map<Position, Node> nodeMap = new HashMap<>();
+  private final ArrayList<String> nodePositions = new ArrayList<>();
+  private final ArrayList<String> leafPositions = new ArrayList<>();
   private final Map<Position, Leaf> leafMap = new HashMap<>();
   private final MenuStructure menuStructure = new MenuStructure();
   private String initialPosition = "root";
   private JSONObject rawMenuStructure;
-
-  public MenuStructure build() {
-    clearBuilt();
-    buildDraftStructure();
-    buildLeafMap();
-    buildStructure();
-    return menuStructure;
-  }
-
-  private void clearBuilt() {
-    nodePositions.clear();
-    leafPositions.clear();
-    nodePositionMap.clear();
-    leafPositionMap.clear();
-    nodeMap.clear();
-    leafMap.clear();
-    menuStructure.clear();
-  }
-
-  private void buildDraftStructure() {
-    if (rawMenuStructure == null) {
-      throw new IllegalStateException(
-          Message.INVALID_STATE.getMessage(
-              "MenuStructureBuilder#build", "RawMenuStructure can not be null."));
-    }
-
-    extractNodesAndLeaves(rawMenuStructure);
-  }
-
-  private void buildLeafMap() {}
-
-  private void buildStructure() {}
-
-  public void clear() {
-    initialPosition = "root";
-    rawMenuStructure = null;
-    leafMap.clear();
-    clearBuilt();
-  }
 
   public MenuStructureBuilder setRawMenuStructure(JSONObject rawMenuStructure) {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
@@ -101,7 +58,50 @@ public class MenuStructureBuilder {
     return this;
   }
 
-  private void extractNodesAndLeaves(JSONObject jsonObject) throws JSONException {
+  public void clear() {
+    initialPosition = "root";
+    rawMenuStructure = null;
+    leafMap.clear();
+    clearBuilt();
+  }
+
+  private void clearBuilt() {
+    nodePositions.clear();
+    leafPositions.clear();
+    leafMap.clear();
+    menuStructure.clear();
+  }
+
+  public MenuStructure build() {
+    clearBuilt();
+    findAllNodesAndLeaves();
+
+    buildLeafMap();
+    buildStructure();
+    System.out.println("\n\nNODES\n");
+    nodePositions.forEach(System.out::println);
+    System.out.println("\n\nLEAVES\n");
+    leafPositions.forEach(System.out::println);
+    System.out.println();
+    return menuStructure;
+  }
+
+  private void findAllNodesAndLeaves() {
+    if (rawMenuStructure == null) {
+      throw new IllegalStateException(
+          Message.INVALID_STATE.getMessage(
+              "MenuStructureBuilder#build", "RawMenuStructure can not be null."));
+    }
+    extractNodesAndLeavesFrom(rawMenuStructure);
+    leafPositions.removeAll(nodePositions);
+  }
+
+  private void buildLeafMap() {}
+
+  private void buildStructure() {}
+
+
+  private void extractNodesAndLeavesFrom(JSONObject jsonObject) throws JSONException {
     String currentKey;
     String currentClass;
     JSONArray keys = jsonObject.names();
@@ -110,43 +110,38 @@ public class MenuStructureBuilder {
     for (int i = 0; i < keys.length(); i++) {
       currentKey = keys.get(i).toString();
       currentClass = jsonObject.get(currentKey).getClass().getName();
-      nodePositions.add(new NodePosition(currentKey));
+      nodePositions.add(currentKey);
 
       switch (currentClass) {
         case "org.json.JSONObject":
-          extractNodesAndLeaves((JSONObject) jsonObject.get(currentKey));
+          extractNodesAndLeavesFrom((JSONObject) jsonObject.get(currentKey));
           break;
         case "org.json.JSONArray":
           JSONArray array = (JSONArray) jsonObject.get(currentKey);
 
           for (int j = 0; j < array.length(); j++) {
-            currentClass = array.get(j)
-                .getClass()
-                .getName();
+            currentClass = array.get(j).getClass().getName();
             if ("org.json.JSONObject".equals(currentClass)) {
-              nodePositions.add(new NodePosition(currentKey));
-              extractNodesAndLeaves((JSONObject) array.get(j));
+              extractNodesAndLeavesFrom((JSONObject) array.get(j));
             } else if ("java.lang.String".equals(currentClass)) {
-              leafPositions.add(new LeafPosition(array.get(j)
-                  .toString()));
+              leafPositions.add(array.get(j).toString());
             }
           }
           break;
         case "java.lang.String":
-          leafPositions.add(new LeafPosition(jsonObject.get(currentKey)
-              .toString()));
+          leafPositions.add(jsonObject.get(currentKey).toString());
           break;
       }
     }
   }
 
   // TODO: 2021. 05. 11. delete after tests
-  public Set<NodePosition> getNodePositions() {
+  public List<String> getNodePositions() {
     return nodePositions;
   }
 
   // TODO: 2021. 05. 11. delete after tests
-  public Set<LeafPosition> getLeafPositions() {
+  public List<String> getLeafPositions() {
     return leafPositions;
   }
 }

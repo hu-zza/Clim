@@ -21,29 +21,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.menu.MenuStructureBuilder;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.json.JSONObject;
+import hu.zza.clim.menu.LeafPosition;
+import hu.zza.clim.menu.NodePosition;
+import hu.zza.clim.menu.Position;
 
-public class MenuStructureBuilderTest {
-  public static void main(String[] args) throws IOException {
-    var msb = new MenuStructureBuilder();
+public class PositionTest {
+  public static void main(String[] args) {
+    new LeafPosition("leaf001");
+    new LeafPosition("leaf002");
+    new NodePosition("node001");
 
-    Path structurePath = Path.of("src", "test", "resources", "MenuStructure.txt");
+    System.out.println(Position.isPositionExists("leaf001"));
+    System.out.println(Position.isPositionExists("leaf002"));
+    System.out.println(Position.isPositionExists("node001"));
 
-    JSONObject menuStructure = new JSONObject(String.join("", Files.readAllLines(structurePath)));
-
-    msb.setRawMenuStructure(menuStructure);
-    msb.build();
-
-//    System.out.println("NODES");
-//    msb.getNodePositions().forEach(e -> System.out.println(e.getName()));
-//    System.out.println("LEAVES");
-//    msb.getLeafPositions().forEach(e -> System.out.println(e.getName()));
-//    System.out.println("END");
-
+    System.out.println(Position.getInstanceCalled("leaf001").getClass());
   }
-
 }
