@@ -27,7 +27,6 @@ import static hu.zza.clim.menu.Message.GNU_GPL;
 import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
 import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
-import hu.zza.clim.menu.LeafPosition;
 import hu.zza.clim.menu.MenuEntry;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
@@ -59,8 +58,6 @@ public final class Menu {
 
   private final MenuStructure menuStructure;
   private final ControlType controlType;
-  private final Map<String, NodePosition> nodeNameMap = Map.of(); // TODO: 2021. 05. 13.
-  private final Map<String, LeafPosition> leafNameMap = Map.of(); // TODO: 2021. 05. 13.
   private final ParameterMatcher parameterMatcher;
   private NodePosition position;
   private Position command;
@@ -253,12 +250,8 @@ public final class Menu {
   }
 
   private Position getPositionByName(String name) {
-    String upperCaseName = name.toUpperCase();
-
-    if (nodeNameMap.containsKey(upperCaseName)) {
-      return nodeNameMap.get(upperCaseName);
-    } else if (leafNameMap.containsKey(upperCaseName)) {
-      return leafNameMap.get(upperCaseName);
+    if (Position.existsBy(name)) {
+      return Position.getBy(name);
     } else {
       throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(name));
     }

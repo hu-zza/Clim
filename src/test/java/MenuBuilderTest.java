@@ -39,7 +39,7 @@ public class MenuBuilderTest {
 
     Menu menu =
         new MenuBuilder()
-            .setControlType(ControlType.ORDINAL)
+            .setControlType(ControlType.NOMINAL)
             .setMenuStructure(menuStructure)
             .setLeaf("leaf1", a -> 0, "node2", "node3", "node1")  // node2  pibling
             .setLeaf("leaf2", a -> 1, "node3", "node4", "node1")  // node4  hidden top
@@ -56,11 +56,16 @@ public class MenuBuilderTest {
             .build();
 
     menu.listOptions();
-    menu.chooseOption("0");
+    menu.chooseOption("node1");
     menu.listOptions();
-    menu.chooseOption("0");
+    menu.chooseOption("leaf1");
     menu.listOptions();
-    menu.chooseOption("0");
+    menu.chooseOption("node3");
+    menu.listOptions();
+    menu.chooseOption("leaf4");
+    menu.listOptions();
+    menu.chooseOption("leaf6");
+    menu.listOptions();
 
   }
 }
