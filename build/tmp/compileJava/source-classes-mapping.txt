@@ -21,18 +21,18 @@ hu/zza/clim/menu/Position.java
  hu.zza.clim.menu.Position
 hu/zza/clim/parameter/ParameterMatcher.java
  hu.zza.clim.parameter.ParameterMatcher
+hu/zza/clim/menu/NodePosition.java
+ hu.zza.clim.menu.NodePosition
+hu/zza/clim/menu/LeafPosition.java
+ hu.zza.clim.menu.LeafPosition
 hu/zza/clim/Menu.java
  hu.zza.clim.Menu
  hu.zza.clim.Menu$1
 hu/zza/clim/menu/MenuStructure.java
  hu.zza.clim.menu.MenuStructure
-hu/zza/clim/menu/LeafPosition.java
- hu.zza.clim.menu.LeafPosition
-hu/zza/clim/menu/NodePosition.java
- hu.zza.clim.menu.NodePosition
+hu/zza/clim/menu/MenuStructureBuilder.java
+ hu.zza.clim.menu.MenuStructureBuilder
 hu/zza/clim/menu/MenuEntry.java
  hu.zza.clim.menu.MenuEntry
  hu.zza.clim.menu.MenuEntry$Leaf
  hu.zza.clim.menu.MenuEntry$Node
-hu/zza/clim/menu/MenuStructureBuilder.java
- hu.zza.clim.menu.MenuStructureBuilder

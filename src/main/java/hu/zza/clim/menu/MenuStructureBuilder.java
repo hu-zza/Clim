@@ -23,13 +23,17 @@
 
 package hu.zza.clim.menu;
 
+import hu.zza.clim.input.ProcessedInput;
 import hu.zza.clim.menu.MenuEntry.Leaf;
+import hu.zza.clim.menu.MenuEntry.Node;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +43,8 @@ public class MenuStructureBuilder {
   private final Set<String> nodePositions = new HashSet<>();
   private final Set<String> leafPositions = new HashSet<>();
   private final Map<String, List<String>> nodeLinks = new HashMap<>();
-  private final Map<Position, Leaf> leafMap = new HashMap<>();
+  private final Map<String, List<String>> leafLinks = new HashMap<>();
+  private final Map<String, Function<ProcessedInput, Integer>> leafFunction = new HashMap<>();
   private final MenuStructure menuStructure = new MenuStructure();
   private String initialPosition = "root";
   private JSONObject rawMenuStructure;
@@ -56,22 +61,25 @@ public class MenuStructureBuilder {
     return this;
   }
 
-  public MenuStructureBuilder putLeaf(Leaf leaf) {
-    Util.assertNonNull("leaf", leaf);
-    leafMap.put(leaf.getPosition(), leaf);
+  public MenuStructureBuilder putLeaf(
+      String name, Function<ProcessedInput, Integer> function, String... links) {
+    leafFunction.put(name, function);
+    leafLinks.put(name, Arrays.asList(links));
     return this;
   }
 
   public void clear() {
     initialPosition = "root";
     rawMenuStructure = null;
-    leafMap.clear();
+    leafLinks.clear();
+    leafFunction.clear();
     clearBuilt();
   }
 
   private void clearBuilt() {
     nodePositions.clear();
     leafPositions.clear();
+    nodeLinks.clear();
     menuStructure.clear();
   }
 
@@ -93,17 +101,38 @@ public class MenuStructureBuilder {
   }
 
   private void buildStructure() {
-    List<NodePosition> nodes =
-        nodePositions.stream().map(NodePosition::new).collect(Collectors.toList());
-    List<LeafPosition> leaves =
-        leafPositions.stream().map(LeafPosition::new).collect(Collectors.toList());
+    Map<String, NodePosition> nodeMap =
+        nodePositions.stream()
+            .map(NodePosition::new)
+            .collect(Collectors.toMap(Position::getName, Function.identity()));
 
-    for (var pos : nodePositions) {
-      System.out.printf("%n%n%S%n", pos);
-      for (var link : nodeLinks.get(pos)) {
-        System.out.println(link);
-      }
-    }
+    Map<String, LeafPosition> leafMap =
+        leafPositions.stream()
+            .map(LeafPosition::new)
+            .collect(Collectors.toMap(Position::getName, Function.identity()));
+
+    nodePositions.forEach(
+        e ->
+            menuStructure.put(
+                new Node(
+                    nodeMap.get(e),
+                    e,
+                    nodeLinks.get(e).stream()
+                        .map(f -> nodeMap.containsKey(f) ? nodeMap.get(f) : leafMap.get(f))
+                        .map(Position.class::cast)
+                        .toArray(Position[]::new))));
+
+    leafPositions.forEach(
+        e ->
+            menuStructure.put(
+                Leaf.of(
+                    leafMap.get(e),
+                    e,
+                    leafFunction.get(e),
+                    leafLinks.get(e).stream()
+                        .filter(nodePositions::contains)
+                        .map(nodeMap::get)
+                        .toArray(NodePosition[]::new))));
   }
 
   private void extractNodesAndLeavesFrom(JSONObject jsonObject) throws JSONException {
