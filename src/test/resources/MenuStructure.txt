@@ -18,7 +18,7 @@
   "node4":
   [
     {
-    "node5": ["leaf8", "leaf9"],
+    "node5": ["leaf8", "leaf9", "node2"],
     "node6":
     [
       {
@@ -32,5 +32,10 @@
       "leaf12"
     ]
     }
-  ]
+  ],
+  "node11":
+  {
+    "node12": "node1",
+    "node13": ["node5", "node6"]
+  }
 }

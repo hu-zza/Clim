@@ -26,15 +26,19 @@ package hu.zza.clim.menu;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MenuStructureBuilder {
-  private final ArrayList<String> nodePositions = new ArrayList<>();
-  private final ArrayList<String> leafPositions = new ArrayList<>();
+  private final Set<String> nodePositions = new HashSet<>();
+  private final Set<String> leafPositions = new HashSet<>();
+  private final Map<String, List<String>> nodeLinks = new HashMap<>();
   private final Map<Position, Leaf> leafMap = new HashMap<>();
   private final MenuStructure menuStructure = new MenuStructure();
   private String initialPosition = "root";
@@ -68,21 +72,13 @@ public class MenuStructureBuilder {
   private void clearBuilt() {
     nodePositions.clear();
     leafPositions.clear();
-    leafMap.clear();
     menuStructure.clear();
   }
 
   public MenuStructure build() {
     clearBuilt();
     findAllNodesAndLeaves();
-
-    buildLeafMap();
     buildStructure();
-    System.out.println("\n\nNODES\n");
-    nodePositions.forEach(System.out::println);
-    System.out.println("\n\nLEAVES\n");
-    leafPositions.forEach(System.out::println);
-    System.out.println();
     return menuStructure;
   }
 
@@ -96,14 +92,25 @@ public class MenuStructureBuilder {
     leafPositions.removeAll(nodePositions);
   }
 
-  private void buildLeafMap() {}
+  private void buildStructure() {
+    List<NodePosition> nodes =
+        nodePositions.stream().map(NodePosition::new).collect(Collectors.toList());
+    List<LeafPosition> leaves =
+        leafPositions.stream().map(LeafPosition::new).collect(Collectors.toList());
 
-  private void buildStructure() {}
-
+    for (var pos : nodePositions) {
+      System.out.printf("%n%n%S%n", pos);
+      for (var link : nodeLinks.get(pos)) {
+        System.out.println(link);
+      }
+    }
+  }
 
   private void extractNodesAndLeavesFrom(JSONObject jsonObject) throws JSONException {
     String currentKey;
     String currentClass;
+    ArrayList<String> linkBuffer = new ArrayList<>();
+
     JSONArray keys = jsonObject.names();
     if (keys == null) return;
 
@@ -115,6 +122,8 @@ public class MenuStructureBuilder {
       switch (currentClass) {
         case "org.json.JSONObject":
           extractNodesAndLeavesFrom((JSONObject) jsonObject.get(currentKey));
+          ((JSONObject) jsonObject.get(currentKey))
+              .names().toList().stream().map(String.class::cast).forEach(linkBuffer::add);
           break;
         case "org.json.JSONArray":
           JSONArray array = (JSONArray) jsonObject.get(currentKey);
@@ -123,25 +132,25 @@ public class MenuStructureBuilder {
             currentClass = array.get(j).getClass().getName();
             if ("org.json.JSONObject".equals(currentClass)) {
               extractNodesAndLeavesFrom((JSONObject) array.get(j));
+              ((JSONObject) array.get(j))
+                  .names().toList().stream().map(String.class::cast).forEach(linkBuffer::add);
+
             } else if ("java.lang.String".equals(currentClass)) {
-              leafPositions.add(array.get(j).toString());
+              String str = array.get(j).toString();
+              leafPositions.add(str);
+              linkBuffer.add(str);
             }
           }
           break;
         case "java.lang.String":
-          leafPositions.add(jsonObject.get(currentKey).toString());
+          String str = jsonObject.get(currentKey).toString();
+          leafPositions.add(str);
+          linkBuffer.add(str);
           break;
       }
+
+      nodeLinks.put(currentKey, List.copyOf(linkBuffer));
+      linkBuffer.clear();
     }
-  }
-
-  // TODO: 2021. 05. 11. delete after tests
-  public List<String> getNodePositions() {
-    return nodePositions;
-  }
-
-  // TODO: 2021. 05. 11. delete after tests
-  public List<String> getLeafPositions() {
-    return leafPositions;
   }
 }

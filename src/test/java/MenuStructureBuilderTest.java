@@ -21,6 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import hu.zza.clim.menu.MenuStructure;
 import hu.zza.clim.menu.MenuStructureBuilder;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,13 +37,7 @@ public class MenuStructureBuilderTest {
     JSONObject menuStructure = new JSONObject(String.join("", Files.readAllLines(structurePath)));
 
     msb.setRawMenuStructure(menuStructure);
-    msb.build();
-
-//    System.out.println("NODES");
-//    msb.getNodePositions().forEach(e -> System.out.println(e.getName()));
-//    System.out.println("LEAVES");
-//    msb.getLeafPositions().forEach(e -> System.out.println(e.getName()));
-//    System.out.println("END");
+    MenuStructure ms = msb.build();
 
   }
 
