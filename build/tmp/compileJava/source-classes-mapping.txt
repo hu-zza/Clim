@@ -30,9 +30,9 @@ hu/zza/clim/Menu.java
  hu.zza.clim.Menu$1
 hu/zza/clim/menu/MenuStructure.java
  hu.zza.clim.menu.MenuStructure
-hu/zza/clim/menu/MenuStructureBuilder.java
- hu.zza.clim.menu.MenuStructureBuilder
 hu/zza/clim/menu/MenuEntry.java
  hu.zza.clim.menu.MenuEntry
  hu.zza.clim.menu.MenuEntry$Leaf
  hu.zza.clim.menu.MenuEntry$Node
+hu/zza/clim/menu/MenuStructureBuilder.java
+ hu.zza.clim.menu.MenuStructureBuilder
