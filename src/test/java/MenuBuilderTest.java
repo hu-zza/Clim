@@ -54,5 +54,13 @@ public class MenuBuilderTest {
             .setLeaf("leaf11", a -> 1, "node2", "node3", "root")  // node3  visible bottom
             .setLeaf("leaf12", a -> 2, "node2", "root", "node5")  // node5  pibling
             .build();
+
+    menu.listOptions();
+    menu.chooseOption("0");
+    menu.listOptions();
+    menu.chooseOption("0");
+    menu.listOptions();
+    menu.chooseOption("0");
+
   }
 }

@@ -24,10 +24,6 @@
 package hu.zza.clim;
 
 import static hu.zza.clim.menu.Message.GNU_GPL;
-import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
-import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
-import static hu.zza.clim.menu.Message.INVALID_NONNULL_ARGUMENT;
-import static hu.zza.clim.menu.Message.MISSING_MENU_ENTRY;
 import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
 import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
@@ -43,7 +39,6 @@ import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterMatcher;
 import hu.zza.clim.parameter.ParameterName;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,173 +59,72 @@ public final class Menu {
 
   private final MenuStructure menuStructure;
   private final ControlType controlType;
-  private final Map<String, NodePosition> nodeNameMap;
-  private final Map<String, LeafPosition> leafNameMap;
+  private final Map<String, NodePosition> nodeNameMap = Map.of(); // TODO: 2021. 05. 13.
+  private final Map<String, LeafPosition> leafNameMap = Map.of(); // TODO: 2021. 05. 13.
   private final ParameterMatcher parameterMatcher;
   private NodePosition position;
   private Position command;
   private Position[] options;
 
-  private Menu(
+  Menu(
       MenuStructure menuStructure,
       ControlType controlType,
-      Class<? extends NodePosition> nodeEnum,
-      Class<? extends LeafPosition> leafEnum,
       NodePosition initialPosition,
       ParameterMatcher parameterMatcher) {
 
-    if (menuStructure == null || menuStructure.isEmpty()) {
-      throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("menuStructure"));
-    }
-
-    if (controlType == null) {
-      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("controlType"));
-    }
-
-    if (nodeEnum == null) {
-      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("nodeEnum"));
-    }
-
-    if (leafEnum == null) {
-      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("leafEnum"));
-    }
-
-    if (initialPosition == null) {
-      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("initialPosition"));
-    }
-
-    if (controlType == ControlType.PARAMETRIC && parameterMatcher == null) {
-      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("parameterMatcher"));
-    }
+//    if (menuStructure == null || menuStructure.isEmpty()) {
+//      throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("menuStructure"));
+//    }
+//
+//    if (controlType == null) {
+//      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("controlType"));
+//    }
+//
+//    if (initialPosition == null) {
+//      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("initialPosition"));
+//    }
+//
+//    if (controlType == ControlType.PARAMETRIC && parameterMatcher == null) {
+//      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("parameterMatcher"));
+//    }
 
     this.menuStructure = menuStructure;
     this.controlType = controlType;
     this.position = initialPosition;
     this.parameterMatcher = parameterMatcher;
 
-    Map<String, NodePosition> tmpNodeMap = new HashMap<>();
-    for (var node : nodeEnum.getEnumConstants()) {
-      if (!menuStructure.containsKey(node)) {
-        throw new IllegalStateException(
-            MISSING_MENU_ENTRY.getMessage("MenuStructure", node.getName()));
-      }
-
-      tmpNodeMap.put(node.getName(), node);
-    }
-    this.nodeNameMap = Map.copyOf(tmpNodeMap);
-
-    Map<String, LeafPosition> tmpLeafMap = new HashMap<>();
-    for (var leaf : leafEnum.getEnumConstants()) {
-      if (!menuStructure.containsKey(leaf)) {
-        throw new IllegalStateException(
-            MISSING_MENU_ENTRY.getMessage("MenuStructure", leaf.getName()));
-      }
-
-      if (!parameterMatcher.containsKeyInPatternMap(leaf)) {
-        throw new IllegalArgumentException(
-            MISSING_MENU_ENTRY.getMessage("PatternMap", leaf.getName()));
-      }
-
-      tmpLeafMap.put(leaf.getName(), leaf);
-    }
-    this.leafNameMap = Map.copyOf(tmpLeafMap);
+//    Map<String, NodePosition> tmpNodeMap = new HashMap<>();
+//    for (var node : nodeEnum.getEnumConstants()) {
+//      if (!menuStructure.containsKey(node)) {
+//        throw new IllegalStateException(
+//            MISSING_MENU_ENTRY.getMessage("MenuStructure", node.getName()));
+//      }
+//
+//      tmpNodeMap.put(node.getName(), node);
+//    }
+//    this.nodeNameMap = Map.copyOf(tmpNodeMap);
+//
+//    Map<String, LeafPosition> tmpLeafMap = new HashMap<>();
+//    for (var leaf : leafEnum.getEnumConstants()) {
+//      if (!menuStructure.containsKey(leaf)) {
+//        throw new IllegalStateException(
+//            MISSING_MENU_ENTRY.getMessage("MenuStructure", leaf.getName()));
+//      }
+//
+//      if (!parameterMatcher.containsKeyInPatternMap(leaf)) {
+//        throw new IllegalArgumentException(
+//            MISSING_MENU_ENTRY.getMessage("PatternMap", leaf.getName()));
+//      }
+//
+//      tmpLeafMap.put(leaf.getName(), leaf);
+//    }
+//    this.leafNameMap = Map.copyOf(tmpLeafMap);
 
     refreshOptions();
   }
 
   private void refreshOptions() {
     options = menuStructure.get(position).getLinks();
-  }
-
-  /**
-   * Creates a simple, {@link ControlType#ORDINAL ordinal} menu and returns with it. The initial
-   * position is the first object from the {@code nodeEnum}.
-   *
-   * @param menuStructure {@link MenuStructure} object which represents the connection between
-   *     {@link NodePosition nodes} and {@link LeafPosition leaves}
-   * @param nodeEnum user defined node enum which implements {@link NodePosition} marker interface
-   * @param leafEnum user defined leaf enum which implements {@link LeafPosition} marker interface
-   * @return the {@link ControlType#ORDINAL ordinal} {@link Menu} object.
-   */
-  public static Menu of(
-      MenuStructure menuStructure,
-      Class<? extends NodePosition> nodeEnum,
-      Class<? extends LeafPosition> leafEnum) {
-    return of(menuStructure, ControlType.ORDINAL, nodeEnum, leafEnum);
-  }
-
-  /**
-   * Creates a menu with the given parameters and returns with it. The initial position is the first
-   * object from the {@code nodeEnum}. This factory method do not set the {@link ParameterMatcher}
-   * of the {@link Menu}, and throws an exception if {@link ControlType} needs a {@link
-   * ParameterMatcher} set.
-   *
-   * @param menuStructure {@link MenuStructure} object which represents the connection between
-   *     {@link NodePosition nodes} and {@link LeafPosition leaves}
-   * @param controlType sets the main behavior of the menu
-   * @param nodeEnum user defined node enum which implements {@link NodePosition} marker interface
-   * @param leafEnum user defined leaf enum which implements {@link LeafPosition} marker interface
-   * @return the {@link Menu} object.
-   */
-  public static Menu of(
-      MenuStructure menuStructure,
-      ControlType controlType,
-      Class<? extends NodePosition> nodeEnum,
-      Class<? extends LeafPosition> leafEnum) {
-    return of(menuStructure, controlType, nodeEnum, leafEnum, null);
-  }
-
-  /**
-   * Creates a menu with the given parameters and returns with it. The initial position is the first
-   * object from the {@code nodeEnum}.
-   *
-   * @param menuStructure {@link MenuStructure} object which represents the connection between
-   *     {@link NodePosition nodes} and {@link LeafPosition leaves}
-   * @param controlType sets the main behavior of the menu
-   * @param nodeEnum user defined node enum which implements {@link NodePosition} marker interface
-   * @param leafEnum user defined leaf enum which implements {@link LeafPosition} marker interface
-   * @param parameterMatcher sets the parameter matching strategy, patterns, etc. with a {@link
-   *     ParameterMatcher}
-   * @return the {@link Menu} object.
-   */
-  public static Menu of(
-      MenuStructure menuStructure,
-      ControlType controlType,
-      Class<? extends NodePosition> nodeEnum,
-      Class<? extends LeafPosition> leafEnum,
-      ParameterMatcher parameterMatcher) {
-    return of(menuStructure, controlType, nodeEnum, leafEnum, null, parameterMatcher);
-  }
-
-  /**
-   * Creates a menu with the given parameters and returns with it.
-   *
-   * @param menuStructure {@link MenuStructure} object which represents the connection between
-   *     {@link NodePosition nodes} and {@link LeafPosition leaves}
-   * @param controlType sets the main behavior of the menu
-   * @param nodeEnum user defined node enum which implements {@link NodePosition} marker interface
-   * @param leafEnum user defined leaf enum which implements {@link LeafPosition} marker interface
-   * @param initialPosition starting point of the menu (choosen from the {@code nodeEnum})
-   * @param parameterMatcher sets the parameter matching strategy, patterns, etc. with a {@link
-   *     ParameterMatcher}
-   * @return the {@link Menu} object.
-   */
-  public static Menu of(
-      MenuStructure menuStructure,
-      ControlType controlType,
-      Class<? extends NodePosition> nodeEnum,
-      Class<? extends LeafPosition> leafEnum,
-      NodePosition initialPosition,
-      ParameterMatcher parameterMatcher) {
-    try {
-      if (initialPosition == null) {
-        initialPosition = nodeEnum.getEnumConstants()[0];
-      }
-      return new Menu(
-          menuStructure, controlType, nodeEnum, leafEnum, initialPosition, parameterMatcher);
-    } catch (Exception e) {
-      throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()));
-    }
   }
 
   /**

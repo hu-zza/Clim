@@ -23,13 +23,20 @@
 
 package hu.zza.clim;
 
+import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
+
 import hu.zza.clim.input.ProcessedInput;
+import hu.zza.clim.menu.MenuStructureBuilder;
+import hu.zza.clim.menu.NodePosition;
 import hu.zza.clim.menu.Util;
 import hu.zza.clim.parameter.Parameter;
+import hu.zza.clim.parameter.ParameterMatcher;
 import hu.zza.clim.parameter.ParameterName;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,25 +45,34 @@ public class MenuBuilder {
   private ControlType controlType = ControlType.ORDINAL;
   private String initialPosition = "root";
   private String commandRegex = "\\s*(\\w+)\\s*";
-  private JSONObject menuStructure;
+  private JSONObject menuStructure = new JSONObject("{\"root\":\"\"}");
   private Class<? extends ParameterName> parameterNameEnum;
-  private final Map<String, Leaf> leafMap = new HashMap<>();
+  private final Set<Leaf> leaves = new HashSet<>();
   private final Map<String, List<ParameterName>> parameterNameMap = new HashMap<>();
   private final Map<String, List<Parameter>> parameterMap = new HashMap<>();
   private final Map<String, String> delimiterMap = new HashMap<>();
+  private ParameterMatcher parameterMatcher;
 
   public Menu build() {
-    // return Menu.of(menuStructure, controlType, parameterMatcher, initialPosition);
-    return null;
+    MenuStructureBuilder msb = new MenuStructureBuilder().setRawMenuStructure(menuStructure);
+
+    leaves.forEach(e -> msb.setLeaf(e.name, e.function, e.links));
+
+    try {
+      return new Menu(
+          msb.build(), controlType, new NodePosition(initialPosition), parameterMatcher);
+    } catch (Exception e) {
+      throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()));
+    }
   }
 
   public MenuBuilder clear() {
     controlType = ControlType.ORDINAL;
     initialPosition = "root";
     commandRegex = "\\s*(\\w+)\\s*";
-    menuStructure = null;
+    menuStructure = new JSONObject("{\"root\":\"\"}");
     parameterNameEnum = null;
-    leafMap.clear();
+    leaves.clear();
     parameterNameMap.clear();
     parameterMap.clear();
     delimiterMap.clear();
@@ -112,7 +128,7 @@ public class MenuBuilder {
             "links",
             links));
 
-    leafMap.put(name, new Leaf(name, function, links));
+    leaves.add(new Leaf(name, function, links));
     return this;
   }
 

@@ -27,18 +27,24 @@ import java.util.Map;
 
 public abstract class Util {
 
-  // TODO: 2021. 05. 09. javadoc
   public static void assertNonNull(String parameterName, Object parameter) {
+    assertNonNull(parameterName, parameter, Message.INVALID_NONNULL_ARGUMENT);
+  }
+
+  public static void assertNonNull(String parameterName, Object parameter, Message errorMessage) {
     if (parameter == null) {
-      throw new IllegalArgumentException(Message.INVALID_NONNULL_ARGUMENT.getMessage(parameterName));
+      throw new IllegalArgumentException(errorMessage.getMessage(parameterName));
     }
   }
 
-  // TODO: 2021. 05. 09. javadoc
   public static void assertNonNull(Map<String, Object> parameters) {
+    assertNonNull(parameters, Message.INVALID_NONNULL_ARGUMENT);
+  }
+
+  public static void assertNonNull(Map<String, Object> parameters, Message errorMessage) {
     for (var entry : parameters.entrySet()) {
       if (entry.getValue() == null) {
-        throw new IllegalArgumentException(Message.INVALID_NONNULL_ARGUMENT.getMessage(entry.getKey()));
+        throw new IllegalArgumentException(errorMessage.getMessage(entry.getKey()));
       }
     }
   }
