@@ -118,7 +118,7 @@ public class MenuStructureBuilder {
     leafPositions.forEach(
         e ->
             menuStructure.put(
-                Leaf.of(
+                new Leaf(
                     leafMap.get(e),
                     e,
                     leafFunction.get(e),

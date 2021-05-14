@@ -27,6 +27,7 @@ import static hu.zza.clim.menu.Message.INVALID_ARGUMENT;
 import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
 import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_FIELD;
 
+import hu.zza.clim.input.ProcessedInput;
 import hu.zza.clim.menu.Position;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,7 +123,7 @@ public final class ParameterMatcher {
    * @param command the directive by which the {@link ParameterMatcher} processes the {@code text}
    * @return a {@link Map} object with {@link ParameterName} - {@link Parameter} bindings
    */
-  public Map<ParameterName, Parameter> processText(Position command) {
+  public ProcessedInput processText(Position command) {
     if (text == null || text.isEmpty()) {
       throw new IllegalStateException(INVALID_NONEMPTY_FIELD.getMessage("text", "processText"));
     }
@@ -159,7 +160,7 @@ public final class ParameterMatcher {
       result.put(parameterNames.get(i), parameterList.get(i));
     }
 
-    return result;
+    return new ProcessedInput(result);
   }
 
   private List<Parameter> getAndPrepareParameterList(ParameterPattern parameterPattern) {

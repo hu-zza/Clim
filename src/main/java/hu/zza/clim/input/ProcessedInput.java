@@ -23,6 +23,15 @@
 
 package hu.zza.clim.input;
 
-public class ProcessedInput {
+import hu.zza.clim.parameter.Parameter;
+import hu.zza.clim.parameter.ParameterName;
+import java.util.Map;
 
+public class ProcessedInput {
+  private Map<ParameterName, Parameter> parameterMap;
+  public static final ProcessedInput NULL = new ProcessedInput(Map.of());
+
+  public ProcessedInput(Map<ParameterName, Parameter> parameterMap) {
+    this.parameterMap = parameterMap;
+  }
 }

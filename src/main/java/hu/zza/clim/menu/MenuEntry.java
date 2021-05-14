@@ -28,9 +28,6 @@ import static hu.zza.clim.menu.Message.INVALID_NONNULL_ARGUMENT;
 
 import hu.zza.clim.Menu;
 import hu.zza.clim.input.ProcessedInput;
-import hu.zza.clim.parameter.Parameter;
-import hu.zza.clim.parameter.ParameterName;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -42,14 +39,14 @@ public abstract class MenuEntry {
   private final String name;
   private final Position position;
   private final Position[] links;
-  private final Function<Map<ParameterName, Parameter>, Integer> function;
+  private final Function<ProcessedInput, Integer> function;
   private final NodePosition[] functionLinks;
 
   private MenuEntry(
       Position position,
       String name,
       Position[] links,
-      Function<Map<ParameterName, Parameter>, Integer> function,
+      Function<ProcessedInput, Integer> function,
       NodePosition... functionLinks) {
     if (position == null) {
       throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("position"));
@@ -101,7 +98,7 @@ public abstract class MenuEntry {
    * @return The {@link NodePosition} where the {@link Menu} redirects itself after selecting a
    *     {@link MenuEntry}.
    */
-  public NodePosition select(Map<ParameterName, Parameter> parameterMap) {
+  public NodePosition select(ProcessedInput parameterMap) {
     return getFunctionLinks()[getFunction().apply(parameterMap)];
   }
 
@@ -109,7 +106,7 @@ public abstract class MenuEntry {
     return functionLinks;
   }
 
-  Function<Map<ParameterName, Parameter>, Integer> getFunction() {
+  Function<ProcessedInput, Integer> getFunction() {
     return function;
   }
 
@@ -157,7 +154,7 @@ public abstract class MenuEntry {
     public Leaf(
         LeafPosition position,
         String name,
-        Function<Map<ParameterName, Parameter>, Integer> function,
+        Function<ProcessedInput, Integer> function,
         NodePosition... functionLinks) {
       /*
       Constructor parameters in order:
@@ -178,14 +175,6 @@ public abstract class MenuEntry {
                           function controls the forwarding: functionLinks[returnValue].
        */
       super(position, name, new Position[0], function, functionLinks);
-    }
-
-    public static Leaf of(
-        LeafPosition position,
-        String name,
-        Function<ProcessedInput, Integer> function,
-        NodePosition... functionLinks) {
-      return new Leaf(position, name, a -> 0, functionLinks);
     }
   }
 }

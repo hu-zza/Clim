@@ -31,6 +31,7 @@ import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
 import static hu.zza.clim.menu.Message.SHORT_LICENCE;
 import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
+import hu.zza.clim.input.ProcessedInput;
 import hu.zza.clim.menu.MenuEntry;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
@@ -38,9 +39,7 @@ import hu.zza.clim.menu.MenuStructure;
 import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.NodePosition;
 import hu.zza.clim.menu.Position;
-import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterMatcher;
-import hu.zza.clim.parameter.ParameterName;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -170,9 +169,7 @@ public final class Menu {
   private void printOrdinalMenu() {
     boolean trailingZero = controlType == ControlType.ORDINAL_TRAILING_ZERO;
 
-    int i = trailingZero ? 1 : 0;
-
-    for (; i < options.length; i++) {
+    for (int i = trailingZero ? 1 : 0; i < options.length; i++) {
       printMenuEntry(menuStructure.get(options[i]), i);
     }
 
@@ -220,13 +217,13 @@ public final class Menu {
         switch (controlType) {
           case NOMINAL:
             Position nominal = getPositionByName(input);
-            setMenuPosition(getValidatedPositionOrThrow(nominal), Map.of());
+            setMenuPosition(getValidatedPositionOrThrow(nominal), ProcessedInput.NULL);
             break;
 
           case ORDINAL:
           case ORDINAL_TRAILING_ZERO:
             int ordinal = Integer.parseInt(input);
-            setMenuPosition(getValidatedPositionOrThrow(ordinal), Map.of());
+            setMenuPosition(getValidatedPositionOrThrow(ordinal), ProcessedInput.NULL);
             break;
 
           case PARAMETRIC:
@@ -254,7 +251,7 @@ public final class Menu {
     }
   }
 
-  private void setMenuPosition(Position key, Map<ParameterName, Parameter> parameterMap) {
+  private void setMenuPosition(Position key, ProcessedInput parameterMap) {
     position = menuStructure.get(key).select(parameterMap);
   }
 
