@@ -40,9 +40,10 @@ import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.NodePosition;
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.parameter.ParameterMatcher;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 
 /** Represents the menu that the user can interact with: navigation, function calls, etc. */
 public final class Menu {
@@ -63,6 +64,7 @@ public final class Menu {
   private final ControlType controlType;
   private final ParameterMatcher parameterMatcher;
   private NodePosition position;
+  private Deque<NodePosition> positionHistory = new ArrayDeque<>();
   private Position command;
   private Position[] options;
 
@@ -72,57 +74,11 @@ public final class Menu {
       NodePosition initialPosition,
       ParameterMatcher parameterMatcher) {
 
-    //    if (menuStructure == null || menuStructure.isEmpty()) {
-    //      throw new
-    // IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("menuStructure"));
-    //    }
-    //
-    //    if (controlType == null) {
-    //      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("controlType"));
-    //    }
-    //
-    //    if (initialPosition == null) {
-    //      throw new
-    // IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("initialPosition"));
-    //    }
-    //
-    //    if (controlType == ControlType.PARAMETRIC && parameterMatcher == null) {
-    //      throw new
-    // IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("parameterMatcher"));
-    //    }
-
     this.menuStructure = menuStructure;
     this.controlType = controlType;
     this.position = initialPosition;
     this.parameterMatcher = parameterMatcher;
-
-    //    Map<String, NodePosition> tmpNodeMap = new HashMap<>();
-    //    for (var node : nodeEnum.getEnumConstants()) {
-    //      if (!menuStructure.containsKey(node)) {
-    //        throw new IllegalStateException(
-    //            MISSING_MENU_ENTRY.getMessage("MenuStructure", node.getName()));
-    //      }
-    //
-    //      tmpNodeMap.put(node.getName(), node);
-    //    }
-    //    this.nodeNameMap = Map.copyOf(tmpNodeMap);
-    //
-    //    Map<String, LeafPosition> tmpLeafMap = new HashMap<>();
-    //    for (var leaf : leafEnum.getEnumConstants()) {
-    //      if (!menuStructure.containsKey(leaf)) {
-    //        throw new IllegalStateException(
-    //            MISSING_MENU_ENTRY.getMessage("MenuStructure", leaf.getName()));
-    //      }
-    //
-    //      if (!parameterMatcher.containsKeyInPatternMap(leaf)) {
-    //        throw new IllegalArgumentException(
-    //            MISSING_MENU_ENTRY.getMessage("PatternMap", leaf.getName()));
-    //      }
-    //
-    //      tmpLeafMap.put(leaf.getName(), leaf);
-    //    }
-    //    this.leafNameMap = Map.copyOf(tmpLeafMap);
-
+    positionHistory.offer(position);
     refreshOptions();
   }
 
@@ -209,7 +165,9 @@ public final class Menu {
       return;
     }
 
-    if (licenseCommands.contains(input.toLowerCase())) {
+    if ("<".equals(input)) {
+      position = 0 < positionHistory.size() ? positionHistory.pollFirst() : position;
+    } else if (licenseCommands.contains(input.toLowerCase())) {
       System.out.println(GNU_GPL.getMessage());
     } else {
       refreshOptions();
@@ -236,11 +194,12 @@ public final class Menu {
           default:
             break;
         }
-        refreshOptions();
+        positionHistory.offerFirst(position);
       } catch (Exception e) {
         warnAboutInput(input, e);
       }
     }
+    refreshOptions();
   }
 
   private Position getPositionByName(String name) {
