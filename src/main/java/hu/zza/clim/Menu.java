@@ -171,6 +171,7 @@ public final class Menu {
       System.out.println(GNU_GPL.getMessage());
     } else {
       refreshOptions();
+      positionHistory.offerFirst(position);
       try {
         switch (controlType) {
           case NOMINAL:
@@ -194,8 +195,8 @@ public final class Menu {
           default:
             break;
         }
-        positionHistory.offerFirst(position);
       } catch (Exception e) {
+        positionHistory.pollFirst();
         warnAboutInput(input, e);
       }
     }
