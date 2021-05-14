@@ -31,6 +31,10 @@ import java.util.ResourceBundle;
  * future.
  */
 public enum Message {
+  MENU_POSITION_DECORATOR,
+  MENU_OPTION_DECORATOR,
+  MENU_ORDINAL_OPTION_DECORATOR,
+
   PROCESSING_FAILED,
   INITIALIZATION_FAILED,
 
@@ -44,7 +48,9 @@ public enum Message {
   UNKNOWN_COMMAND,
   INVALID_ARGUMENT,
   INVALID_POSITION,
+  NO_OPTIONS,
 
+  SHORT_LICENCE,
   GNU_GPL;
 
   private final String message;

@@ -24,7 +24,11 @@
 package hu.zza.clim;
 
 import static hu.zza.clim.menu.Message.GNU_GPL;
+import static hu.zza.clim.menu.Message.MENU_OPTION_DECORATOR;
+import static hu.zza.clim.menu.Message.MENU_ORDINAL_OPTION_DECORATOR;
+import static hu.zza.clim.menu.Message.MENU_POSITION_DECORATOR;
 import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
+import static hu.zza.clim.menu.Message.SHORT_LICENCE;
 import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
 import hu.zza.clim.menu.MenuEntry;
@@ -69,53 +73,56 @@ public final class Menu {
       NodePosition initialPosition,
       ParameterMatcher parameterMatcher) {
 
-//    if (menuStructure == null || menuStructure.isEmpty()) {
-//      throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("menuStructure"));
-//    }
-//
-//    if (controlType == null) {
-//      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("controlType"));
-//    }
-//
-//    if (initialPosition == null) {
-//      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("initialPosition"));
-//    }
-//
-//    if (controlType == ControlType.PARAMETRIC && parameterMatcher == null) {
-//      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("parameterMatcher"));
-//    }
+    //    if (menuStructure == null || menuStructure.isEmpty()) {
+    //      throw new
+    // IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("menuStructure"));
+    //    }
+    //
+    //    if (controlType == null) {
+    //      throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("controlType"));
+    //    }
+    //
+    //    if (initialPosition == null) {
+    //      throw new
+    // IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("initialPosition"));
+    //    }
+    //
+    //    if (controlType == ControlType.PARAMETRIC && parameterMatcher == null) {
+    //      throw new
+    // IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("parameterMatcher"));
+    //    }
 
     this.menuStructure = menuStructure;
     this.controlType = controlType;
     this.position = initialPosition;
     this.parameterMatcher = parameterMatcher;
 
-//    Map<String, NodePosition> tmpNodeMap = new HashMap<>();
-//    for (var node : nodeEnum.getEnumConstants()) {
-//      if (!menuStructure.containsKey(node)) {
-//        throw new IllegalStateException(
-//            MISSING_MENU_ENTRY.getMessage("MenuStructure", node.getName()));
-//      }
-//
-//      tmpNodeMap.put(node.getName(), node);
-//    }
-//    this.nodeNameMap = Map.copyOf(tmpNodeMap);
-//
-//    Map<String, LeafPosition> tmpLeafMap = new HashMap<>();
-//    for (var leaf : leafEnum.getEnumConstants()) {
-//      if (!menuStructure.containsKey(leaf)) {
-//        throw new IllegalStateException(
-//            MISSING_MENU_ENTRY.getMessage("MenuStructure", leaf.getName()));
-//      }
-//
-//      if (!parameterMatcher.containsKeyInPatternMap(leaf)) {
-//        throw new IllegalArgumentException(
-//            MISSING_MENU_ENTRY.getMessage("PatternMap", leaf.getName()));
-//      }
-//
-//      tmpLeafMap.put(leaf.getName(), leaf);
-//    }
-//    this.leafNameMap = Map.copyOf(tmpLeafMap);
+    //    Map<String, NodePosition> tmpNodeMap = new HashMap<>();
+    //    for (var node : nodeEnum.getEnumConstants()) {
+    //      if (!menuStructure.containsKey(node)) {
+    //        throw new IllegalStateException(
+    //            MISSING_MENU_ENTRY.getMessage("MenuStructure", node.getName()));
+    //      }
+    //
+    //      tmpNodeMap.put(node.getName(), node);
+    //    }
+    //    this.nodeNameMap = Map.copyOf(tmpNodeMap);
+    //
+    //    Map<String, LeafPosition> tmpLeafMap = new HashMap<>();
+    //    for (var leaf : leafEnum.getEnumConstants()) {
+    //      if (!menuStructure.containsKey(leaf)) {
+    //        throw new IllegalStateException(
+    //            MISSING_MENU_ENTRY.getMessage("MenuStructure", leaf.getName()));
+    //      }
+    //
+    //      if (!parameterMatcher.containsKeyInPatternMap(leaf)) {
+    //        throw new IllegalArgumentException(
+    //            MISSING_MENU_ENTRY.getMessage("PatternMap", leaf.getName()));
+    //      }
+    //
+    //      tmpLeafMap.put(leaf.getName(), leaf);
+    //    }
+    //    this.leafNameMap = Map.copyOf(tmpLeafMap);
 
     refreshOptions();
   }
@@ -124,21 +131,15 @@ public final class Menu {
     options = menuStructure.get(position).getLinks();
   }
 
-  /**
-   * Prints the available options (with license footer) from the current position of the {@link
-   * Menu}.
-   */
-  public void listOptions() {
-    listOptions(true);
+  /** Prints a short licence information about clim. */
+  public void printShortLicence() {
+    System.out.println(SHORT_LICENCE.getMessage());
   }
 
-  /**
-   * Prints the available options from the current position of the {@link Menu}.
-   *
-   * @param showLicense switch license footer on or off for the current printing
-   */
-  public void listOptions(boolean showLicense) {
+  /** Prints the available options from the current position of the {@link Menu}. */
+  public void listOptions() {
     refreshOptions();
+    printHeader();
     if (options.length != 0) {
       switch (controlType) {
         case ORDINAL:
@@ -157,17 +158,13 @@ public final class Menu {
         default:
           break;
       }
+    } else {
+      System.out.println(Message.NO_OPTIONS.getMessage());
     }
+  }
 
-    if (showLicense) {
-      System.out.println(
-          "\n\n"
-              + "    clim   // Command Line Interface Menu\n\n"
-              + "    Copyright (C) 2020-2021 Szabó László András <hu@zza.hu>\n\n"
-              + "    This program comes with ABSOLUTELY NO WARRANTY; for details type \"license\".\n"
-              + "    This is free software, and you are welcome to redistribute it\n"
-              + "    under certain conditions; type \"license\" for details.\n");
-    }
+  private void printHeader() {
+    System.out.print(MENU_POSITION_DECORATOR.getMessage(position.getName()));
   }
 
   private void printOrdinalMenu() {
@@ -187,9 +184,9 @@ public final class Menu {
   private void printMenuEntry(MenuEntry menuEntry, Integer ordinal) {
     if (menuEntry != null) {
       if (ordinal != null) {
-        System.out.printf("%d. %s%n", ordinal, menuEntry.getName());
+        System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(ordinal, menuEntry.getName()));
       } else {
-        System.out.printf("%s%n", menuEntry.getName());
+        System.out.print(MENU_OPTION_DECORATOR.getMessage(menuEntry.getName()));
       }
     }
   }

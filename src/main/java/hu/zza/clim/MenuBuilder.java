@@ -59,8 +59,10 @@ public class MenuBuilder {
     leaves.forEach(e -> msb.setLeaf(e.name, e.function, e.links));
 
     try {
-      return new Menu(
-          msb.build(), controlType, new NodePosition(initialPosition), parameterMatcher);
+      Menu menu =
+          new Menu(msb.build(), controlType, new NodePosition(initialPosition), parameterMatcher);
+      menu.printShortLicence();
+      return menu;
     } catch (Exception e) {
       throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()));
     }
@@ -119,14 +121,7 @@ public class MenuBuilder {
   public MenuBuilder setLeaf(
       String name, Function<ProcessedInput, Integer> function, String... links) {
 
-    Util.assertNonNull(
-        Map.of(
-            "name",
-            name,
-            "function",
-            function,
-            "links",
-            links));
+    Util.assertNonNull(Map.of("name", name, "function", function, "links", links));
 
     leaves.add(new Leaf(name, function, links));
     return this;
