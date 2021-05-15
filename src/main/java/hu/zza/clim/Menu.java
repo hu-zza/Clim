@@ -61,7 +61,8 @@ public final class Menu {
           "show liability");
 
   private final MenuStructure menuStructure;
-  private final ControlType controlType;
+  private final ControlType[] controlTypes;
+  private final InputType inputType;
   private final ParameterMatcher parameterMatcher;
   private NodePosition position;
   private Deque<NodePosition> positionHistory = new ArrayDeque<>();
@@ -70,15 +71,24 @@ public final class Menu {
 
   Menu(
       MenuStructure menuStructure,
-      ControlType controlType,
+      ControlType[] controlTypes,
       NodePosition initialPosition,
       ParameterMatcher parameterMatcher) {
 
     this.menuStructure = menuStructure;
-    this.controlType = controlType;
+    this.controlTypes = controlTypes;
     this.position = initialPosition;
     this.parameterMatcher = parameterMatcher;
     positionHistory.offer(position);
+    inputType =
+        (InputType)
+            Arrays.stream(controlTypes)
+                .filter(e -> e instanceof InputType)
+                .findFirst()
+                .orElse(InputType.ORDINAL);
+
+
+
     refreshOptions();
   }
 
@@ -96,7 +106,7 @@ public final class Menu {
     refreshOptions();
     printHeader();
     if (options.length != 0) {
-      switch (controlType) {
+      switch (inputType) {
         case ORDINAL:
         case ORDINAL_TRAILING_ZERO:
           printOrdinalMenu();
@@ -123,7 +133,7 @@ public final class Menu {
   }
 
   private void printOrdinalMenu() {
-    boolean trailingZero = controlType == ControlType.ORDINAL_TRAILING_ZERO;
+    boolean trailingZero = inputType == InputType.ORDINAL_TRAILING_ZERO;
 
     for (int i = trailingZero ? 1 : 0; i < options.length; i++) {
       printMenuEntry(menuStructure.get(options[i]), i);
@@ -149,16 +159,16 @@ public final class Menu {
    * node}, {@link Menu} navigates itself to this position. If it is a {@link Leaf leaf}, {@link
    * Menu} call its function, and according to the result, it navigates itself toward.
    *
-   * <p>The desired format of {@code input} depends on the {@link ControlType} of the {@link Menu}
+   * <p>The desired format of {@code input} depends on the {@link InputType} of the {@link Menu}
    * object:<br>
-   * {@link ControlType#NOMINAL} requires the exact name of the choosen option.<br>
-   * {@link ControlType#ORDINAL} and {@link ControlType#ORDINAL_TRAILING_ZERO} require a numeric
-   * string which is parsable with {@link Integer#parseInt(String)}.<br>
-   * {@link ControlType#PARAMETRIC} is more flexible (depends on the configuration of the {@link
+   * {@link InputType#NOMINAL} requires the exact name of the choosen option.<br>
+   * {@link InputType#ORDINAL} and {@link InputType#ORDINAL_TRAILING_ZERO} require a numeric string
+   * which is parsable with {@link Integer#parseInt(String)}.<br>
+   * {@link InputType#PARAMETRIC} is more flexible (depends on the configuration of the {@link
    * ParameterMatcher}).
    *
    * @param input the choice of the user, its desired format (single integer, alphanumeric text,
-   *     etc.) depends on {@link ControlType}
+   *     etc.) depends on {@link InputType}
    */
   public void chooseOption(String input) {
     if (input == null || input.isBlank()) {
@@ -173,7 +183,7 @@ public final class Menu {
       refreshOptions();
       positionHistory.offerFirst(position);
       try {
-        switch (controlType) {
+        switch (inputType) {
           case NOMINAL:
             Position nominal = getPositionByName(input);
             setMenuPosition(getValidatedPositionOrThrow(nominal), ProcessedInput.NULL);
@@ -218,7 +228,7 @@ public final class Menu {
   private Position getValidatedPositionOrThrow(Object choosenOption) {
     String notValid = "";
 
-    switch (controlType) {
+    switch (inputType) {
       case ORDINAL:
       case ORDINAL_TRAILING_ZERO:
         int ordinal = (Integer) choosenOption;

@@ -46,11 +46,18 @@ public class MenuStructureBuilder {
   private final Map<String, List<String>> leafLinks = new HashMap<>();
   private final Map<String, Function<ProcessedInput, Integer>> leafFunction = new HashMap<>();
   private MenuStructure menuStructure = new MenuStructure();
+  private String initialPosition = "root";
   private JSONObject rawMenuStructure;
 
   public MenuStructureBuilder setRawMenuStructure(JSONObject rawMenuStructure) {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
     this.rawMenuStructure = rawMenuStructure;
+    return this;
+  }
+
+  public MenuStructureBuilder setInitialPosition(String initialPosition) {
+    Util.assertNonNull("initialPosition", initialPosition);
+    this.initialPosition = initialPosition;
     return this;
   }
 
@@ -63,6 +70,7 @@ public class MenuStructureBuilder {
 
   public void clear() {
     rawMenuStructure = null;
+    initialPosition = "root";
     leafLinks.clear();
     leafFunction.clear();
     clearBuilt();
@@ -103,6 +111,8 @@ public class MenuStructureBuilder {
         leafPositions.stream()
             .map(LeafPosition::new)
             .collect(Collectors.toMap(Position::getName, Function.identity()));
+
+    menuStructure.setInitialPosition(nodeMap.get(initialPosition));
 
     nodePositions.forEach(
         e ->

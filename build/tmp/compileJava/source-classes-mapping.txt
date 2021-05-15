@@ -20,19 +20,21 @@ hu/zza/clim/parameter/ParameterPattern.java
  hu.zza.clim.parameter.ParameterPattern
 hu/zza/clim/parameter/ParameterMatcher.java
  hu.zza.clim.parameter.ParameterMatcher
-hu/zza/clim/menu/MenuEntry.java
- hu.zza.clim.menu.MenuEntry
- hu.zza.clim.menu.MenuEntry$Leaf
- hu.zza.clim.menu.MenuEntry$Node
+hu/zza/clim/InputType.java
+ hu.zza.clim.InputType
 hu/zza/clim/input/ProcessedInput.java
  hu.zza.clim.input.ProcessedInput
-hu/zza/clim/menu/MenuStructureBuilder.java
- hu.zza.clim.menu.MenuStructureBuilder
-hu/zza/clim/menu/MenuStructure.java
- hu.zza.clim.menu.MenuStructure
 hu/zza/clim/MenuBuilder.java
  hu.zza.clim.MenuBuilder
  hu.zza.clim.MenuBuilder$Leaf
 hu/zza/clim/Menu.java
  hu.zza.clim.Menu
  hu.zza.clim.Menu$1
+hu/zza/clim/menu/MenuStructure.java
+ hu.zza.clim.menu.MenuStructure
+hu/zza/clim/menu/MenuStructureBuilder.java
+ hu.zza.clim.menu.MenuStructureBuilder
+hu/zza/clim/menu/MenuEntry.java
+ hu.zza.clim.menu.MenuEntry
+ hu.zza.clim.menu.MenuEntry$Leaf
+ hu.zza.clim.menu.MenuEntry$Node

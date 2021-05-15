@@ -30,15 +30,20 @@ import java.util.HashMap;
 public final class MenuStructure {
 
   private final HashMap<Position, MenuEntry> menu = new HashMap<>();
+  private NodePosition initialPosition;
   private boolean finalized;
 
   public boolean isEmpty() {
     return menu.isEmpty();
   }
 
-  /** Sets {@link MenuStructure} finalized, so {@link MenuStructure#put} will be disabled. */
+  /**
+   * Sets {@link MenuStructure} finalized, so {@link MenuStructure#put} will be disabled. This
+   * method sets the initial (and fallback) position too.
+   */
   public void setFinalized() {
     finalized = true;
+    menu.put(null, menu.get(initialPosition));
   }
 
   /**
@@ -60,6 +65,10 @@ public final class MenuStructure {
 
   public MenuEntry get(Position position) {
     return menu.get(position);
+  }
+
+  public void setInitialPosition(NodePosition initialPosition) {
+    this.initialPosition = initialPosition;
   }
 
   public void clear() {

@@ -42,7 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MenuBuilder {
-  private ControlType controlType = ControlType.ORDINAL;
+  private InputType inputType = InputType.ORDINAL;
   private String initialPosition = "root";
   private String commandRegex = "\\s*(\\w+)\\s*";
   private JSONObject menuStructure = new JSONObject("{\"root\":\"\"}");
@@ -60,7 +60,7 @@ public class MenuBuilder {
 
     try {
       Menu menu =
-          new Menu(msb.build(), controlType, new NodePosition(initialPosition), parameterMatcher);
+          new Menu(msb.build(), new ControlType[]{inputType}, new NodePosition(initialPosition), parameterMatcher);
       menu.printShortLicence();
       return menu;
     } catch (Exception e) {
@@ -69,7 +69,7 @@ public class MenuBuilder {
   }
 
   public MenuBuilder clear() {
-    controlType = ControlType.ORDINAL;
+    inputType = InputType.ORDINAL;
     initialPosition = "root";
     commandRegex = "\\s*(\\w+)\\s*";
     menuStructure = new JSONObject("{\"root\":\"\"}");
@@ -81,9 +81,9 @@ public class MenuBuilder {
     return this;
   }
 
-  public MenuBuilder setControlType(ControlType controlType) {
-    Util.assertNonNull("controlType", controlType);
-    this.controlType = controlType;
+  public MenuBuilder setControlType(InputType inputType) {
+    Util.assertNonNull("controlType", inputType);
+    this.inputType = inputType;
     return this;
   }
 

@@ -21,7 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.ControlType;
+import hu.zza.clim.InputType;
 import hu.zza.clim.Menu;
 import hu.zza.clim.MenuBuilder;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class MenuBuilderTest {
 
     Menu menu =
         new MenuBuilder()
-            .setControlType(ControlType.NOMINAL)
+            .setControlType(InputType.NOMINAL)
             .setMenuStructure(menuStructure)
             .setLeaf("leaf1", a -> 0, "node2", "node3", "node1")  // node2  pibling
             .setLeaf("leaf2", a -> 1, "node3", "node4", "node1")  // node4  hidden top
