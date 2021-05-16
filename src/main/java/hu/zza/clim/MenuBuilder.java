@@ -41,7 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MenuBuilder {
-  private InputType inputType = InputType.ORDINAL;
+  private ClimOption[] climOptions = new ClimOption[0];
   private String initialPosition = "root";
   private String commandRegex = "\\s*(\\w+)\\s*";
   private JSONObject menuStructure = new JSONObject("{\"root\":\"\"}");
@@ -59,7 +59,7 @@ public class MenuBuilder {
 
     try {
       Menu menu =
-          new Menu(msb.build(), parameterMatcher, inputType);
+          new Menu(msb.build(), parameterMatcher, climOptions);
       menu.printShortLicence();
       return menu;
     } catch (Exception e) {
@@ -68,7 +68,7 @@ public class MenuBuilder {
   }
 
   public MenuBuilder clear() {
-    inputType = InputType.ORDINAL;
+    climOptions = new ClimOption[0];
     initialPosition = "root";
     commandRegex = "\\s*(\\w+)\\s*";
     menuStructure = new JSONObject("{\"root\":\"\"}");
@@ -80,9 +80,9 @@ public class MenuBuilder {
     return this;
   }
 
-  public MenuBuilder setControlType(InputType inputType) {
-    Util.assertNonNull("controlType", inputType);
-    this.inputType = inputType;
+  public MenuBuilder setClimOptions(ClimOption... climOptions) {
+    Util.assertNonNull("climOptions", climOptions);
+    this.climOptions = climOptions;
     return this;
   }
 

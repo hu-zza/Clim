@@ -46,11 +46,11 @@ public abstract class Position {
     return name;
   }
 
-  public static boolean existsBy(String name) {
+  public static boolean existsByName(String name) {
     return instances.containsKey(name);
   }
 
-  public static Position getBy(String name) {
+  public static Position getByName(String name) {
     return instances.get(name);
   }
 

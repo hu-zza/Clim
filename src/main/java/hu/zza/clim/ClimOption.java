@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 public interface ClimOption {
   Map<Class<? extends ClimOption>, ? extends ClimOption> DEFAULT_VALUES =
-      Map.of(InputType.class, InputType.ORDINAL);
+      Map.of(UserInterface.class, UserInterface.ORDINAL, NavigationMode.class, NavigationMode.BASIC);
 
   static Map<Class<? extends ClimOption>, ClimOption> getClimOptionMap(ClimOption... climOptions) {
     return getClimOptionMap(new HashSet<>(Arrays.asList(climOptions)));
