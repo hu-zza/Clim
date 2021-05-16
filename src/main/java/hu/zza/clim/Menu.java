@@ -44,6 +44,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 
 /** Represents the menu that the user can interact with: navigation, function calls, etc. */
 public final class Menu {
@@ -61,7 +62,7 @@ public final class Menu {
           "show liability");
 
   private final MenuStructure menuStructure;
-  private final ClimOptions[] climOptions;
+  private final Map<Class<? extends ClimOption>, ClimOption> climOptions;
   private final InputType inputType;
   private final ParameterMatcher parameterMatcher;
   private NodePosition position;
@@ -71,21 +72,16 @@ public final class Menu {
 
   Menu(
       MenuStructure menuStructure,
-      ClimOptions[] climOptions,
-      ParameterMatcher parameterMatcher) {
+      ParameterMatcher parameterMatcher,
+      ClimOption... climOptions) {
 
     this.menuStructure = menuStructure;
-    this.climOptions = climOptions;
     this.parameterMatcher = parameterMatcher;
-    position = menuStructure.get(null).select(ProcessedInput.NULL);
-    positionHistory.offer(position);
-    inputType =
-        (InputType)
-            Arrays.stream(climOptions)
-                .filter(e -> e instanceof InputType)
-                .findFirst()
-                .orElse(InputType.ORDINAL);
+    this.climOptions = ClimOption.getClimOptionMap(climOptions);
 
+    position = menuStructure.get(null).select(ProcessedInput.NULL);
+    inputType = (InputType) this.climOptions.get(InputType.class);
+    positionHistory.offer(position);
     refreshOptions();
   }
 

@@ -30,8 +30,8 @@ hu/zza/clim/menu/MenuStructure.java
  hu.zza.clim.menu.MenuStructure
 hu/zza/clim/InputType.java
  hu.zza.clim.InputType
-hu/zza/clim/ClimOptions.java
- hu.zza.clim.ClimOptions
+hu/zza/clim/ClimOption.java
+ hu.zza.clim.ClimOption
 hu/zza/clim/MenuBuilder.java
  hu.zza.clim.MenuBuilder
  hu.zza.clim.MenuBuilder$Leaf

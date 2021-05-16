@@ -59,7 +59,7 @@ public class MenuBuilder {
 
     try {
       Menu menu =
-          new Menu(msb.build(), new ClimOptions[]{inputType}, parameterMatcher);
+          new Menu(msb.build(), parameterMatcher, inputType);
       menu.printShortLicence();
       return menu;
     } catch (Exception e) {
