@@ -27,7 +27,6 @@ import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
 import static hu.zza.clim.menu.Message.INVALID_NONNULL_ARGUMENT;
 
 import hu.zza.clim.Menu;
-import hu.zza.clim.input.ProcessedInput;
 import java.util.function.Function;
 
 /**

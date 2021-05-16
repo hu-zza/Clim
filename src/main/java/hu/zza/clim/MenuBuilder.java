@@ -25,7 +25,7 @@ package hu.zza.clim;
 
 import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
 
-import hu.zza.clim.input.ProcessedInput;
+import hu.zza.clim.menu.ProcessedInput;
 import hu.zza.clim.menu.MenuStructureBuilder;
 import hu.zza.clim.menu.Util;
 import hu.zza.clim.parameter.Parameter;

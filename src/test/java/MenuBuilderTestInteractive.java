@@ -25,7 +25,7 @@ import hu.zza.clim.UserInterface;
 import hu.zza.clim.Menu;
 import hu.zza.clim.MenuBuilder;
 import hu.zza.clim.NavigationMode;
-import hu.zza.clim.input.ProcessedInput;
+import hu.zza.clim.menu.ProcessedInput;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,7 +45,7 @@ public class MenuBuilderTestInteractive {
 
       menu =
           new MenuBuilder()
-              .setClimOptions(UserInterface.ORDINAL_TRAILING_ZERO, NavigationMode.ARROWS)
+              .setClimOptions(UserInterface.NOMINAL, NavigationMode.ARROWS)
               .setMenuStructure(menuStructure)
               .setLeaf("leaf1", a -> 0, "node2", "node3", "node1") // node2  pibling
               .setLeaf("leaf2", a -> 1, "node3", "node4", "node1") // node4  hidden top

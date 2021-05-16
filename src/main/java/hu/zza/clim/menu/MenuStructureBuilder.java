@@ -23,7 +23,6 @@
 
 package hu.zza.clim.menu;
 
-import hu.zza.clim.input.ProcessedInput;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
 import java.util.ArrayList;

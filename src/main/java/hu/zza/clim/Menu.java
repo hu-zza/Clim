@@ -26,13 +26,15 @@ package hu.zza.clim;
 import static hu.zza.clim.menu.Message.GNU_GPL;
 import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
 
-import hu.zza.clim.input.ProcessedInput;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
 import hu.zza.clim.menu.MenuStructure;
 import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.NodePosition;
 import hu.zza.clim.menu.Position;
+import hu.zza.clim.menu.ProcessedInput;
+import hu.zza.clim.menu.component.InputProcessorService;
+import hu.zza.clim.menu.component.ParametricInputProcessor;
 import hu.zza.clim.menu.component.UserInterfaceService;
 import hu.zza.clim.parameter.ParameterMatcher;
 import java.util.ArrayDeque;
@@ -59,23 +61,27 @@ public final class Menu {
 
   private final MenuStructure menuStructure;
   private final Map<Class<? extends ClimOption>, ClimOption> climOptions;
-  private UserInterface inputType = UserInterface.NOMINAL;
   private final UserInterfaceService userInterfaceService;
-  private final ParameterMatcher parameterMatcher;
+  private final InputProcessorService inputProcessorService;
   private final Deque<NodePosition> positionHistory = new ArrayDeque<>();
   private NodePosition position;
-  private Position command;
   private Position[] options;
 
   Menu(MenuStructure menuStructure, ParameterMatcher parameterMatcher, ClimOption... climOptions) {
 
     this.menuStructure = menuStructure;
-    this.parameterMatcher = parameterMatcher;
     this.climOptions = ClimOption.getClimOptionMap(climOptions);
 
+    UserInterface ui = (UserInterface) this.climOptions.get(UserInterface.class);
+    userInterfaceService = UserInterfaceService.of(ui);
+
+    if (parameterMatcher != null) {
+      inputProcessorService = new ParametricInputProcessor(parameterMatcher);
+    } else {
+      inputProcessorService = InputProcessorService.of(ui);
+    }
+
     position = menuStructure.get(null).select(ProcessedInput.NULL);
-    userInterfaceService =
-        UserInterfaceService.of((UserInterface) this.climOptions.get(UserInterface.class));
     positionHistory.offer(position);
     refreshOptions();
   }
@@ -100,60 +106,9 @@ public final class Menu {
     }
   }
 
-
   private List<String> getDisplayableOptions() {
     return Arrays.stream(options).map(Position::getName).collect(Collectors.toList());
   }
-
-//  private void printOrdinalMenu() {
-//    boolean trailingZero = inputType == UserInterface.ORDINAL_TRAILING_ZERO;
-//
-//    for (int i = trailingZero ? 1 : 0; i < options.length; i++) {
-//      printMenuEntry(menuStructure.get(options[i]), i);
-//    }
-//
-//    if (trailingZero) {
-//      printMenuEntry(menuStructure.get(options[0]), 0);
-//    }
-//  }
-//
-//  private void printMenuEntry(MenuEntry menuEntry, Integer ordinal) {
-//    if (menuEntry != null) {
-//      if (ordinal != null) {
-//        System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(ordinal, menuEntry.getName()));
-//      } else {
-//        System.out.print(MENU_OPTION_DECORATOR.getMessage(menuEntry.getName()));
-//      }
-//    }
-//  }
-
-
-//    if ("<".equals(input)) {
-//      position = 0 < positionHistory.size() ? positionHistory.pollFirst() : position;
-//    } else
-
-//  switch (inputType) {
-//    case NOMINAL:
-//      Position nominal = getPositionByName(input);
-//      setMenuPosition(getValidatedPositionOrThrow(nominal), ProcessedInput.NULL);
-//      break;
-//
-//    case ORDINAL:
-//    case ORDINAL_TRAILING_ZERO:
-//      int ordinal = Integer.parseInt(input);
-//      setMenuPosition(getValidatedPositionOrThrow(ordinal), ProcessedInput.NULL);
-//      break;
-//
-//    case PARAMETRIC:
-//      extractAndUpdateCommandField(input);
-//      getValidatedPositionOrThrow(command);
-//      parameterMatcher.setText(input);
-//      setMenuPosition(command, parameterMatcher.processText(command));
-//      break;
-//
-//    default:
-//      break;
-//  }
 
   /**
    * Choose an option from the {@link Menu#listOptions available ones}. If it is a {@link Node
@@ -186,36 +141,17 @@ public final class Menu {
 
   private void tryToChooseAnOption(String input) {
     try {
-      Position choosenPosition = userInterfaceService.chooseOption(input, options);
-      setMenuPosition(choosenPosition, null); // todo implement parameterMatcher service
+      setMenuPosition(inputProcessorService.process(input));
     } catch (Exception e) {
       positionHistory.pollFirst();
       warnAboutInput(input, e);
     }
   }
 
-  private void setMenuPosition(Position key, ProcessedInput parameterMap) {
-    position = menuStructure.get(key).select(parameterMap);
+  private void setMenuPosition(ProcessedInput processedInput) {
+    Position choosenPosition = userInterfaceService.chooseOption(processedInput, options);
+    position = menuStructure.get(choosenPosition).select(processedInput);
   }
-
-//  private Position getPositionByName(String name) {
-//    if (Position.existsBy(name)) {
-//      return Position.getBy(name);
-//    } else {
-//      throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(name));
-//    }
-//  }
-//
-//
-//
-//  private void extractAndUpdateCommandField(String commandString) {
-//    parameterMatcher
-//        .getCommandRegex()
-//        .matcher(commandString)
-//        .results()
-//        .findFirst()
-//        .ifPresent(m -> command = getPositionByName(m.group(1)));
-//  }
 
   private static void warnAboutInput(String input, Exception e) {
     System.err.print(PROCESSING_FAILED.getMessage(input, e.getMessage()));

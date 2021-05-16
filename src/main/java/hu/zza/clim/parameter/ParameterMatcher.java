@@ -27,8 +27,8 @@ import static hu.zza.clim.menu.Message.INVALID_ARGUMENT;
 import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
 import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_FIELD;
 
-import hu.zza.clim.input.ProcessedInput;
 import hu.zza.clim.menu.Position;
+import hu.zza.clim.menu.ProcessedInput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

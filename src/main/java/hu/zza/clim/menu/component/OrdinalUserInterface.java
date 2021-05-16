@@ -24,29 +24,14 @@
 package hu.zza.clim.menu.component;
 
 import static hu.zza.clim.menu.Message.MENU_ORDINAL_OPTION_DECORATOR;
-import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
-import hu.zza.clim.menu.Position;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class OrdinalUserInterface implements UserInterfaceService {
+public class OrdinalUserInterface extends AbstractOrdinalUserInterface {
   public void printOptionList(List<String> options) {
     IntStream.range(0, options.size())
         .forEach(
             e -> System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(e, options.get(e))));
-  }
-
-  public Position chooseOption(String input, Position[] options) {
-    return getValidatedPositionOrThrow(parseInputIntoPosition(input, options), options);
-  }
-
-  public Position parseInputIntoPosition(String input, Position[] options) {
-    int ordinal = Integer.parseInt(input);
-
-    if (0 <= ordinal && ordinal < options.length) {
-      return options[ordinal];
-    }
-    throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
   }
 }

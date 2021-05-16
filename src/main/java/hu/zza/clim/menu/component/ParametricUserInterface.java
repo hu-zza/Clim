@@ -24,5 +24,12 @@
 package hu.zza.clim.menu.component;
 
 public class ParametricUserInterface implements UserInterfaceService {
-
+//  private void extractAndUpdateCommandField(String commandString) {
+//    parameterMatcher
+//        .getCommandRegex()
+//        .matcher(commandString)
+//        .results()
+//        .findFirst()
+//        .ifPresent(m -> command = getPositionByName(m.group(1)));
+//  }
 }

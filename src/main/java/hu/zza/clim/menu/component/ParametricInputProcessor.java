@@ -23,16 +23,17 @@
 
 package hu.zza.clim.menu.component;
 
-import static hu.zza.clim.menu.Message.MENU_ORDINAL_OPTION_DECORATOR;
+import hu.zza.clim.menu.ProcessedInput;
+import hu.zza.clim.parameter.ParameterMatcher;
 
-import java.util.List;
-import java.util.stream.IntStream;
+public class ParametricInputProcessor implements InputProcessorService {
+  private ParameterMatcher parameterMatcher;
 
-public class OrdinalTrailingZeroUserInterface extends AbstractOrdinalUserInterface {
-  public void printOptionList(List<String> options) {
-    IntStream.range(1, options.size())
-        .forEach(
-            e -> System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(e, options.get(e))));
-    System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(0, options.get(0)));
+  public ParametricInputProcessor(ParameterMatcher parameterMatcher) {
+    this.parameterMatcher = parameterMatcher;
+  }
+
+  public ProcessedInput process(String input) {
+    return new ProcessedInput(input);
   }
 }

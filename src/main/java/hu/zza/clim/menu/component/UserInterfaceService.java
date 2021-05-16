@@ -31,6 +31,7 @@ import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 import hu.zza.clim.UserInterface;
 import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.Position;
+import hu.zza.clim.menu.ProcessedInput;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,13 +65,13 @@ public interface UserInterfaceService {
     options.forEach(e -> System.out.print(MENU_OPTION_DECORATOR.getMessage(e)));
   }
 
-  default Position chooseOption(String input, Position[] options) {
+  default Position chooseOption(ProcessedInput input, Position[] options) {
     return getValidatedPositionOrThrow(parseInputIntoPosition(input), options);
   }
 
-  default Position parseInputIntoPosition(String input) {
-    if (Position.existsByName(input)) {
-      return Position.getByName(input);
+  default Position parseInputIntoPosition(ProcessedInput input) {
+    if (Position.existsByName(input.getCommandString())) {
+      return Position.getByName(input.getCommandString());
     }
     throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
   }
