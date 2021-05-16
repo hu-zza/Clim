@@ -41,26 +41,14 @@ public interface UserInterfaceService {
       case NOMINAL:
         return new NominalUserInterface();
       case ORDINAL:
+        return new OrdinalUserInterface();
       case ORDINAL_TRAILING_ZERO:
+        return new OrdinalTrailingZeroUserInterface();
       case PARAMETRIC:
+        return new ParametricUserInterface();
       default:
         throw new IllegalArgumentException();
     }
-  }
-
-  default void printOptionList(List<String> options) {
-    options.forEach(e -> System.out.print(MENU_OPTION_DECORATOR.getMessage(e)));
-  }
-
-  default Position chooseOption(String input, Position[] options) {
-    return getValidatedPositionOrThrow(getPositionByName(input), options);
-  }
-
-  default Position getValidatedPositionOrThrow(Position position, Position[] options) {
-    if (Arrays.asList(options).contains(position)) {
-      return position;
-    }
-    throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage(position.getName()));
   }
 
   /** Prints a short licence information about clim. */
@@ -72,11 +60,25 @@ public interface UserInterfaceService {
     System.out.print(MENU_POSITION_DECORATOR.getMessage(currentPosition));
   }
 
-  default Position getPositionByName(String name) {
-    if (Position.existsByName(name)) {
-      return Position.getByName(name);
-    } else {
-      throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(name));
+  default void printOptionList(List<String> options) {
+    options.forEach(e -> System.out.print(MENU_OPTION_DECORATOR.getMessage(e)));
+  }
+
+  default Position chooseOption(String input, Position[] options) {
+    return getValidatedPositionOrThrow(parseInputIntoPosition(input), options);
+  }
+
+  default Position parseInputIntoPosition(String input) {
+    if (Position.existsByName(input)) {
+      return Position.getByName(input);
     }
+    throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
+  }
+
+  default Position getValidatedPositionOrThrow(Position position, Position[] options) {
+    if (Arrays.asList(options).contains(position)) {
+      return position;
+    }
+    throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage(position.getName()));
   }
 }

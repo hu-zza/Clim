@@ -45,7 +45,7 @@ public class MenuBuilderTestInteractive {
 
       menu =
           new MenuBuilder()
-              .setClimOptions(UserInterface.NOMINAL, NavigationMode.ARROWS)
+              .setClimOptions(UserInterface.ORDINAL_TRAILING_ZERO, NavigationMode.ARROWS)
               .setMenuStructure(menuStructure)
               .setLeaf("leaf1", a -> 0, "node2", "node3", "node1") // node2  pibling
               .setLeaf("leaf2", a -> 1, "node3", "node4", "node1") // node4  hidden top

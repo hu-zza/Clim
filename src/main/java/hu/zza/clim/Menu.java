@@ -207,34 +207,6 @@ public final class Menu {
 //  }
 //
 //
-//  private Position getValidatedPositionOrThrow(Object choosenOption) {
-//    String notValid = "";
-//
-//    switch (inputType) {
-//      case ORDINAL:
-//      case ORDINAL_TRAILING_ZERO:
-//        int ordinal = (Integer) choosenOption;
-//
-//        if (0 <= ordinal || ordinal < options.length) {
-//          return options[ordinal];
-//        } else {
-//          notValid = String.valueOf(ordinal);
-//        }
-//        break;
-//
-//      case NOMINAL:
-//      case PARAMETRIC:
-//        Position nominal = (Position) choosenOption;
-//        if (Arrays.asList(options).contains(nominal)) {
-//          return nominal;
-//        } else {
-//          notValid = String.valueOf(nominal);
-//        }
-//        break;
-//    }
-//
-//    throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage(notValid));
-//  }
 //
 //  private void extractAndUpdateCommandField(String commandString) {
 //    parameterMatcher
