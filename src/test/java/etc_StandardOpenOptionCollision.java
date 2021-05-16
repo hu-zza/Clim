@@ -21,8 +21,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
-public interface ControlType {
+public class etc_StandardOpenOptionCollision {
+  public static void main(String[] args) throws IOException {
+    Path structurePath = Path.of("src", "test", "resources", "MenuStructure2.txt");
+    BufferedWriter writer =
+        Files.newBufferedWriter(
+            structurePath,
+            StandardOpenOption.APPEND,
+            StandardOpenOption.TRUNCATE_EXISTING);
 
+    writer.write("...");
+  }
 }

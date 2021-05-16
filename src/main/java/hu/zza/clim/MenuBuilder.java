@@ -27,7 +27,6 @@ import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
 
 import hu.zza.clim.input.ProcessedInput;
 import hu.zza.clim.menu.MenuStructureBuilder;
-import hu.zza.clim.menu.NodePosition;
 import hu.zza.clim.menu.Util;
 import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterMatcher;
@@ -60,7 +59,7 @@ public class MenuBuilder {
 
     try {
       Menu menu =
-          new Menu(msb.build(), new ControlType[]{inputType}, new NodePosition(initialPosition), parameterMatcher);
+          new Menu(msb.build(), new ClimOptions[]{inputType}, parameterMatcher);
       menu.printShortLicence();
       return menu;
     } catch (Exception e) {

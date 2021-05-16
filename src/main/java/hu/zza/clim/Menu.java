@@ -61,7 +61,7 @@ public final class Menu {
           "show liability");
 
   private final MenuStructure menuStructure;
-  private final ControlType[] controlTypes;
+  private final ClimOptions[] climOptions;
   private final InputType inputType;
   private final ParameterMatcher parameterMatcher;
   private NodePosition position;
@@ -71,23 +71,20 @@ public final class Menu {
 
   Menu(
       MenuStructure menuStructure,
-      ControlType[] controlTypes,
-      NodePosition initialPosition,
+      ClimOptions[] climOptions,
       ParameterMatcher parameterMatcher) {
 
     this.menuStructure = menuStructure;
-    this.controlTypes = controlTypes;
-    this.position = initialPosition;
+    this.climOptions = climOptions;
     this.parameterMatcher = parameterMatcher;
+    position = menuStructure.get(null).select(ProcessedInput.NULL);
     positionHistory.offer(position);
     inputType =
         (InputType)
-            Arrays.stream(controlTypes)
+            Arrays.stream(climOptions)
                 .filter(e -> e instanceof InputType)
                 .findFirst()
                 .orElse(InputType.ORDINAL);
-
-
 
     refreshOptions();
   }
