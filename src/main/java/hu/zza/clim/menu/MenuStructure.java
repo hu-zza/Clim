@@ -33,17 +33,10 @@ public final class MenuStructure {
   private NodePosition initialPosition;
   private boolean finalized;
 
-  public boolean isEmpty() {
-    return menu.isEmpty();
-  }
-
-  /**
-   * Sets {@link MenuStructure} finalized, so {@link MenuStructure#put} will be disabled. This
-   * method sets the initial (and fallback) position too.
-   */
-  public void setFinalized() {
-    finalized = true;
-    menu.put(null, menu.get(initialPosition));
+  public void setInitialPosition(NodePosition initialPosition) {
+    if (!finalized) {
+      this.initialPosition = initialPosition;
+    }
   }
 
   /**
@@ -67,11 +60,26 @@ public final class MenuStructure {
     return menu.get(position);
   }
 
-  public void setInitialPosition(NodePosition initialPosition) {
-    this.initialPosition = initialPosition;
+  public boolean isFinalized() {
+    return finalized;
+  }
+
+  /**
+   * Sets {@link MenuStructure} finalized, so {@link MenuStructure#put} will be disabled. This
+   * method sets the initial (and fallback) position too.
+   */
+  public void setFinalized() {
+    finalized = true;
+    menu.put(null, menu.get(initialPosition));
+  }
+
+  public boolean isEmpty() {
+    return menu.isEmpty();
   }
 
   public void clear() {
-    menu.clear();
+    if (!finalized) {
+      menu.clear();
+    }
   }
 }

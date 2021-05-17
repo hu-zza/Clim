@@ -23,4 +23,4 @@
 
 package hu.zza.clim.menu.component.ui;
 
-public class StandardUserInterface implements UserInterfaceService {}
+public final class StandardUserInterface implements UserInterfaceService {}

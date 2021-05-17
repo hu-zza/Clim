@@ -23,6 +23,7 @@
 
 import hu.zza.clim.Menu;
 import hu.zza.clim.MenuBuilder;
+import hu.zza.clim.MenuStructureBuilder;
 import hu.zza.clim.NavigationMode;
 import hu.zza.clim.UserInterface;
 import hu.zza.clim.menu.ProcessedInput;
@@ -40,15 +41,11 @@ public class MenuBuilderTestInteractive {
     try {
       Path structurePath = Path.of("src", "test", "resources", "MenuStructure.txt");
 
-      String menuStructure = String.join("", Files.readAllLines(structurePath));
+      String rawMenuStructure = String.join("", Files.readAllLines(structurePath));
 
-      final String dottedDate = "\\d{4}.\\d{2}.\\d{2}";
-
-      menu =
-          new MenuBuilder()
-              .setClimOptions(UserInterface.ORDINAL, NavigationMode.ARROWS)
-              .setCommandRegex("^(?:" + dottedDate + "\\s)?(\\w+)\\b")
-              .setMenuStructure(menuStructure)
+      var menuStructure =
+          new MenuStructureBuilder()
+              .setRawMenuStructure(rawMenuStructure)
               .setInitialPosition("node4")
               .setLeaf("leaf1", a -> 0, "node2", "node3", "node1") // node2  pibling
               .setLeaf("leaf2", a -> 1, "node3", "node4", "node1") // node4  hidden top
@@ -58,12 +55,20 @@ public class MenuBuilderTestInteractive {
               .setLeaf("leaf6", a -> 2, "node4", "node7", "node9") // node9  hidden bottom
               .setLeaf("leaf7", a -> 0, "root", "node3", "node1") // root   parent
               .setLeaf("leaf8", a -> 1, "node2", "root", "node1") // root   great-grandparent
-              .setLeaf(
-                  "leaf9", a -> 2, "root", "node3", "node10") // node10 first-cousin once removed
+              .setLeaf("leaf9", a -> 2, "root", "root", "node10") // node10 first-cousin o. r.
               .setLeaf("leaf10", a -> 0, "node5", "root", "node1") // node5  pibling
               .setLeaf("leaf11", a -> 1, "node2", "node3", "root") // node3  visible bottom
               .setLeaf("leaf12", a -> 2, "node2", "root", "node5") // node5  pibling
               .build();
+
+      final String dottedDate = "\\d{4}.\\d{2}.\\d{2}";
+
+      menu =
+          new MenuBuilder()
+              .setMenuStructure(menuStructure)
+              .setClimOptions(UserInterface.ORDINAL, NavigationMode.ARROWS)
+              .build();
+
     } catch (Exception e) {
       System.err.println(e.getMessage());
     }

@@ -27,7 +27,7 @@ import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
 import hu.zza.clim.parameter.ParameterMatcher;
 
-public class ParametricInputProcessor implements InputProcessorService {
+public final class ParametricInputProcessor implements InputProcessorService {
   private final ParameterMatcher parameterMatcher;
 
   public ParametricInputProcessor(ParameterMatcher parameterMatcher) {

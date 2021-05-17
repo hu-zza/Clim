@@ -21,10 +21,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim.menu;
+package hu.zza.clim;
 
+import hu.zza.clim.menu.LeafPosition;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
+import hu.zza.clim.menu.MenuStructure;
+import hu.zza.clim.menu.NodePosition;
+import hu.zza.clim.menu.Position;
+import hu.zza.clim.menu.ProcessedInput;
+import hu.zza.clim.menu.Util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,15 +44,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MenuStructureBuilder {
+public final class MenuStructureBuilder {
+  private JSONObject rawMenuStructure = new JSONObject("{\"root\":\"\"}");
+  private String initialPosition = "root";
+  private MenuStructure menuStructure = new MenuStructure();
+
   private final Set<String> nodePositions = new HashSet<>();
   private final Set<String> leafPositions = new HashSet<>();
   private final Map<String, List<String>> nodeLinks = new HashMap<>();
   private final Map<String, List<String>> leafLinks = new HashMap<>();
   private final Map<String, Function<ProcessedInput, Integer>> leafFunction = new HashMap<>();
-  private MenuStructure menuStructure = new MenuStructure();
-  private String initialPosition = "root";
-  private JSONObject rawMenuStructure;
+
+
+  public MenuStructureBuilder setRawMenuStructure(String rawMenuStructure) throws JSONException {
+    Util.assertNonNull("rawMenuStructure", rawMenuStructure);
+    return setRawMenuStructure(new JSONObject(rawMenuStructure));
+  }
 
   public MenuStructureBuilder setRawMenuStructure(JSONObject rawMenuStructure) {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
@@ -62,13 +75,14 @@ public class MenuStructureBuilder {
 
   public MenuStructureBuilder setLeaf(
       String name, Function<ProcessedInput, Integer> function, String... links) {
+    Util.assertNonNull(Map.of("name", name, "function", function, "links", links));
     leafFunction.put(name, function);
     leafLinks.put(name, Arrays.asList(links));
     return this;
   }
 
   public void clear() {
-    rawMenuStructure = null;
+    rawMenuStructure = new JSONObject("{\"root\":\"\"}");
     initialPosition = "root";
     leafLinks.clear();
     leafFunction.clear();
@@ -91,11 +105,6 @@ public class MenuStructureBuilder {
   }
 
   private void findAllNodesAndLeaves() {
-    if (rawMenuStructure == null) {
-      throw new IllegalStateException(
-          Message.INVALID_STATE.getMessage(
-              "MenuStructureBuilder#build", "RawMenuStructure can not be null."));
-    }
     extractNodesAndLeavesFrom(rawMenuStructure);
     leafPositions.removeAll(nodePositions);
   }

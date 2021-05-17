@@ -28,7 +28,7 @@ import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
 
-public class NominalInputProcessor implements InputProcessorService {
+public final class NominalInputProcessor implements InputProcessorService {
 
   @Override
   public ProcessedInput process(String input, Position[] options) {

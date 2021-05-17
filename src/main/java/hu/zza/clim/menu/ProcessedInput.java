@@ -28,7 +28,7 @@ import hu.zza.clim.parameter.ParameterName;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProcessedInput {
+public final class ProcessedInput {
 
   public static final ProcessedInput NULL = new ProcessedInput(null);
   private final Position position;

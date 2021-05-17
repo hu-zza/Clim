@@ -25,60 +25,42 @@ package hu.zza.clim;
 
 import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
 
-import hu.zza.clim.menu.ProcessedInput;
-import hu.zza.clim.menu.MenuStructureBuilder;
+import hu.zza.clim.menu.MenuStructure;
 import hu.zza.clim.menu.Util;
-import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterMatcher;
-import hu.zza.clim.parameter.ParameterName;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-public class MenuBuilder {
-  private JSONObject menuStructure = new JSONObject("{\"root\":\"\"}");
-  private String initialPosition = "root";
-  private final Set<Leaf> leaves = new HashSet<>();
+public final class MenuBuilder {
+  private static final List<UserInterface> hasParameterMatcherDependency =
+      List.of(UserInterface.PARAMETRIC);
 
+  private MenuStructure menuStructure = new MenuStructure();
+  private ParameterMatcher parameterMatcher;
   private ClimOption[] climOptions = new ClimOption[0];
 
-  private String commandRegex = "\\s*(\\w+)\\s*";
-  private Class<? extends ParameterName> parameterNameEnum;
-  private final Map<String, List<ParameterName>> parameterNameMap = new HashMap<>();
-  private final Map<String, List<Parameter>> parameterMap = new HashMap<>();
-  private final Map<String, String> delimiterMap = new HashMap<>();
-  private ParameterMatcher parameterMatcher;
-
   public Menu build() {
-    MenuStructureBuilder msb = new MenuStructureBuilder().setRawMenuStructure(menuStructure).setInitialPosition(initialPosition);
-
-    leaves.forEach(e -> msb.setLeaf(e.name, e.function, e.links));
-
     try {
-      Menu menu =
-          new Menu(msb.build(), parameterMatcher, climOptions);
-      menu.printShortLicence();
-      return menu;
+      return buildMenu();
     } catch (Exception e) {
       throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()));
     }
   }
 
-  public MenuBuilder clear() {
-    menuStructure = new JSONObject("{\"root\":\"\"}");
-    initialPosition = "root";
-    leaves.clear();
-    climOptions = new ClimOption[0];
-    commandRegex = "\\s*(\\w+)\\s*";
-    parameterNameEnum = null;
-    parameterNameMap.clear();
-    parameterMap.clear();
-    delimiterMap.clear();
+  private Menu buildMenu() {
+    checkParametersBeforeBuild();
+    return new Menu(menuStructure, parameterMatcher, climOptions);
+  }
+
+  public MenuBuilder setMenuStructure(MenuStructure menuStructure) {
+    Util.assertNonNull("menuStructure", menuStructure);
+    this.menuStructure = menuStructure;
+    return this;
+  }
+
+  public MenuBuilder setParameterMatcher(ParameterMatcher parameterMatcher) {
+    Util.assertNonNull("parameterMatcher", parameterMatcher);
+    this.parameterMatcher = parameterMatcher;
     return this;
   }
 
@@ -88,86 +70,36 @@ public class MenuBuilder {
     return this;
   }
 
-  // TODO: 2021. 05. 09. check validity at build()
-  public MenuBuilder setInitialPosition(String initialPosition) {
-    Util.assertNonNull("initialPosition", initialPosition);
-    this.initialPosition = initialPosition;
+  public MenuBuilder clear() {
+    menuStructure = new MenuStructure();
+    parameterMatcher = null;
+    climOptions = new ClimOption[0];
     return this;
   }
 
-  public MenuBuilder setCommandRegex(String commandRegex) {
-    Util.assertNonNull("commandRegex", commandRegex);
-    this.commandRegex = commandRegex;
-    return this;
+  private void checkParametersBeforeBuild() {
+    checkMenuStructure();
+    checkParameterMatcher();
   }
 
-  public MenuBuilder setMenuStructure(String menuStructureJSON) throws JSONException {
-    Util.assertNonNull("menuStructureJSON", menuStructureJSON);
-    this.menuStructure = new JSONObject(menuStructureJSON);
-    return this;
-  }
-
-  public MenuBuilder setMenuStructure(JSONObject menuStructure) {
-    Util.assertNonNull("menuStructure", menuStructure);
-    this.menuStructure = menuStructure;
-    return this;
-  }
-
-  public MenuBuilder setParameterNameEnum(Class<? extends ParameterName> parameterNameEnum) {
-    Util.assertNonNull("parameterNameEnum", parameterNameEnum);
-    this.parameterNameEnum = parameterNameEnum;
-    return this;
-  }
-
-  public MenuBuilder setLeaf(
-      String name, Function<ProcessedInput, Integer> function, String... links) {
-
-    Util.assertNonNull(Map.of("name", name, "function", function, "links", links));
-
-    leaves.add(new Leaf(name, function, links));
-    return this;
-  }
-
-  public MenuBuilder setLeafParameters(
-      String leafName,
-      String delimiter,
-      List<ParameterName> parameterNames,
-      List<Parameter> parameters) {
-
-    Util.assertNonNull(
-        Map.of(
-            "leafName",
-            leafName,
-            "delimiter",
-            delimiter,
-            "parameterNames",
-            parameterNames,
-            "parameters",
-            parameters));
-
-    parameterNameMap.put(leafName, parameterNames);
-    parameterMap.put(leafName, parameters);
-    delimiterMap.put(leafName, delimiter);
-    return this;
-  }
-
-  public MenuBuilder clearLeafParameters(String leafName) {
-    Util.assertNonNull("leafName", leafName);
-    parameterNameMap.remove(leafName);
-    parameterMap.remove(leafName);
-    delimiterMap.remove(leafName);
-    return this;
-  }
-
-  private static class Leaf {
-    private final String name;
-    private final Function<ProcessedInput, Integer> function;
-    private final String[] links;
-
-    public Leaf(String name, Function<ProcessedInput, Integer> function, String[] links) {
-      this.name = name;
-      this.function = function;
-      this.links = links.clone();
+  private void checkMenuStructure() {
+    if (menuStructure.isEmpty()) {
+      throw new IllegalStateException("'menuStructure' is empty!");
     }
+
+    if (!menuStructure.isFinalized()) {
+      throw new IllegalStateException("'menuStructure' isn't finalized!");
+    }
+  }
+
+  private void checkParameterMatcher() {
+    if (parameterMatcher == null && isParameterMatcherRequired()) {
+      throw new IllegalStateException("'parameterMatcher' is required, but it is null!");
+    }
+  }
+
+  private boolean isParameterMatcherRequired() {
+    return Arrays.stream(climOptions)
+        .anyMatch(hasParameterMatcherDependency::contains);
   }
 }
