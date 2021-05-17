@@ -50,7 +50,7 @@ public enum Message {
   INVALID_POSITION,
   NO_OPTIONS,
 
-  SHORT_LICENCE,
+  SHORT_LICENSE,
   GNU_GPL;
 
   private final String message;

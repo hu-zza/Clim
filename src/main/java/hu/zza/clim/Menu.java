@@ -26,7 +26,7 @@ package hu.zza.clim;
 import static hu.zza.clim.menu.Message.GNU_GPL;
 import static hu.zza.clim.menu.Message.INVALID_POSITION;
 import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
-import static hu.zza.clim.menu.Message.SHORT_LICENCE;
+import static hu.zza.clim.menu.Message.SHORT_LICENSE;
 
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
@@ -53,12 +53,15 @@ public final class Menu {
   private static final List<String> licenseCommands =
       List.of(
           "license",
+          "licence",
           "warranty",
           "liability",
           "about license",
+          "about licence",
           "about warranty",
           "about liability",
           "show license",
+          "show licence",
           "show warranty",
           "show liability");
 
@@ -129,7 +132,7 @@ public final class Menu {
     if (consoleInput == null || consoleInput.isBlank()) {
       System.out.println();
     } else if (licenseCommands.contains(consoleInput.toLowerCase())) {
-      printLicence();
+      printLicense();
     } else {
       positionHistory.offerFirst(position);
       tryToChooseAnOption(consoleInput);
@@ -137,8 +140,8 @@ public final class Menu {
     refreshOptions();
   }
 
-  /** Prints the full licence information about clim. */
-  public void printLicence() {
+  /** Prints the full license information about clim. */
+  public void printLicense() {
     System.out.println(GNU_GPL.getMessage());
   }
 
@@ -168,8 +171,8 @@ public final class Menu {
     throw new IllegalArgumentException(INVALID_POSITION.getMessage(position.getName()));
   }
 
-  /** Prints a short licence information about clim. */
-  public void printShortLicence() {
-    System.out.println(SHORT_LICENCE.getMessage());
+  /** Prints short license information about clim. */
+  public void printShortLicense() {
+    System.out.println(SHORT_LICENSE.getMessage());
   }
 }
