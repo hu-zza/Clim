@@ -41,19 +41,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MenuBuilder {
-  private ClimOption[] climOptions = new ClimOption[0];
-  private String initialPosition = "root";
-  private String commandRegex = "\\s*(\\w+)\\s*";
   private JSONObject menuStructure = new JSONObject("{\"root\":\"\"}");
-  private Class<? extends ParameterName> parameterNameEnum;
+  private String initialPosition = "root";
   private final Set<Leaf> leaves = new HashSet<>();
+
+  private ClimOption[] climOptions = new ClimOption[0];
+
+  private String commandRegex = "\\s*(\\w+)\\s*";
+  private Class<? extends ParameterName> parameterNameEnum;
   private final Map<String, List<ParameterName>> parameterNameMap = new HashMap<>();
   private final Map<String, List<Parameter>> parameterMap = new HashMap<>();
   private final Map<String, String> delimiterMap = new HashMap<>();
   private ParameterMatcher parameterMatcher;
 
   public Menu build() {
-    MenuStructureBuilder msb = new MenuStructureBuilder().setRawMenuStructure(menuStructure);
+    MenuStructureBuilder msb = new MenuStructureBuilder().setRawMenuStructure(menuStructure).setInitialPosition(initialPosition);
 
     leaves.forEach(e -> msb.setLeaf(e.name, e.function, e.links));
 
@@ -68,12 +70,12 @@ public class MenuBuilder {
   }
 
   public MenuBuilder clear() {
-    climOptions = new ClimOption[0];
-    initialPosition = "root";
-    commandRegex = "\\s*(\\w+)\\s*";
     menuStructure = new JSONObject("{\"root\":\"\"}");
-    parameterNameEnum = null;
+    initialPosition = "root";
     leaves.clear();
+    climOptions = new ClimOption[0];
+    commandRegex = "\\s*(\\w+)\\s*";
+    parameterNameEnum = null;
     parameterNameMap.clear();
     parameterMap.clear();
     delimiterMap.clear();

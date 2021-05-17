@@ -54,8 +54,8 @@ hu/zza/clim/menu/MenuStructure.java
 hu/zza/clim/menu/component/in/InputProcessorService.java
  hu.zza.clim.menu.component.in.InputProcessorService
  hu.zza.clim.menu.component.in.InputProcessorService$1
+hu/zza/clim/Menu.java
+ hu.zza.clim.Menu
 hu/zza/clim/MenuBuilder.java
  hu.zza.clim.MenuBuilder
  hu.zza.clim.MenuBuilder$Leaf
-hu/zza/clim/Menu.java
- hu.zza.clim.Menu

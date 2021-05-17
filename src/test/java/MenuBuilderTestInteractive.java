@@ -42,20 +42,24 @@ public class MenuBuilderTestInteractive {
 
       String menuStructure = String.join("", Files.readAllLines(structurePath));
 
+      final String dottedDate = "\\d{4}.\\d{2}.\\d{2}";
+
       menu =
           new MenuBuilder()
-              .setClimOptions(UserInterface.PARAMETRIC, NavigationMode.ARROWS)
+              .setClimOptions(UserInterface.ORDINAL, NavigationMode.ARROWS)
+              .setCommandRegex("^(?:" + dottedDate + "\\s)?(\\w+)\\b")
               .setMenuStructure(menuStructure)
+              .setInitialPosition("node4")
               .setLeaf("leaf1", a -> 0, "node2", "node3", "node1") // node2  pibling
               .setLeaf("leaf2", a -> 1, "node3", "node4", "node1") // node4  hidden top
               .setLeaf("leaf3", a -> 2, "node2", "node3", "node1") // node1  pibling
-              .setLeaf("leaf4", a -> 0, "root", "node1", "node2")  // root   great-grandparent
+              .setLeaf("leaf4", a -> 0, "root", "node1", "node2") // root   great-grandparent
               .setLeaf("leaf5", a -> 1, "node2", "node3", "node1") // node3  sibling
               .setLeaf("leaf6", a -> 2, "node4", "node7", "node9") // node9  hidden bottom
-              .setLeaf("leaf7", a -> 0, "root", "node3", "node1")  // root   parent
-              .setLeaf("leaf8", a -> 1, "node2", "root", "node1")  // root   great-grandparent
+              .setLeaf("leaf7", a -> 0, "root", "node3", "node1") // root   parent
+              .setLeaf("leaf8", a -> 1, "node2", "root", "node1") // root   great-grandparent
               .setLeaf(
-                  "leaf9", a -> 2, "root", "node3", "node10")      // node10 first-cousin once removed
+                  "leaf9", a -> 2, "root", "node3", "node10") // node10 first-cousin once removed
               .setLeaf("leaf10", a -> 0, "node5", "root", "node1") // node5  pibling
               .setLeaf("leaf11", a -> 1, "node2", "node3", "root") // node3  visible bottom
               .setLeaf("leaf12", a -> 2, "node2", "root", "node5") // node5  pibling
