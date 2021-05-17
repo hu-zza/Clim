@@ -28,7 +28,7 @@ import static hu.zza.clim.menu.Message.MENU_ORDINAL_OPTION_DECORATOR;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class OrdinalTrailingZeroUserInterface extends AbstractOrdinalUserInterface {
+public class OrdinalTrailingZeroUserInterface implements UserInterfaceService {
   @Override
   public void printOptionList(List<String> options) {
     IntStream.range(1, options.size())

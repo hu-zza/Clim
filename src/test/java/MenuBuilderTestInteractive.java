@@ -21,12 +21,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.UserInterface;
 import hu.zza.clim.Menu;
 import hu.zza.clim.MenuBuilder;
 import hu.zza.clim.NavigationMode;
+import hu.zza.clim.UserInterface;
 import hu.zza.clim.menu.ProcessedInput;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Scanner;
@@ -45,7 +44,7 @@ public class MenuBuilderTestInteractive {
 
       menu =
           new MenuBuilder()
-              .setClimOptions(UserInterface.NOMINAL, NavigationMode.ARROWS)
+              .setClimOptions(UserInterface.PARAMETRIC, NavigationMode.ARROWS)
               .setMenuStructure(menuStructure)
               .setLeaf("leaf1", a -> 0, "node2", "node3", "node1") // node2  pibling
               .setLeaf("leaf2", a -> 1, "node3", "node4", "node1") // node4  hidden top
@@ -61,8 +60,8 @@ public class MenuBuilderTestInteractive {
               .setLeaf("leaf11", a -> 1, "node2", "node3", "root") // node3  visible bottom
               .setLeaf("leaf12", a -> 2, "node2", "root", "node5") // node5  pibling
               .build();
-    } catch (IOException e) {
-      System.out.println("Error at menu initialization.");
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
     }
   }
 

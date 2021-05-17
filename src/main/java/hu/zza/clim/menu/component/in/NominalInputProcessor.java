@@ -23,4 +23,23 @@
 
 package hu.zza.clim.menu.component.in;
 
-public class StandardInputProcessor implements InputProcessorService {}
+import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
+
+import hu.zza.clim.menu.Position;
+import hu.zza.clim.menu.ProcessedInput;
+
+public class NominalInputProcessor implements InputProcessorService {
+
+  @Override
+  public ProcessedInput process(String input, Position[] options) {
+    Position selected = parseInputIntoPosition(input);
+    return new ProcessedInput(selected);
+  }
+
+  private Position parseInputIntoPosition(String input) {
+    if (Position.existsByName(input)) {
+      return Position.getByName(input);
+    }
+    throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
+  }
+}

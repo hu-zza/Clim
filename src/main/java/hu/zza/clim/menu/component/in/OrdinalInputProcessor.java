@@ -21,20 +21,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim.menu.component.ui;
+package hu.zza.clim.menu.component.in;
 
 import static hu.zza.clim.menu.Message.INVALID_POSITION;
+import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
 
-public abstract class AbstractOrdinalUserInterface implements UserInterfaceService {
+public class OrdinalInputProcessor implements InputProcessorService {
+
   @Override
-  public Position parseInputIntoPosition(ProcessedInput input, Position[] options) {
-    int ordinal = input.getCommandOrdinal();
+  public ProcessedInput process(String input, Position[] options) {
+    int ordinal = parseInputIntoOrdinal(input);
+    Position command = validateAndParseOrdinal(ordinal, options);
+    return new ProcessedInput(command);
+  }
+
+  private int parseInputIntoOrdinal(String input) {
+    try {
+      return Integer.parseInt(input);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
+    }
+  }
+
+  private Position validateAndParseOrdinal(int ordinal, Position[] options) {
     if (0 <= ordinal && ordinal < options.length) {
       return options[ordinal];
     }
-    throw new IllegalArgumentException(INVALID_POSITION.getMessage(input.getCommandString()));
+    throw new IllegalArgumentException(INVALID_POSITION.getMessage(ordinal));
   }
 }

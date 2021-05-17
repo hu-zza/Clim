@@ -107,7 +107,8 @@ public final class ParameterMatcher {
     String commandString =
         this.commandRegex.matcher(text).results().findFirst().map(m -> m.group(1)).orElseThrow();
 
-    ParameterPattern parameterPattern = patternMap.get(Position.getByName(commandString));
+    Position commandPosition = Position.getByName(commandString);
+    ParameterPattern parameterPattern = patternMap.get(commandPosition);
     List<ParameterName> parameterNames = parameterPattern.getParameterNameList();
     List<Parameter> parameterList = getAndPrepareParameterList(parameterPattern);
 
@@ -133,7 +134,7 @@ public final class ParameterMatcher {
       throw new IllegalArgumentException(INVALID_ARGUMENT.getMessage());
     }
 
-    ProcessedInput result = new ProcessedInput(commandString);
+    ProcessedInput result = new ProcessedInput(commandPosition);
 
     for (int i = 0; i < parameterNames.size(); i++) {
       result.putParameter(parameterNames.get(i), parameterList.get(i));

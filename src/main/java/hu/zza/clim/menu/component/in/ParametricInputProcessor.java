@@ -23,6 +23,7 @@
 
 package hu.zza.clim.menu.component.in;
 
+import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
 import hu.zza.clim.parameter.ParameterMatcher;
 
@@ -34,7 +35,7 @@ public class ParametricInputProcessor implements InputProcessorService {
   }
 
   @Override
-  public ProcessedInput process(String input) {
+  public ProcessedInput process(String input, Position[] options) {
     return parameterMatcher.processText(input);
   }
 }

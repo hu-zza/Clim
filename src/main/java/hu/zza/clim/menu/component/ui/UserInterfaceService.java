@@ -25,14 +25,9 @@ package hu.zza.clim.menu.component.ui;
 
 import static hu.zza.clim.menu.Message.MENU_OPTION_DECORATOR;
 import static hu.zza.clim.menu.Message.MENU_POSITION_DECORATOR;
-import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
 import hu.zza.clim.UserInterface;
-import hu.zza.clim.menu.Message;
-import hu.zza.clim.menu.Position;
-import hu.zza.clim.menu.ProcessedInput;
 import hu.zza.clim.menu.component.NotImplementedException;
-import java.util.Arrays;
 import java.util.List;
 
 public interface UserInterfaceService {
@@ -57,24 +52,5 @@ public interface UserInterfaceService {
 
   default void printOptionList(List<String> options) {
     options.forEach(e -> System.out.print(MENU_OPTION_DECORATOR.getMessage(e)));
-  }
-
-  default Position chooseOption(ProcessedInput input, Position[] options) {
-    Position choosen = parseInputIntoPosition(input, options);
-    return getValidatedPositionOrThrow(choosen, options);
-  }
-
-  default Position parseInputIntoPosition(ProcessedInput input, Position[] options) {
-    if (Position.existsByName(input.getCommandString())) {
-      return Position.getByName(input.getCommandString());
-    }
-    throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
-  }
-
-  default Position getValidatedPositionOrThrow(Position position, Position[] options) {
-    if (Arrays.asList(options).contains(position)) {
-      return position;
-    }
-    throw new IllegalArgumentException(Message.INVALID_POSITION.getMessage(position.getName()));
   }
 }

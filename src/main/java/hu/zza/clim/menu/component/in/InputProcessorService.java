@@ -24,6 +24,7 @@
 package hu.zza.clim.menu.component.in;
 
 import hu.zza.clim.UserInterface;
+import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
 import hu.zza.clim.menu.component.NotImplementedException;
 
@@ -31,16 +32,14 @@ public interface InputProcessorService {
   static InputProcessorService of(UserInterface userInterface) {
     switch (userInterface) {
       case NOMINAL:
-        return new StandardInputProcessor();
+        return new NominalInputProcessor();
       case ORDINAL:
       case ORDINAL_TRAILING_ZERO:
-        return new IntegerInputProcessor();
+        return new OrdinalInputProcessor();
       default:
         throw new NotImplementedException();
     }
   }
 
-  default ProcessedInput process(String input) {
-    return new ProcessedInput(input);
-  }
+  ProcessedInput process(String input, Position[] options);
 }

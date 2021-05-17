@@ -27,16 +27,19 @@ import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterName;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class ProcessedInput {
 
-  public static final ProcessedInput NULL = new ProcessedInput("");
-  private final String command;
+  public static final ProcessedInput NULL = new ProcessedInput(null);
+  private final Position position;
   private final Map<ParameterName, Parameter> parameterMap = new HashMap<>();
 
-  public ProcessedInput(String command) {
-    this.command = command;
+  public ProcessedInput(Position position) {
+    this.position = position;
+  }
+
+  public Position getPosition() {
+    return position;
   }
 
   public void putParameter(ParameterName parameterName, Parameter parameter) {
@@ -49,24 +52,5 @@ public class ProcessedInput {
 
   public Parameter getParameter(ParameterName parameterName) {
     return parameterMap.get(parameterName);
-  }
-
-  public String getCommand() {
-    return getCommandString();
-  }
-
-  public String getCommandString() {
-    return command;
-  }
-
-  public int getCommandOrdinal() {
-    if (parsableToInteger()) {
-      return Integer.parseInt(getCommandString());
-    }
-    throw new IllegalStateException();
-  }
-
-  public boolean parsableToInteger() {
-    return Pattern.matches("^\\d+$", getCommandString());
   }
 }
