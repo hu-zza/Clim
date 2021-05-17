@@ -25,27 +25,38 @@ package hu.zza.clim.menu;
 
 import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterName;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ProcessedInput {
 
-  public static final ProcessedInput NULL = new ProcessedInput(Map.of());
-  private final String original;
-  private String commandString;
-  private Map<ParameterName, Parameter> parameterMap;
+  public static final ProcessedInput NULL = new ProcessedInput("");
+  private final String command;
+  private final Map<ParameterName, Parameter> parameterMap = new HashMap<>();
 
-  public ProcessedInput(String nominalInput) {
-    this.original = nominalInput;
+  public ProcessedInput(String command) {
+    this.command = command;
   }
 
-  public ProcessedInput(Map<ParameterName, Parameter> parameterMap) {
-    this.original = "";
-    this.parameterMap = parameterMap;
+  public void putParameter(ParameterName parameterName, Parameter parameter) {
+    parameterMap.put(parameterName, parameter);
+  }
+
+  public boolean containsParameter(ParameterName parameterName) {
+    return parameterMap.containsKey(parameterName);
+  }
+
+  public Parameter getParameter(ParameterName parameterName) {
+    return parameterMap.get(parameterName);
+  }
+
+  public String getCommand() {
+    return getCommandString();
   }
 
   public String getCommandString() {
-    return commandString != null ? commandString : original;
+    return command;
   }
 
   public int getCommandOrdinal() {
@@ -53,10 +64,6 @@ public class ProcessedInput {
       return Integer.parseInt(getCommandString());
     }
     throw new IllegalStateException();
-  }
-
-  public Map<ParameterName, Parameter> getParameterMap() {
-    return parameterMap;
   }
 
   public boolean parsableToInteger() {

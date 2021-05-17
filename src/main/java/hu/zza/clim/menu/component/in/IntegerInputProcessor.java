@@ -21,6 +21,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim.menu.component;
+package hu.zza.clim.menu.component.in;
 
-public class NominalUserInterface implements UserInterfaceService {}
+import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
+
+import hu.zza.clim.menu.ProcessedInput;
+
+public class IntegerInputProcessor implements InputProcessorService {
+
+  @Override
+  public ProcessedInput process(String input) {
+    try {
+      int integerInput = Integer.parseInt(input);
+      return new ProcessedInput(String.valueOf(integerInput));
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
+    }
+  }
+}

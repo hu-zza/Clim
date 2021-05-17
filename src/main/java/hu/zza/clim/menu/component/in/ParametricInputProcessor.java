@@ -21,22 +21,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim.menu.component;
+package hu.zza.clim.menu.component.in;
 
-import hu.zza.clim.UserInterface;
 import hu.zza.clim.menu.ProcessedInput;
+import hu.zza.clim.parameter.ParameterMatcher;
 
-public interface InputProcessorService {
-  static InputProcessorService of(UserInterface userInterface){
-    switch (userInterface) {
-      case NOMINAL:
-      case ORDINAL:
-      case ORDINAL_TRAILING_ZERO:
-        return new StandardInputProcessor();
-      default:
-        throw new IllegalArgumentException();
-    }
+public class ParametricInputProcessor implements InputProcessorService {
+  private final ParameterMatcher parameterMatcher;
+
+  public ParametricInputProcessor(ParameterMatcher parameterMatcher) {
+    this.parameterMatcher = parameterMatcher;
   }
 
-  ProcessedInput process(String input);
+  @Override
+  public ProcessedInput process(String input) {
+    return parameterMatcher.processText(input);
+  }
 }

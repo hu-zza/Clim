@@ -21,17 +21,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim.menu.component;
+package hu.zza.clim.menu.component.ui;
 
-import static hu.zza.clim.menu.Message.MENU_ORDINAL_OPTION_DECORATOR;
-
-import java.util.List;
-import java.util.stream.IntStream;
-
-public class OrdinalUserInterface extends AbstractOrdinalUserInterface {
-  public void printOptionList(List<String> options) {
-    IntStream.range(0, options.size())
-        .forEach(
-            e -> System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(e, options.get(e))));
-  }
-}
+public class StandardUserInterface implements UserInterfaceService {}

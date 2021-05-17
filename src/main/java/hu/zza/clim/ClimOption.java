@@ -24,7 +24,6 @@
 package hu.zza.clim;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -50,15 +49,6 @@ public interface ClimOption {
         .forEach((k, v) -> result.put(k, v.orElseThrow()));
 
     return result;
-  }
-
-  private static ClimOption reduceConcurrentOptions(Collection<ClimOption> options) {
-    ClimOption[] optionArray = options.toArray(new ClimOption[0]);
-    if (optionArray.length != 1 && DEFAULT_VALUES.containsKey(optionArray[0].getClass())) {
-      return DEFAULT_VALUES.get(optionArray[0].getClass());
-    } else {
-      return optionArray[0];
-    }
   }
 
   private static ClimOption reduceOptions(ClimOption optionA, ClimOption optionB) {

@@ -21,17 +21,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim.menu.component;
+package hu.zza.clim.menu.component.ui;
 
 import static hu.zza.clim.menu.Message.MENU_OPTION_DECORATOR;
 import static hu.zza.clim.menu.Message.MENU_POSITION_DECORATOR;
-import static hu.zza.clim.menu.Message.SHORT_LICENCE;
 import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
 
 import hu.zza.clim.UserInterface;
 import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
+import hu.zza.clim.menu.component.NotImplementedException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,21 +40,15 @@ public interface UserInterfaceService {
   static UserInterfaceService of(UserInterface userInterface) {
     switch (userInterface) {
       case NOMINAL:
-        return new NominalUserInterface();
+      case PARAMETRIC:
+        return new StandardUserInterface();
       case ORDINAL:
         return new OrdinalUserInterface();
       case ORDINAL_TRAILING_ZERO:
         return new OrdinalTrailingZeroUserInterface();
-      case PARAMETRIC:
-        return new ParametricUserInterface();
       default:
-        throw new IllegalArgumentException();
+        throw new NotImplementedException();
     }
-  }
-
-  /** Prints a short licence information about clim. */
-  default void printShortLicence() {
-    System.out.println(SHORT_LICENCE.getMessage());
   }
 
   default void printHeader(String currentPosition) {
@@ -66,10 +60,11 @@ public interface UserInterfaceService {
   }
 
   default Position chooseOption(ProcessedInput input, Position[] options) {
-    return getValidatedPositionOrThrow(parseInputIntoPosition(input), options);
+    Position choosen = parseInputIntoPosition(input, options);
+    return getValidatedPositionOrThrow(choosen, options);
   }
 
-  default Position parseInputIntoPosition(ProcessedInput input) {
+  default Position parseInputIntoPosition(ProcessedInput input, Position[] options) {
     if (Position.existsByName(input.getCommandString())) {
       return Position.getByName(input.getCommandString());
     }

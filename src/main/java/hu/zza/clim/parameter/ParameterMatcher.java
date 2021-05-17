@@ -25,12 +25,11 @@ package hu.zza.clim.parameter;
 
 import static hu.zza.clim.menu.Message.INVALID_ARGUMENT;
 import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
-import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_FIELD;
 
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
+import hu.zza.clim.menu.Util;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -58,7 +57,7 @@ public final class ParameterMatcher {
    * @param patternMap {@link Map} of {@link Position} - {@link ParameterPattern} bindings
    */
   public ParameterMatcher(String commandRegex, Map<Position, ParameterPattern> patternMap) {
-    this(commandRegex, 0, null, patternMap);
+    this(commandRegex, 0, patternMap);
   }
 
   /**
@@ -69,11 +68,10 @@ public final class ParameterMatcher {
    *
    * @param commandRegex same as {@code regex} in {@link Pattern#compile(String, int)}
    * @param flags same as {@code flags} in {@link Pattern#compile(String, int)}
-   * @param text processable input which stored internally
    * @param patternMap {@link Map} of {@link Position} - {@link ParameterPattern} bindings
    */
   public ParameterMatcher(
-      String commandRegex, int flags, String text, Map<Position, ParameterPattern> patternMap) {
+      String commandRegex, int flags, Map<Position, ParameterPattern> patternMap) {
     if (commandRegex == null || commandRegex.isBlank()) {
       throw new IllegalArgumentException(INVALID_NONEMPTY_ARGUMENT.getMessage("commandRegex"));
     }
@@ -83,26 +81,7 @@ public final class ParameterMatcher {
     }
 
     this.commandRegex = Pattern.compile(commandRegex, flags);
-    this.text = text;
     this.patternMap = patternMap;
-  }
-
-  /**
-   * Returns with the command regex, which universally points to the command in the input strings.
-   *
-   * @return the command regex.
-   */
-  public Pattern getCommandRegex() {
-    return commandRegex;
-  }
-
-  /**
-   * Sets the processable text for {@link ParameterMatcher}.
-   *
-   * @param text input that {@link ParameterMatcher} should process
-   */
-  public void setText(String text) {
-    this.text = text;
   }
 
   /**
@@ -117,18 +96,18 @@ public final class ParameterMatcher {
   }
 
   /**
-   * Processing the internally stored {@code text} (set by {@link ParameterMatcher#setText}), and
-   * returns with the extracted parameter list.
+   * .......
    *
-   * @param command the directive by which the {@link ParameterMatcher} processes the {@code text}
    * @return a {@link Map} object with {@link ParameterName} - {@link Parameter} bindings
    */
-  public ProcessedInput processText(Position command) {
-    if (text == null || text.isEmpty()) {
-      throw new IllegalStateException(INVALID_NONEMPTY_FIELD.getMessage("text", "processText"));
-    }
+  public ProcessedInput processText(String text) {
+    Util.assertNonNull("text", text);
+    setText(text);
 
-    ParameterPattern parameterPattern = patternMap.get(command);
+    String commandString =
+        this.commandRegex.matcher(text).results().findFirst().map(m -> m.group(1)).orElseThrow();
+
+    ParameterPattern parameterPattern = patternMap.get(Position.getByName(commandString));
     List<ParameterName> parameterNames = parameterPattern.getParameterNameList();
     List<Parameter> parameterList = getAndPrepareParameterList(parameterPattern);
 
@@ -154,13 +133,17 @@ public final class ParameterMatcher {
       throw new IllegalArgumentException(INVALID_ARGUMENT.getMessage());
     }
 
-    Map<ParameterName, Parameter> result = new HashMap<>();
+    ProcessedInput result = new ProcessedInput(commandString);
 
     for (int i = 0; i < parameterNames.size(); i++) {
-      result.put(parameterNames.get(i), parameterList.get(i));
+      result.putParameter(parameterNames.get(i), parameterList.get(i));
     }
 
-    return new ProcessedInput(result);
+    return result;
+  }
+
+  private void setText(String text) {
+    this.text = text;
   }
 
   private List<Parameter> getAndPrepareParameterList(ParameterPattern parameterPattern) {

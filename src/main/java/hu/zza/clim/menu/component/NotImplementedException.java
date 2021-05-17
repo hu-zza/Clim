@@ -23,13 +23,20 @@
 
 package hu.zza.clim.menu.component;
 
-public class ParametricUserInterface implements UserInterfaceService {
-//  private void extractAndUpdateCommandField(String commandString) {
-//    parameterMatcher
-//        .getCommandRegex()
-//        .matcher(commandString)
-//        .results()
-//        .findFirst()
-//        .ifPresent(m -> command = getPositionByName(m.group(1)));
-//  }
+public class NotImplementedException extends RuntimeException {
+  public NotImplementedException() {
+    super();
+  }
+
+  public NotImplementedException(String message) {
+    super(message);
+  }
+
+  public NotImplementedException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public NotImplementedException(Throwable cause) {
+    super(cause);
+  }
 }

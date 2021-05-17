@@ -25,6 +25,7 @@ package hu.zza.clim;
 
 import static hu.zza.clim.menu.Message.GNU_GPL;
 import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
+import static hu.zza.clim.menu.Message.SHORT_LICENCE;
 
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
@@ -33,9 +34,9 @@ import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.NodePosition;
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
-import hu.zza.clim.menu.component.InputProcessorService;
-import hu.zza.clim.menu.component.ParametricInputProcessor;
-import hu.zza.clim.menu.component.UserInterfaceService;
+import hu.zza.clim.menu.component.in.InputProcessorService;
+import hu.zza.clim.menu.component.in.ParametricInputProcessor;
+import hu.zza.clim.menu.component.ui.UserInterfaceService;
 import hu.zza.clim.parameter.ParameterMatcher;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -92,7 +93,12 @@ public final class Menu {
 
   /** Prints a short licence information about clim. */
   public void printShortLicence() {
-    userInterfaceService.printShortLicence();
+    System.out.println(SHORT_LICENCE.getMessage());
+  }
+
+  /** Prints the full licence information about clim. */
+  public void printLicence() {
+    System.out.println(GNU_GPL.getMessage());
   }
 
   /** Prints the available options from the current position of the {@link Menu}. */
@@ -130,7 +136,7 @@ public final class Menu {
     if (input == null || input.isBlank()) {
       return;
     } else if (licenseCommands.contains(input.toLowerCase())) {
-      System.out.println(GNU_GPL.getMessage());
+      printLicence();
     } else {
       refreshOptions();
       positionHistory.offerFirst(position);

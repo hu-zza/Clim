@@ -21,12 +21,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim.menu.component;
+package hu.zza.clim.menu.component.ui;
 
-import hu.zza.clim.menu.ProcessedInput;
+import static hu.zza.clim.menu.Message.MENU_ORDINAL_OPTION_DECORATOR;
 
-public class StandardInputProcessor implements InputProcessorService {
-  public ProcessedInput process(String input) {
-    return new ProcessedInput(input);
+import java.util.List;
+import java.util.stream.IntStream;
+
+public class OrdinalTrailingZeroUserInterface extends AbstractOrdinalUserInterface {
+  @Override
+  public void printOptionList(List<String> options) {
+    IntStream.range(1, options.size())
+        .forEach(
+            e -> System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(e, options.get(e))));
+    System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(0, options.get(0)));
   }
 }

@@ -21,19 +21,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim.menu.component;
+package hu.zza.clim.menu.component.ui;
 
-import hu.zza.clim.menu.ProcessedInput;
-import hu.zza.clim.parameter.ParameterMatcher;
+import static hu.zza.clim.menu.Message.MENU_ORDINAL_OPTION_DECORATOR;
 
-public class ParametricInputProcessor implements InputProcessorService {
-  private ParameterMatcher parameterMatcher;
+import java.util.List;
+import java.util.stream.IntStream;
 
-  public ParametricInputProcessor(ParameterMatcher parameterMatcher) {
-    this.parameterMatcher = parameterMatcher;
-  }
-
-  public ProcessedInput process(String input) {
-    return new ProcessedInput(input);
+public class OrdinalUserInterface extends AbstractOrdinalUserInterface {
+  @Override
+  public void printOptionList(List<String> options) {
+    IntStream.range(0, options.size())
+        .forEach(
+            e -> System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(e, options.get(e))));
   }
 }
