@@ -23,41 +23,33 @@
 
 package hu.zza.clim;
 
+import hu.zza.clim.menu.LeafPosition;
+import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.Util;
 import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.ParameterMatcher;
 import hu.zza.clim.parameter.ParameterName;
+import hu.zza.clim.parameter.ParameterPattern;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class ParameterMatcherBuilder {
-  private String commandRegex = "\\s*(\\w+)\\s*";
-  private Class<? extends ParameterName> parameterNameEnum;
-  private final Map<String, List<ParameterName>> parameterNameMap = new HashMap<>();
-  private final Map<String, List<Parameter>> parameterMap = new HashMap<>();
-  private final Map<String, String> delimiterMap = new HashMap<>();
-  private ParameterMatcher parameterMatcher;
+  private String commandRegex = "";
+  private final Map<Position, ParameterPattern> patternMap = new HashMap<>();
+
+  public ParameterMatcher build() {
+    return new ParameterMatcher(commandRegex, patternMap);
+  }
 
   public void clear() {
-    commandRegex = "\\s*(\\w+)\\s*";
-    parameterNameEnum = null;
-    parameterNameMap.clear();
-    parameterMap.clear();
-    delimiterMap.clear();
+    commandRegex = "";
+    patternMap.clear();
   }
 
   public ParameterMatcherBuilder setCommandRegex(String commandRegex) {
     Util.assertNonNull("commandRegex", commandRegex);
     this.commandRegex = commandRegex;
-    return this;
-  }
-
-
-
-  public ParameterMatcherBuilder setParameterNameEnum(Class<? extends ParameterName> parameterNameEnum) {
-    Util.assertNonNull("parameterNameEnum", parameterNameEnum);
-    this.parameterNameEnum = parameterNameEnum;
     return this;
   }
 
@@ -78,18 +70,17 @@ public final class ParameterMatcherBuilder {
             "parameters",
             parameters));
 
-    parameterNameMap.put(leafName, parameterNames);
-    parameterMap.put(leafName, parameters);
-    delimiterMap.put(leafName, delimiter);
+    Position position = Position.getByName(leafName);
+
+    if (position instanceof LeafPosition) {
+      patternMap.put(position, new ParameterPattern(delimiter, parameterNames, parameters));
+    }
     return this;
   }
 
   public ParameterMatcherBuilder clearLeafParameters(String leafName) {
     Util.assertNonNull("leafName", leafName);
-    parameterNameMap.remove(leafName);
-    parameterMap.remove(leafName);
-    delimiterMap.remove(leafName);
+    patternMap.remove(Position.getByName(leafName));
     return this;
   }
-
 }

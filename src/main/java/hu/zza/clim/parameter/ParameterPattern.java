@@ -50,7 +50,7 @@ public final class ParameterPattern {
    * @param parameterNames names of {@link Parameter parameters} in sequential order
    * @param parameters {@link Parameter} objects
    */
-  ParameterPattern(
+  public ParameterPattern(
       String delimiter, List<ParameterName> parameterNames, List<Parameter> parameters) {
     if (delimiter == null) {
       throw new IllegalArgumentException(INVALID_NONNULL_ARGUMENT.getMessage("delimiter"));

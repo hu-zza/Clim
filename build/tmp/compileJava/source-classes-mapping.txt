@@ -1,11 +1,12 @@
-hu/zza/clim/parameter/Parameters.java
- hu.zza.clim.parameter.Parameters
+hu/zza/clim/menu/component/ui/OrdinalTrailingZeroUserInterface.java
+ hu.zza.clim.menu.component.ui.OrdinalTrailingZeroUserInterface
 hu/zza/clim/parameter/ParameterName.java
  hu.zza.clim.parameter.ParameterName
 hu/zza/clim/parameter/Parameter.java
  hu.zza.clim.parameter.Parameter
-hu/zza/clim/parameter/ParameterPattern.java
- hu.zza.clim.parameter.ParameterPattern
+hu/zza/clim/menu/component/in/InputProcessorService.java
+ hu.zza.clim.menu.component.in.InputProcessorService
+ hu.zza.clim.menu.component.in.InputProcessorService$1
 hu/zza/clim/menu/Position.java
  hu.zza.clim.menu.Position
 hu/zza/clim/menu/Util.java
@@ -45,18 +46,17 @@ hu/zza/clim/MenuStructureBuilder.java
  hu.zza.clim.MenuStructureBuilder
 hu/zza/clim/menu/component/in/OrdinalInputProcessor.java
  hu.zza.clim.menu.component.in.OrdinalInputProcessor
+hu/zza/clim/menu/MenuStructure.java
+ hu.zza.clim.menu.MenuStructure
+hu/zza/clim/Menu.java
+ hu.zza.clim.Menu
+hu/zza/clim/parameter/Parameters.java
+ hu.zza.clim.parameter.Parameters
+hu/zza/clim/parameter/ParameterPattern.java
+ hu.zza.clim.parameter.ParameterPattern
 hu/zza/clim/parameter/ParameterMatcher.java
  hu.zza.clim.parameter.ParameterMatcher
 hu/zza/clim/MenuBuilder.java
  hu.zza.clim.MenuBuilder
 hu/zza/clim/ParameterMatcherBuilder.java
  hu.zza.clim.ParameterMatcherBuilder
-hu/zza/clim/Menu.java
- hu.zza.clim.Menu
-hu/zza/clim/menu/MenuStructure.java
- hu.zza.clim.menu.MenuStructure
-hu/zza/clim/menu/component/in/InputProcessorService.java
- hu.zza.clim.menu.component.in.InputProcessorService
- hu.zza.clim.menu.component.in.InputProcessorService$1
-hu/zza/clim/menu/component/ui/OrdinalTrailingZeroUserInterface.java
- hu.zza.clim.menu.component.ui.OrdinalTrailingZeroUserInterface
