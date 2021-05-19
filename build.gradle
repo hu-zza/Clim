@@ -24,6 +24,7 @@
 plugins {
     id 'java'
     id 'maven'
+    id "com.lingocoder.mrjar" version "0.0.16"
 }
 
 group 'hu.zza'
