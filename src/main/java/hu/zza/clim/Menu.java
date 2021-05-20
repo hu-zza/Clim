@@ -70,6 +70,7 @@ public final class Menu {
   private final UserInterfaceService userInterfaceService;
   private final InputProcessorService inputProcessorService;
   private final Deque<NodePosition> positionHistory = new ArrayDeque<>();
+  private boolean visibleHeader;
   private NodePosition position;
   private Position[] options;
 
@@ -88,6 +89,8 @@ public final class Menu {
       inputProcessorService = InputProcessorService.of(ui);
     }
 
+    visibleHeader = (HeaderStyle) this.climOptions.get(HeaderStyle.class) != HeaderStyle.HIDDEN;
+
     position = menuStructure.get(null).select(ProcessedInput.NULL);
     positionHistory.offer(position);
     refreshOptions();
@@ -100,7 +103,9 @@ public final class Menu {
   /** Prints the available options from the current position of the {@link Menu}. */
   public void listOptions() {
     refreshOptions();
-    userInterfaceService.printHeader(position.getName());
+    if (visibleHeader) {
+      userInterfaceService.printHeader(position.getName());
+    }
     if (options.length != 0) {
       userInterfaceService.printOptionList(getDisplayableOptions());
     } else {

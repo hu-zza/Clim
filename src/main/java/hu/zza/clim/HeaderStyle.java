@@ -23,8 +23,6 @@
 
 package hu.zza.clim;
 
-public enum NavigationMode implements ClimOption {
-  STANDARD,
-  ARROWS,
-  SHORTCUTS;
+public enum HeaderStyle implements ClimOption {
+  STANDARD, HIDDEN, PATH;
 }
