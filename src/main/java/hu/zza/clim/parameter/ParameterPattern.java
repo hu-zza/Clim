@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * Represents a complex pattern of {@link Parameter parameters} that is used for evaluating user
@@ -90,6 +91,6 @@ public final class ParameterPattern {
   }
 
   List<Parameter> getParameterClonesList() {
-    return new ArrayList<>(parameters.values());
+    return parameters.values().stream().map(Parameter::clone).collect(Collectors.toList());
   }
 }
