@@ -66,7 +66,7 @@ public final class ParameterPattern {
 
     this.delimiter = delimiter;
 
-    for(int i = 0; i < parameterNames.size(); i++) {
+    for (int i = 0; i < parameterNames.size(); i++) {
       this.parameters.put(parameterNames.get(i), parameters.get(i));
     }
   }
