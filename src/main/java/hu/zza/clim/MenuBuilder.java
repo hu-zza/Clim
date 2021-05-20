@@ -43,7 +43,7 @@ public final class MenuBuilder {
     try {
       return buildMenu();
     } catch (Exception e) {
-      throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()));
+      throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()), e);
     }
   }
 
