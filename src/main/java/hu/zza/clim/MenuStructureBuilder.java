@@ -45,16 +45,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public final class MenuStructureBuilder {
-  private JSONObject rawMenuStructure = new JSONObject("{\"root\":\"\"}");
-  private String initialPosition = "root";
-  private MenuStructure menuStructure = new MenuStructure();
-
   private final Set<String> nodePositions = new HashSet<>();
   private final Set<String> leafPositions = new HashSet<>();
   private final Map<String, List<String>> nodeLinks = new HashMap<>();
   private final Map<String, List<String>> leafLinks = new HashMap<>();
   private final Map<String, Function<ProcessedInput, Integer>> leafFunction = new HashMap<>();
-
+  private JSONObject rawMenuStructure = new JSONObject("{\"root\":\"\"}");
+  private String initialPosition = "root";
+  private MenuStructure menuStructure = new MenuStructure();
 
   public MenuStructureBuilder setRawMenuStructure(String rawMenuStructure) throws JSONException {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
@@ -99,6 +97,7 @@ public final class MenuStructureBuilder {
   public MenuStructure build() {
     clearBuilt();
     findAllNodesAndLeaves();
+    checkBeforeBuild();
     buildStructure();
     menuStructure.setFinalized();
     return menuStructure;
@@ -107,6 +106,27 @@ public final class MenuStructureBuilder {
   private void findAllNodesAndLeaves() {
     extractNodesAndLeavesFrom(rawMenuStructure);
     leafPositions.removeAll(nodePositions);
+  }
+
+  private void checkBeforeBuild() {
+    checkNodes();
+    checkInitialPosition();
+  }
+
+  private void checkNodes() {
+    if (nodePositions.size() == 0) {
+      throw new IllegalStateException("There are no node positions.");
+    }
+  }
+
+  private void checkInitialPosition() {
+    if (nodePositions.size() == 1) {
+      initialPosition = String.valueOf(nodePositions.toArray()[0]);
+    }
+
+    if (!nodePositions.contains(initialPosition)) {
+      throw new IllegalStateException("Initial position is invalid. No such node is there.");
+    }
   }
 
   private void buildStructure() {

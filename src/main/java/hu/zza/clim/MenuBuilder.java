@@ -43,13 +43,38 @@ public final class MenuBuilder {
     try {
       return buildMenu();
     } catch (Exception e) {
-      throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()));
+      throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()), e);
     }
   }
 
   private Menu buildMenu() {
     checkParametersBeforeBuild();
     return new Menu(menuStructure, parameterMatcher, climOptions);
+  }
+
+  private void checkParametersBeforeBuild() {
+    checkMenuStructure();
+    checkParameterMatcher();
+  }
+
+  private void checkMenuStructure() {
+    if (menuStructure.isEmpty()) {
+      throw new IllegalStateException("'menuStructure' is empty!");
+    }
+
+    if (!menuStructure.isFinalized()) {
+      throw new IllegalStateException("'menuStructure' isn't finalized!");
+    }
+  }
+
+  private void checkParameterMatcher() {
+    if (parameterMatcher == null && isParameterMatcherRequired()) {
+      throw new IllegalStateException("'parameterMatcher' is required, but it is null!");
+    }
+  }
+
+  private boolean isParameterMatcherRequired() {
+    return Arrays.stream(climOptions).anyMatch(hasParameterMatcherDependency::contains);
   }
 
   public MenuBuilder setMenuStructure(MenuStructure menuStructure) {
@@ -75,31 +100,5 @@ public final class MenuBuilder {
     parameterMatcher = null;
     climOptions = new ClimOption[0];
     return this;
-  }
-
-  private void checkParametersBeforeBuild() {
-    checkMenuStructure();
-    checkParameterMatcher();
-  }
-
-  private void checkMenuStructure() {
-    if (menuStructure.isEmpty()) {
-      throw new IllegalStateException("'menuStructure' is empty!");
-    }
-
-    if (!menuStructure.isFinalized()) {
-      throw new IllegalStateException("'menuStructure' isn't finalized!");
-    }
-  }
-
-  private void checkParameterMatcher() {
-    if (parameterMatcher == null && isParameterMatcherRequired()) {
-      throw new IllegalStateException("'parameterMatcher' is required, but it is null!");
-    }
-  }
-
-  private boolean isParameterMatcherRequired() {
-    return Arrays.stream(climOptions)
-        .anyMatch(hasParameterMatcherDependency::contains);
   }
 }

@@ -35,8 +35,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class ParameterMatcherBuilder {
-  private String commandRegex = "";
   private final Map<Position, ParameterPattern> patternMap = new HashMap<>();
+  private String commandRegex = "";
 
   public ParameterMatcher build() {
     return new ParameterMatcher(commandRegex, patternMap);

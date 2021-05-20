@@ -34,16 +34,12 @@ import java.util.Objects;
  * subtypes are marker interfaces for user defined enums. These enums function as ID collections.
  */
 public abstract class Position {
-  private final String name;
   private static final Map<String, Position> instances = new HashMap<>();
+  private final String name;
 
   Position(String name) {
     this.name = name;
     instances.put(name, this);
-  }
-
-  public String getName() {
-    return name;
   }
 
   public static boolean existsByName(String name) {
@@ -52,6 +48,15 @@ public abstract class Position {
 
   public static Position getByName(String name) {
     return instances.get(name);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name);
   }
 
   @Override
@@ -64,10 +69,5 @@ public abstract class Position {
     }
     Position position = (Position) o;
     return name.equals(position.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name);
   }
 }

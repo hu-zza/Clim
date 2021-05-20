@@ -117,16 +117,16 @@ public final class Menu {
    * node}, {@link Menu} navigates itself to this position. If it is a {@link Leaf leaf}, {@link
    * Menu} call its function, and according to the result, it navigates itself toward.
    *
-   * <p>The desired format of {@code consoleInput} depends on the {@link UserInterface} of the {@link Menu}
-   * object:<br>
+   * <p>The desired format of {@code consoleInput} depends on the {@link UserInterface} of the
+   * {@link Menu} object:<br>
    * {@link UserInterface#NOMINAL} requires the exact name of the choosen option.<br>
    * {@link UserInterface#ORDINAL} and {@link UserInterface#ORDINAL_TRAILING_ZERO} require a numeric
    * string which is parsable with {@link Integer#parseInt(String)}.<br>
    * {@link UserInterface#PARAMETRIC} is more flexible (depends on the configuration of the {@link
    * ParameterMatcher}).
    *
-   * @param consoleInput the choice of the user, its desired format (single integer, alphanumeric text,
-   *     etc.) depends on {@link UserInterface}
+   * @param consoleInput the choice of the user, its desired format (single integer, alphanumeric
+   *     text, etc.) depends on {@link UserInterface}
    */
   public void chooseOption(String consoleInput) {
     if (consoleInput == null || consoleInput.isBlank()) {

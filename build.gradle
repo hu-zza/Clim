@@ -24,10 +24,11 @@
 plugins {
     id 'java'
     id 'maven'
+    id "com.lingocoder.mrjar" version "0.0.16"
 }
 
-group 'hu.zza'
-project.version = '0.1.3'
+group = 'hu.zza'
+project.version = '0.2.0'
 sourceCompatibility = '11'
 
 repositories {

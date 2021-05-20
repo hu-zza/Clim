@@ -46,7 +46,7 @@ public class MenuStructureBuilderTest {
             .setLeaf("leaf7", a -> 0, "root", "node3", "node1") // root   parent
             .setLeaf("leaf8", a -> 1, "node2", "root", "node1") // root   great-grandparent
             .setLeaf("leaf9", a -> 2, "root", "node3", "node10") // node10 first-cousin once removed
-            .setLeaf("leaf10", a -> 0, "node5", "root", "node1") // node5  pibling
+            .setLeaf("leaf10", a -> 0, "node5") // node5  pibling
             .setLeaf("leaf11", a -> 1, "node2", "node3", "root") // node3  visible bottom
             .setLeaf("leaf12", a -> 2, "node2", "root", "node5") // node5  pibling
             .build();
