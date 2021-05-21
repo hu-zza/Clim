@@ -22,8 +22,8 @@ hu/zza/clim/MenuBuilder.java
  hu.zza.clim.MenuBuilder
 hu/zza/clim/ParameterMatcherBuilder.java
  hu.zza.clim.ParameterMatcherBuilder
-hu/zza/clim/menu/component/ui/OrdinalTrailingZeroUserInterface.java
- hu.zza.clim.menu.component.ui.OrdinalTrailingZeroUserInterface
+hu/zza/clim/menu/component/ui/HiddenHeader.java
+ hu.zza.clim.menu.component.ui.HiddenHeader
 hu/zza/clim/menu/component/in/InputProcessorService.java
  hu.zza.clim.menu.component.in.InputProcessorService
  hu.zza.clim.menu.component.in.InputProcessorService$1
@@ -49,8 +49,9 @@ hu/zza/clim/menu/component/ui/StandardUserInterface.java
  hu.zza.clim.menu.component.ui.StandardUserInterface
 hu/zza/clim/menu/component/ui/OrdinalUserInterface.java
  hu.zza.clim.menu.component.ui.OrdinalUserInterface
-hu/zza/clim/menu/Message.java
- hu.zza.clim.menu.Message
+hu/zza/clim/menu/component/ui/HeaderService.java
+ hu.zza.clim.menu.component.ui.HeaderService
+ hu.zza.clim.menu.component.ui.HeaderService$1
 hu/zza/clim/menu/component/ui/UserInterfaceService.java
  hu.zza.clim.menu.component.ui.UserInterfaceService
  hu.zza.clim.menu.component.ui.UserInterfaceService$1
@@ -66,8 +67,7 @@ hu/zza/clim/menu/MenuStructure.java
  hu.zza.clim.menu.MenuStructure
 hu/zza/clim/parameter/ParameterName.java
  hu.zza.clim.parameter.ParameterName
-hu/zza/clim/menu/component/ui/HiddenHeader.java
- hu.zza.clim.menu.component.ui.HiddenHeader
-hu/zza/clim/menu/component/ui/HeaderService.java
- hu.zza.clim.menu.component.ui.HeaderService
- hu.zza.clim.menu.component.ui.HeaderService$1
+hu/zza/clim/menu/Message.java
+ hu.zza.clim.menu.Message
+hu/zza/clim/menu/component/ui/OrdinalTrailingZeroUserInterface.java
+ hu.zza.clim.menu.component.ui.OrdinalTrailingZeroUserInterface

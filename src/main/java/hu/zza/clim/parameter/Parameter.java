@@ -31,6 +31,11 @@ import java.util.function.UnaryOperator;
 /** Represents a single parameter which can be concrete or optional. */
 public final class Parameter implements Cloneable {
 
+  public static final Parameter NULL = new Parameter("()", null, null);
+  static {
+    NULL.setValue("");
+  }
+
   private final String regex;
   private final UnaryOperator<String> parsingOperator;
   private final Supplier<String> defaultValueSupplier;

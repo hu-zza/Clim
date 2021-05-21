@@ -51,6 +51,6 @@ public final class ProcessedInput {
   }
 
   public Parameter getParameter(ParameterName parameterName) {
-    return parameterMap.get(parameterName);
+    return parameterMap.getOrDefault(parameterName, Parameter.NULL);
   }
 }

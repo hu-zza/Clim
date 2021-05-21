@@ -165,7 +165,12 @@ public final class Menu {
   }
 
   private static void warnAboutInput(String input, Exception e) {
-    System.err.print(PROCESSING_FAILED.getMessage(input, e.getMessage()));
+    if (e.getMessage() != null) {
+      System.err.print(PROCESSING_FAILED.getMessage(input, e.getMessage()));
+    } else {
+      System.err.print(PROCESSING_FAILED.getMessage(input, ""));
+      e.printStackTrace();
+    }
   }
 
   private Position returnValidatedPositionOrThrow(Position position) {

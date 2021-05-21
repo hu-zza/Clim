@@ -91,7 +91,7 @@ public class MenuBuilderTestInteractive {
           new MenuBuilder()
               .setMenuStructure(menuStructure)
               .setParameterMatcher(parameterMatcher)
-              .setClimOptions(UserInterface.NOMINAL, HeaderStyle.HIDDEN, NavigationMode.ARROWS)
+              .setClimOptions(UserInterface.NOMINAL, HeaderStyle.HISTORY, NavigationMode.ARROWS)
               .build();
 
     } catch (Exception e) {
