@@ -31,13 +31,13 @@ import static hu.zza.clim.menu.Message.SHORT_LICENSE;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
 import hu.zza.clim.menu.MenuStructure;
-import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.NodePosition;
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
 import hu.zza.clim.menu.Util;
 import hu.zza.clim.menu.component.in.InputProcessorService;
 import hu.zza.clim.menu.component.in.ParametricInputProcessor;
+import hu.zza.clim.menu.component.ui.HeaderService;
 import hu.zza.clim.menu.component.ui.UserInterfaceService;
 import hu.zza.clim.parameter.ParameterMatcher;
 import java.util.ArrayDeque;
@@ -70,7 +70,6 @@ public final class Menu {
   private final UserInterfaceService userInterfaceService;
   private final InputProcessorService inputProcessorService;
   private final Deque<NodePosition> positionHistory = new ArrayDeque<>();
-  private boolean visibleHeader;
   private NodePosition position;
   private Position[] options;
 
@@ -89,10 +88,10 @@ public final class Menu {
       inputProcessorService = InputProcessorService.of(ui);
     }
 
-    visibleHeader = (HeaderStyle) this.climOptions.get(HeaderStyle.class) != HeaderStyle.HIDDEN;
+    userInterfaceService.setHeaderService(
+        HeaderService.of((HeaderStyle) this.climOptions.get(HeaderStyle.class)));
 
     position = menuStructure.get(null).select(ProcessedInput.NULL);
-    positionHistory.offer(position);
     refreshOptions();
   }
 
@@ -103,14 +102,14 @@ public final class Menu {
   /** Prints the available options from the current position of the {@link Menu}. */
   public void listOptions() {
     refreshOptions();
-    if (visibleHeader) {
-      userInterfaceService.printHeader(position.getName());
-    }
-    if (options.length != 0) {
-      userInterfaceService.printOptionList(getDisplayableOptions());
-    } else {
-      System.out.println(Message.NO_OPTIONS.getMessage());
-    }
+    userInterfaceService.printHeaderForCurrentPositionAndHistory(
+        position.getName(), getPositionHistoryAsStringArray());
+    userInterfaceService.printOptionList(getDisplayableOptions());
+    userInterfaceService.printFooter();
+  }
+
+  private String[] getPositionHistoryAsStringArray() {
+    return positionHistory.stream().map(Position::getName).toArray(String[]::new);
   }
 
   private List<String> getDisplayableOptions() {
@@ -152,7 +151,8 @@ public final class Menu {
 
   private void tryToChooseAnOption(String input) {
     try {
-      chooseOptionByProcessedInput(inputProcessorService.process(input, options));
+      chooseOptionByProcessedInput(
+          inputProcessorService.processInputRelatedToOptions(input, options));
     } catch (Exception e) {
       positionHistory.pollFirst();
       warnAboutInput(input, e);

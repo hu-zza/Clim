@@ -35,7 +35,7 @@ public final class ParametricInputProcessor implements InputProcessorService {
   }
 
   @Override
-  public ProcessedInput process(String input, Position[] options) {
+  public ProcessedInput processInputRelatedToOptions(String input, Position[] options) {
     return parameterMatcher.processText(input);
   }
 }

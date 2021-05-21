@@ -23,4 +23,10 @@
 
 package hu.zza.clim.menu.component.ui;
 
-public final class StandardUserInterface extends UserInterfaceService {}
+public class HiddenHeader implements HeaderService {
+  @Override
+  public void printHeaderForCurrentPositionAndHistory(
+      String currentPosition, String[] positionHistory) {
+    System.out.printf("%n%n");
+  }
+}

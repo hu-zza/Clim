@@ -23,4 +23,29 @@
 
 package hu.zza.clim.menu.component.ui;
 
-public final class StandardUserInterface extends UserInterfaceService {}
+import static hu.zza.clim.menu.Message.MENU_POSITION_DECORATOR;
+import static hu.zza.clim.menu.Message.MENU_POSITION_SPACER;
+
+import hu.zza.clim.HeaderStyle;
+import hu.zza.clim.menu.component.NotImplementedException;
+
+public interface HeaderService {
+  static HeaderService of(HeaderStyle headerStyle) {
+    switch (headerStyle) {
+      case HIDDEN:
+        return new HiddenHeader();
+      case STANDARD:
+        return new StandardHeader();
+      case HISTORY:
+        return new HistoryHeader();
+      default:
+        throw new NotImplementedException();
+    }
+  }
+
+  default void printHeaderForCurrentPositionAndHistory(
+      String currentPosition, String[] positionHistory) {
+    System.out.print(
+        MENU_POSITION_SPACER.getMessage(MENU_POSITION_DECORATOR.getMessage(currentPosition)));
+  }
+}

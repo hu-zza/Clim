@@ -23,4 +23,22 @@
 
 package hu.zza.clim.menu.component.ui;
 
-public final class StandardUserInterface extends UserInterfaceService {}
+import static hu.zza.clim.menu.Message.MENU_HISTORY_SEPARATOR;
+import static hu.zza.clim.menu.Message.MENU_POSITION_DECORATOR;
+import static hu.zza.clim.menu.Message.MENU_POSITION_SPACER;
+
+public class HistoryHeader implements HeaderService {
+
+  @Override
+  public void printHeaderForCurrentPositionAndHistory(String currentPosition, String[] positionHistory) {
+    String header = MENU_POSITION_DECORATOR.getMessage(currentPosition);
+    String separator = MENU_HISTORY_SEPARATOR.getMessage();
+    int historyToShow = 2;
+
+    for (int i = 0; i < positionHistory.length && i < historyToShow; i++) {
+      header = String.format("%s %s %s", positionHistory[i], separator, header);
+    }
+
+    System.out.print(MENU_POSITION_SPACER.getMessage(header));
+  }
+}

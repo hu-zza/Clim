@@ -24,15 +24,16 @@
 package hu.zza.clim.menu.component.ui;
 
 import static hu.zza.clim.menu.Message.MENU_OPTION_DECORATOR;
-import static hu.zza.clim.menu.Message.MENU_POSITION_DECORATOR;
+import static hu.zza.clim.menu.Message.MENU_OPTION_SPACER;
 
 import hu.zza.clim.UserInterface;
 import hu.zza.clim.menu.component.NotImplementedException;
 import java.util.List;
 
-public interface UserInterfaceService {
+public abstract class UserInterfaceService {
+  private HeaderService headerService;
 
-  static UserInterfaceService of(UserInterface userInterface) {
+  public static UserInterfaceService of(UserInterface userInterface) {
     switch (userInterface) {
       case NOMINAL:
       case PARAMETRIC:
@@ -46,11 +47,22 @@ public interface UserInterfaceService {
     }
   }
 
-  default void printHeader(String currentPosition) {
-    System.out.print(MENU_POSITION_DECORATOR.getMessage(currentPosition));
+  public void setHeaderService(HeaderService headerService) {
+    this.headerService = headerService;
   }
 
-  default void printOptionList(List<String> options) {
-    options.forEach(e -> System.out.print(MENU_OPTION_DECORATOR.getMessage(e)));
+  public void printHeaderForCurrentPositionAndHistory(
+      String currentPosition, String[] positionHistory) {
+    headerService.printHeaderForCurrentPositionAndHistory(currentPosition, positionHistory);
+  }
+
+  // Dummy...
+  public void printFooter() {
+    System.out.println();
+  }
+
+  public void printOptionList(List<String> options) {
+    options.forEach(
+        e -> System.out.print(MENU_OPTION_SPACER.getMessage(MENU_OPTION_DECORATOR.getMessage(e))));
   }
 }

@@ -41,5 +41,5 @@ public interface InputProcessorService {
     }
   }
 
-  ProcessedInput process(String input, Position[] options);
+  ProcessedInput processInputRelatedToOptions(String input, Position[] options);
 }

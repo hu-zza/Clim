@@ -23,16 +23,20 @@
 
 package hu.zza.clim.menu.component.ui;
 
+import static hu.zza.clim.menu.Message.MENU_OPTION_SPACER;
 import static hu.zza.clim.menu.Message.MENU_ORDINAL_OPTION_DECORATOR;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
-public final class OrdinalUserInterface implements UserInterfaceService {
+public final class OrdinalUserInterface extends UserInterfaceService {
   @Override
   public void printOptionList(List<String> options) {
     IntStream.range(0, options.size())
         .forEach(
-            e -> System.out.print(MENU_ORDINAL_OPTION_DECORATOR.getMessage(e, options.get(e))));
+            e ->
+                System.out.print(
+                    MENU_OPTION_SPACER.getMessage(
+                        MENU_ORDINAL_OPTION_DECORATOR.getMessage(e, options.get(e)))));
   }
 }

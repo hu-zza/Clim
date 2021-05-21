@@ -24,5 +24,5 @@
 package hu.zza.clim;
 
 public enum HeaderStyle implements ClimOption {
-  STANDARD, HIDDEN, PATH;
+  HIDDEN, STANDARD, HISTORY;
 }

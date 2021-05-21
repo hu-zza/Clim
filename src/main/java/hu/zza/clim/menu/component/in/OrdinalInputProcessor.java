@@ -32,7 +32,7 @@ import hu.zza.clim.menu.ProcessedInput;
 public final class OrdinalInputProcessor implements InputProcessorService {
 
   @Override
-  public ProcessedInput process(String input, Position[] options) {
+  public ProcessedInput processInputRelatedToOptions(String input, Position[] options) {
     int ordinal = parseInputIntoOrdinal(input);
     Position command = validateAndParseOrdinal(ordinal, options);
     return new ProcessedInput(command);

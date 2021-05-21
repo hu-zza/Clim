@@ -31,7 +31,7 @@ import hu.zza.clim.menu.ProcessedInput;
 public final class NominalInputProcessor implements InputProcessorService {
 
   @Override
-  public ProcessedInput process(String input, Position[] options) {
+  public ProcessedInput processInputRelatedToOptions(String input, Position[] options) {
     Position selected = parseInputIntoPosition(input);
     return new ProcessedInput(selected);
   }
