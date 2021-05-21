@@ -30,7 +30,8 @@ import static hu.zza.clim.menu.Message.MENU_POSITION_SPACER;
 public class HistoryHeader implements HeaderService {
 
   @Override
-  public void printHeaderForCurrentPositionAndHistory(String currentPosition, String[] positionHistory) {
+  public void printHeaderForCurrentPositionAndHistory(
+      String currentPosition, String[] positionHistory) {
     String header = MENU_POSITION_DECORATOR.getMessage(currentPosition);
     String separator = MENU_HISTORY_SEPARATOR.getMessage();
     int historyToShow = 2;

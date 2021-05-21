@@ -32,6 +32,7 @@ import java.util.function.UnaryOperator;
 public final class Parameter implements Cloneable {
 
   public static final Parameter NULL = new Parameter("()", null, null);
+
   static {
     NULL.setValue("");
   }

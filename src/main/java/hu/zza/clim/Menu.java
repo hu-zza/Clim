@@ -66,7 +66,6 @@ public final class Menu {
           "show liability");
 
   private final MenuStructure menuStructure;
-  private final Map<Class<? extends ClimOption>, ClimOption> climOptions;
   private final UserInterfaceService userInterfaceService;
   private final InputProcessorService inputProcessorService;
   private final Deque<NodePosition> positionHistory = new ArrayDeque<>();
@@ -76,9 +75,10 @@ public final class Menu {
   Menu(MenuStructure menuStructure, ParameterMatcher parameterMatcher, ClimOption... climOptions) {
 
     this.menuStructure = menuStructure;
-    this.climOptions = ClimOption.getClimOptionMap(climOptions);
+    Map<Class<? extends ClimOption>, ClimOption> optionsMap =
+        ClimOption.getClimOptionMap(climOptions);
 
-    UserInterface ui = (UserInterface) this.climOptions.get(UserInterface.class);
+    UserInterface ui = (UserInterface) optionsMap.get(UserInterface.class);
     userInterfaceService = UserInterfaceService.of(ui);
 
     if (ui == UserInterface.PARAMETRIC) {
@@ -89,7 +89,7 @@ public final class Menu {
     }
 
     userInterfaceService.setHeaderService(
-        HeaderService.of((HeaderStyle) this.climOptions.get(HeaderStyle.class)));
+        HeaderService.of((HeaderStyle) optionsMap.get(HeaderStyle.class)));
 
     position = menuStructure.get(null).select(ProcessedInput.NULL);
     refreshOptions();

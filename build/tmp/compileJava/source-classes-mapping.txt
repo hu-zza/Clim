@@ -45,29 +45,29 @@ hu/zza/clim/menu/component/ui/HistoryHeader.java
  hu.zza.clim.menu.component.ui.HistoryHeader
 hu/zza/clim/parameter/ParameterPattern.java
  hu.zza.clim.parameter.ParameterPattern
-hu/zza/clim/menu/component/ui/StandardUserInterface.java
- hu.zza.clim.menu.component.ui.StandardUserInterface
-hu/zza/clim/menu/component/ui/OrdinalUserInterface.java
- hu.zza.clim.menu.component.ui.OrdinalUserInterface
+hu/zza/clim/menu/Message.java
+ hu.zza.clim.menu.Message
+hu/zza/clim/parameter/ParameterName.java
+ hu.zza.clim.parameter.ParameterName
 hu/zza/clim/menu/component/ui/HeaderService.java
  hu.zza.clim.menu.component.ui.HeaderService
  hu.zza.clim.menu.component.ui.HeaderService$1
-hu/zza/clim/menu/component/ui/UserInterfaceService.java
- hu.zza.clim.menu.component.ui.UserInterfaceService
- hu.zza.clim.menu.component.ui.UserInterfaceService$1
+hu/zza/clim/menu/MenuStructure.java
+ hu.zza.clim.menu.MenuStructure
 hu/zza/clim/MenuStructureBuilder.java
  hu.zza.clim.MenuStructureBuilder
 hu/zza/clim/parameter/ParameterMatcher.java
  hu.zza.clim.parameter.ParameterMatcher
 hu/zza/clim/menu/component/NotImplementedException.java
  hu.zza.clim.menu.component.NotImplementedException
+hu/zza/clim/menu/component/ui/UserInterfaceService.java
+ hu.zza.clim.menu.component.ui.UserInterfaceService
+ hu.zza.clim.menu.component.ui.UserInterfaceService$1
+hu/zza/clim/menu/component/ui/StandardUserInterface.java
+ hu.zza.clim.menu.component.ui.StandardUserInterface
+hu/zza/clim/menu/component/ui/OrdinalUserInterface.java
+ hu.zza.clim.menu.component.ui.OrdinalUserInterface
 hu/zza/clim/Menu.java
  hu.zza.clim.Menu
-hu/zza/clim/menu/MenuStructure.java
- hu.zza.clim.menu.MenuStructure
-hu/zza/clim/parameter/ParameterName.java
- hu.zza.clim.parameter.ParameterName
-hu/zza/clim/menu/Message.java
- hu.zza.clim.menu.Message
 hu/zza/clim/menu/component/ui/OrdinalTrailingZeroUserInterface.java
  hu.zza.clim.menu.component.ui.OrdinalTrailingZeroUserInterface

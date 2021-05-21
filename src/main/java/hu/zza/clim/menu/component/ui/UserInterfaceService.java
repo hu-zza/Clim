@@ -27,6 +27,7 @@ import static hu.zza.clim.menu.Message.MENU_OPTION_DECORATOR;
 import static hu.zza.clim.menu.Message.MENU_OPTION_SPACER;
 
 import hu.zza.clim.UserInterface;
+import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.component.NotImplementedException;
 import java.util.List;
 
@@ -62,7 +63,14 @@ public abstract class UserInterfaceService {
   }
 
   public void printOptionList(List<String> options) {
+    printWarningIfEmpty(options);
     options.forEach(
         e -> System.out.print(MENU_OPTION_SPACER.getMessage(MENU_OPTION_DECORATOR.getMessage(e))));
+  }
+
+  void printWarningIfEmpty(List<String> options) {
+    if (options.isEmpty()) {
+      System.out.println(Message.NO_OPTIONS.getMessage());
+    }
   }
 }
