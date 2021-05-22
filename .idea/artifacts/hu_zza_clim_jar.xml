@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="hu.zza.clim:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/hu_zza_clim_jar</output-path>
+    <root id="archive" name="hu.zza.clim.jar" />
+  </artifact>
+</component>
