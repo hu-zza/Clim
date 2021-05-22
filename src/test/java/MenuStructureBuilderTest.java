@@ -21,22 +21,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.menu.MenuStructure;
 import hu.zza.clim.MenuStructureBuilder;
+import hu.zza.clim.menu.MenuStructure;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.json.JSONObject;
 
 public class MenuStructureBuilderTest {
   public static void main(String[] args) throws IOException {
     Path structurePath = Path.of("src", "test", "resources", "MenuStructure.txt");
 
-    JSONObject menuStructure = new JSONObject(String.join("", Files.readAllLines(structurePath)));
 
     MenuStructure ms =
         new MenuStructureBuilder()
-            .setRawMenuStructure(menuStructure)
+            .setRawMenuStructure(String.join("", Files.readAllLines(structurePath)))
             .setLeaf("leaf1", a -> 0, "node2", "node3", "node1") // node2  pibling
             .setLeaf("leaf2", a -> 1, "node3", "node4", "node1") // node4  hidden top
             .setLeaf("leaf3", a -> 2, "node2", "node3", "node1") // node1  pibling

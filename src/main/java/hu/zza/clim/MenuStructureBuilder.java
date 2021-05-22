@@ -23,6 +23,11 @@
 
 package hu.zza.clim;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import hu.zza.clim.menu.LeafPosition;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
@@ -40,26 +45,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public final class MenuStructureBuilder {
   private final Set<String> nodePositions = new HashSet<>();
   private final Set<String> leafPositions = new HashSet<>();
+  private final ArrayList<String> linkBuffer = new ArrayList<>();
   private final Map<String, List<String>> nodeLinks = new HashMap<>();
   private final Map<String, List<String>> leafLinks = new HashMap<>();
   private final Map<String, Function<ProcessedInput, Integer>> leafFunction = new HashMap<>();
-  private JSONObject rawMenuStructure = new JSONObject("{\"root\":\"\"}");
-  private String initialPosition = "root";
+  private JsonObject rawMenuStructure = new JsonObject();
+  private String initialPosition = "";
   private MenuStructure menuStructure = new MenuStructure();
 
-  public MenuStructureBuilder setRawMenuStructure(String rawMenuStructure) throws JSONException {
+  public MenuStructureBuilder setRawMenuStructure(String rawMenuStructure)
+      throws JsonParseException {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
-    return setRawMenuStructure(new JSONObject(rawMenuStructure));
+    JsonObject jsonObject = new JsonObject();
+    return setRawMenuStructure(JsonParser.parseString(rawMenuStructure).getAsJsonObject());
   }
 
-  public MenuStructureBuilder setRawMenuStructure(JSONObject rawMenuStructure) {
+  public MenuStructureBuilder setRawMenuStructure(JsonObject rawMenuStructure) {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
     this.rawMenuStructure = rawMenuStructure;
     return this;
@@ -80,8 +85,8 @@ public final class MenuStructureBuilder {
   }
 
   public void clear() {
-    rawMenuStructure = new JSONObject("{\"root\":\"\"}");
-    initialPosition = "root";
+    rawMenuStructure = new JsonObject();
+    initialPosition = "";
     leafLinks.clear();
     leafFunction.clear();
     clearBuilt();
@@ -166,51 +171,53 @@ public final class MenuStructureBuilder {
                         .toArray(NodePosition[]::new))));
   }
 
-  private void extractNodesAndLeavesFrom(JSONObject jsonObject) throws JSONException {
-    String currentKey;
-    String currentClass;
-    ArrayList<String> linkBuffer = new ArrayList<>();
+  private void extractNodesAndLeavesFrom(JsonObject jsonObject) {
+    linkBuffer.clear();
+    List<String> keys = new ArrayList<>(jsonObject.keySet());
 
-    JSONArray keys = jsonObject.names();
-    if (keys == null) return;
+    if (!keys.isEmpty()) {
+      extractJsonObjectByKeys(jsonObject, keys);
+    }
+  }
 
-    for (int i = 0; i < keys.length(); i++) {
-      currentKey = keys.get(i).toString();
-      currentClass = jsonObject.get(currentKey).getClass().getName();
-      nodePositions.add(currentKey);
-
-      switch (currentClass) {
-        case "org.json.JSONObject":
-          extractNodesAndLeavesFrom((JSONObject) jsonObject.get(currentKey));
-          ((JSONObject) jsonObject.get(currentKey))
-              .names().toList().stream().map(String.class::cast).forEach(linkBuffer::add);
-          break;
-        case "org.json.JSONArray":
-          JSONArray array = (JSONArray) jsonObject.get(currentKey);
-
-          for (int j = 0; j < array.length(); j++) {
-            currentClass = array.get(j).getClass().getName();
-            if ("org.json.JSONObject".equals(currentClass)) {
-              extractNodesAndLeavesFrom((JSONObject) array.get(j));
-              ((JSONObject) array.get(j))
-                  .names().toList().stream().map(String.class::cast).forEach(linkBuffer::add);
-
-            } else if ("java.lang.String".equals(currentClass)) {
-              String str = array.get(j).toString();
-              leafPositions.add(str);
-              linkBuffer.add(str);
-            }
-          }
-          break;
-        case "java.lang.String":
-          String str = jsonObject.get(currentKey).toString();
-          leafPositions.add(str);
-          linkBuffer.add(str);
-          break;
-      }
-
-      nodeLinks.put(currentKey, List.copyOf(linkBuffer));
+  private void extractJsonObjectByKeys(JsonObject jsonObject, List<String> keys) {
+    for (String key : keys) {
+      nodePositions.add(key);
+      processJsonElement(jsonObject.get(key));
+      nodeLinks.put(key, List.copyOf(linkBuffer));
       linkBuffer.clear();
     }
+  }
+
+  private void processJsonElement(JsonElement item) {
+    if (item.isJsonObject()) {
+      processJsonObject(item.getAsJsonObject());
+    } else if (item.isJsonArray()) {
+      processJsonArray(item.getAsJsonArray());
+    } else if (item.isJsonPrimitive()) {
+      processLeafString(item.getAsString());
+    }
+  }
+
+  private void processJsonObject(JsonObject jsonObject) {
+    extractNodesAndLeavesFrom(jsonObject);
+    linkBuffer.addAll(jsonObject.keySet());
+  }
+
+  private void processJsonArray(JsonArray jsonArray) {
+    for (int j = 0; j < jsonArray.size(); j++) {
+      JsonElement item = jsonArray.get(j);
+
+      if (item.isJsonObject()) {
+        processJsonObject(item.getAsJsonObject());
+      } else if (item.isJsonPrimitive()) {
+        processLeafString(item.getAsString());
+      }
+    }
+  }
+
+  private void processLeafString(String leafString) {
+    leafPositions.add(leafString);
+    linkBuffer.add(leafString);
   }
 }
