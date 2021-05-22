@@ -5,6 +5,9 @@
       <module name="clim.java10" target="10" />
       <module name="clim.java12" target="12" />
       <module name="clim.java9" target="9" />
+      <module name="hu.zza.clim.java10" target="10" />
+      <module name="hu.zza.clim.java12" target="12" />
+      <module name="hu.zza.clim.java9" target="9" />
     </bytecodeTargetLevel>
   </component>
 </project>
