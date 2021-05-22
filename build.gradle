@@ -23,7 +23,7 @@
 
 plugins {
     id 'java'
-    id 'maven-publish'
+    id 'maven'
 }
 
 group = 'hu.zza'
