@@ -110,7 +110,7 @@ public class MenuBuilderTestInteractive {
     return 0;
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     waitingForUserInput = true;
     try (var scanner = new Scanner(System.in)) {
       while (waitingForUserInput) {

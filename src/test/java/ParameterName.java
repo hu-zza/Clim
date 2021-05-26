@@ -25,5 +25,5 @@ public enum ParameterName implements hu.zza.clim.parameter.ParameterName {
   COMMAND,
   NAME,
   VALUE,
-  DATE;
+  DATE
 }

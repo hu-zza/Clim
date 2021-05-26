@@ -26,5 +26,5 @@ package hu.zza.clim;
 public enum NavigationMode implements ClimOption {
   STANDARD,
   ARROWS,
-  SHORTCUTS;
+  SHORTCUTS
 }

@@ -58,7 +58,7 @@ public enum Message {
 
   private final String message;
 
-  ResourceBundle resourceBundle = ResourceBundle.getBundle("MessageTemplate", Locale.ENGLISH);
+  final ResourceBundle resourceBundle = ResourceBundle.getBundle("MessageTemplate", Locale.ENGLISH);
 
   Message() {
     this.message =

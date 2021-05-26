@@ -62,7 +62,6 @@ public final class MenuStructureBuilder {
   public MenuStructureBuilder setRawMenuStructure(String rawMenuStructure)
       throws JsonParseException {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
-    JsonObject jsonObject = new JsonObject();
     return setRawMenuStructure(JsonParser.parseString(rawMenuStructure).getAsJsonObject());
   }
 
