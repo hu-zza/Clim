@@ -155,7 +155,7 @@ public final class Menu {
           inputProcessorService.processInputRelatedToOptions(input, options));
     } catch (Exception e) {
       positionHistory.pollFirst();
-      warnAboutInput(input, e);
+      throw new ClimException(PROCESSING_FAILED.getMessage(input), e);
     }
   }
 
@@ -164,14 +164,6 @@ public final class Menu {
     position = menuStructure.get(selected).select(processedInput);
   }
 
-  private static void warnAboutInput(String input, Exception e) {
-    if (e.getMessage() != null) {
-      System.err.print(PROCESSING_FAILED.getMessage(input, e.getMessage()));
-    } else {
-      System.err.print(PROCESSING_FAILED.getMessage(input, ""));
-      e.printStackTrace();
-    }
-  }
 
   private Position returnValidatedPositionOrThrow(Position position) {
     refreshOptions();

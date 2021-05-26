@@ -21,25 +21,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id 'java'
-    id 'maven'
-}
+package hu.zza.clim;
 
-group = 'hu.zza'
-project.version = '0.3.1'
-sourceCompatibility = '11'
+public class ClimException extends RuntimeException {
 
-repositories {
-    mavenCentral()
-}
+  public ClimException() {
+    super();
+  }
 
-dependencies {
-    implementation 'com.google.code.gson:gson:2.8.6'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
+  public ClimException(String message) {
+    super(message);
+  }
 
-test {
-    useJUnitPlatform()
+  public ClimException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public ClimException(Throwable cause) {
+    super(cause);
+  }
 }

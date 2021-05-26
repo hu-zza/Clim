@@ -23,6 +23,8 @@
 
 package hu.zza.clim;
 
+import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -100,6 +102,14 @@ public final class MenuStructureBuilder {
   }
 
   public MenuStructure build() {
+    try {
+      return buildMenuStructure();
+    } catch (Exception e) {
+      throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()), e);
+    }
+  }
+
+  private MenuStructure buildMenuStructure() {
     clearBuilt();
     findAllNodesAndLeaves();
     checkBeforeBuild();

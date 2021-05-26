@@ -21,6 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import hu.zza.clim.ClimException;
 import hu.zza.clim.HeaderStyle;
 import hu.zza.clim.Menu;
 import hu.zza.clim.MenuBuilder;
@@ -115,7 +116,11 @@ public class MenuBuilderTestInteractive {
       while (waitingForUserInput) {
         menu.listOptions();
         if (scanner.hasNext()) {
-          menu.chooseOption(scanner.nextLine());
+          try {
+            menu.chooseOption(scanner.nextLine());
+          } catch (ClimException e) {
+            System.err.println(e.getMessage());
+          }
         } else {
           waitingForUserInput = false;
         }
