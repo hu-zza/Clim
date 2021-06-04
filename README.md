@@ -17,3 +17,10 @@ First of all, click on the badge of the current release:
 *(...and the site will help you to import it.)*  
 
 
+## Building the menu
+
+There are builders to make it quick and easy. The main steps:  
+
+- Building the structure of the menu
+- Building the parameter matcher *(optional)*
+- Building the menu with built components
