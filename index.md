@@ -24,6 +24,18 @@ There are builders to make it quick and easy. The main steps:
 - Building the menu with built components
 
 ### Building the structure of the menu
+```java
+    MenuStructure menuStructure =
+        new MenuStructureBuilder()
+            .setRawMenuStructure(
+                "{\"Shared Bills Splitter\" : [\"balance\", \"balancePerfect\", \"borrow\", \"cashBack\", "
+                    + "\"exit\", \"group\", \"help\", \"purchase\", \"repay\", \"secretSanta\", \"writeOff\"]}")
+            .setLeaf("exit", Console::exit, "Shared Bills Splitter")
+            .setLeaf("help", Console::help, "Shared Bills Splitter")
+            .setLeaf("balance", Ledger::getBalance, "Shared Bills Splitter")
+            // more and more .setLeaf()
+            .build();
+```
 
 ### Building the parameter matcher *(optional)*
 
