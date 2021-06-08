@@ -25,6 +25,11 @@ There are builders to make it quick and easy. The main steps:
 - Building the parameter matcher *(optional)*
 - Building the menu with built components
 
+### Building the structure of the menu
+
+### Building the parameter matcher *(optional)*
+
+### Building the menu with built components
 
 ## clim in action
 You can check the initialisation of **clim** in the project 'Shared Bills Splitter (Hyperskill)': [hu.zza.hyperskill.splitter.config](https://github.com/hu-zza/Shared_Bills_Splitter_-Hyperskill-/tree/master/src/main/java/hu/zza/hyperskill/splitter/config)
