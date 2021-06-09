@@ -70,7 +70,32 @@ the n-th forwarding node and navigates to it.
 In the code snippet *Date* and *Time* leaves' lambda returns with zero,  
 so *clim* chooses the one and only element from the forwarding list, *Flat Menu*.  
   
+```java
+import java.time.*;
 
+MenuStructure menuStructure =
+    new MenuStructureBuilder()
+        .setRawMenuStructure("{\"Double-decker\" : [
+            {\"Date & Time\" : [\"Date\", \"Time\", \"Double-decker\"]},
+            \"Help\",
+            \"Exit\"
+          ]}")
+        .setInitialPosition("Double-decker")
+        .setLeaf("Date", e -> {System.out.println(LocalDate.now()); return 0;}, "Double-decker", "Date & Time")
+        .setLeaf("Time", e -> {System.out.println(LocalTime.now()); return 1;}, "Double-decker", "Date & Time")
+        .setLeaf("Help", Console::help, "Flat Menu")
+        .setLeaf("Exit", Console::exit, "Flat Menu")
+        .build();
+```  
+* `Double-decker`
+  - `Date & Time`
+    + Date
+    + Time
+    + Double-decker (it's a pseudo-leaf, a link to the node)  
+  - Help
+  - Exit
+  
+  
 ### Building the parameter matcher *(optional)*
 
 ### Building the menu with built components
