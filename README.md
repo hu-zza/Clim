@@ -57,7 +57,7 @@ The code snippet above represents a very basic menu: one *node* and four *leaves
 In both cases the argument should represent a `com.google.gson.JsonObject`.  
 The keys of the JsonObject are the nodes, and the primitive values are leaves.
   
-`setInitialPosition` accepts a `java.lang.String` which should be the name of a node.
+`setInitialPosition` accepts a `java.lang.String` which should be the name of a node.  
 If there is only one node (like in the snippet), this method can be omitted.
   
 `setLeaf` parameters are:  
