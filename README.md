@@ -27,17 +27,51 @@ There are builders to make it quick and easy. The main steps:
 
 ### Building the structure of the menu
 ```java
-    MenuStructure menuStructure =
-        new MenuStructureBuilder()
-            .setRawMenuStructure(
-                "{\"Shared Bills Splitter\" : [\"balance\", \"balancePerfect\", \"borrow\", \"cashBack\", "
-                    + "\"exit\", \"group\", \"help\", \"purchase\", \"repay\", \"secretSanta\", \"writeOff\"]}")
-            .setLeaf("exit", Console::exit, "Shared Bills Splitter")
-            .setLeaf("help", Console::help, "Shared Bills Splitter")
-            .setLeaf("balance", Ledger::getBalance, "Shared Bills Splitter")
-            // more and more .setLeaf()
-            .build();
-```
+import java.time.*;
+
+MenuStructure menuStructure =
+    new MenuStructureBuilder()
+        .setRawMenuStructure("{\"Flat Menu\" : [\"Date\", \"Time\", \"Help\", \"Exit\"]}")
+        .setInitialPosition("Flat Menu")
+        .setLeaf("Date", e -> {System.out.println(LocalDate.now()); return 0;}, "Flat Menu")
+        .setLeaf("Time", e -> {System.out.println(LocalTime.now()); return 0;}, "Flat Menu")
+        .setLeaf("Help", Console::help, "Flat Menu")
+        .setLeaf("Exit", Console::exit, "Flat Menu")
+        .build();
+```  
+  
+The code snippet above represents a very basic menu: one *node* and four *leaves*:  
+  
+* `Flat Menu`
+  - Date
+  - Time
+  - Help
+  - Exit
+
+**Please note, in *clim* a leaf is not a node:**  
+*Nodes* are "walkable" points without functionality.  
+*Leaves* are function representations without "real" position.  
+  
+`setRawMenuStructure` accepts either a `com.google.gson.JsonObject` or a `java.lang.String`.  
+(The String should be a valid JSON text which is processable by `com.google.gson.JsonParser`.)  
+In both cases the argument should represent a `com.google.gson.JsonObject`.  
+The keys of the JsonObject are the nodes, and the primitive values are leaves.
+  
+`setInitialPosition` accepts a `java.lang.String` which should be the name of a node.
+If there is only one node (like in the snippet), this method can be omitted.
+  
+`setLeaf` parameters are:  
+  - `java.lang.String` // the name of the leaf  
+  - `java.util.function.Function<hu.zza.clim.menu.ProcessedInput, java.lang.Integer>` // the functionality  
+  - `java.lang.String...` // one or more node name -> the possible forwarding destination(s)  
+
+If the user choose a leaf, *clim* calls its function (with the processed input),  
+and in according to the functions result (returning integer), *clim* chooses  
+the n-th forwarding node and navigates to it.  
+
+In the code snippet *Date* and *Time* leaves' lambda returns with zero,  
+so *clim* chooses the one and only element from the forwarding list, *Flat Menu*.  
+  
 
 ### Building the parameter matcher *(optional)*
 
