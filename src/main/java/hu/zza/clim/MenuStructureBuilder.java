@@ -122,6 +122,47 @@ public final class MenuStructureBuilder {
     leafPositions.removeAll(nodePositions);
   }
 
+  private void extractNodesAndLeavesFrom(JsonObject jsonObject) {
+    for (String key : jsonObject.keySet()) {
+      linkBuffer.clear();
+      nodePositions.add(key);
+      processJsonElement(jsonObject.get(key));
+      nodeLinks.put(key, List.copyOf(linkBuffer));
+    }
+  }
+
+  private void processJsonElement(JsonElement item) {
+    if (item.isJsonObject()) {
+      processJsonObject(item.getAsJsonObject());
+    } else if (item.isJsonArray()) {
+      processJsonArray(item.getAsJsonArray());
+    } else if (item.isJsonPrimitive()) {
+      processLeafString(item.getAsString());
+    }
+  }
+
+  private void processJsonObject(JsonObject jsonObject) {
+    extractNodesAndLeavesFrom(jsonObject);
+    linkBuffer.addAll(jsonObject.keySet());
+  }
+
+  private void processJsonArray(JsonArray jsonArray) {
+    for (int j = 0; j < jsonArray.size(); j++) {
+      JsonElement item = jsonArray.get(j);
+
+      if (item.isJsonObject()) {
+        processJsonObject(item.getAsJsonObject());
+      } else if (item.isJsonPrimitive()) {
+        processLeafString(item.getAsString());
+      }
+    }
+  }
+
+  private void processLeafString(String leafString) {
+    leafPositions.add(leafString);
+    linkBuffer.add(leafString);
+  }
+
   private void checkBeforeBuild() {
     checkNodes();
     checkInitialPosition();
@@ -135,7 +176,7 @@ public final class MenuStructureBuilder {
 
   private void checkInitialPosition() {
     if (nodePositions.size() == 1) {
-      initialPosition = String.valueOf(nodePositions.toArray()[0]);
+      initialPosition = nodePositions.toArray(new String[0])[0];
     }
 
     if (!nodePositions.contains(initialPosition)) {
@@ -178,55 +219,5 @@ public final class MenuStructureBuilder {
                         .filter(nodePositions::contains)
                         .map(nodeMap::get)
                         .toArray(NodePosition[]::new))));
-  }
-
-  private void extractNodesAndLeavesFrom(JsonObject jsonObject) {
-    linkBuffer.clear();
-    List<String> keys = new ArrayList<>(jsonObject.keySet());
-
-    if (!keys.isEmpty()) {
-      extractJsonObjectByKeys(jsonObject, keys);
-    }
-  }
-
-  private void extractJsonObjectByKeys(JsonObject jsonObject, List<String> keys) {
-    for (String key : keys) {
-      nodePositions.add(key);
-      processJsonElement(jsonObject.get(key));
-      nodeLinks.put(key, List.copyOf(linkBuffer));
-      linkBuffer.clear();
-    }
-  }
-
-  private void processJsonElement(JsonElement item) {
-    if (item.isJsonObject()) {
-      processJsonObject(item.getAsJsonObject());
-    } else if (item.isJsonArray()) {
-      processJsonArray(item.getAsJsonArray());
-    } else if (item.isJsonPrimitive()) {
-      processLeafString(item.getAsString());
-    }
-  }
-
-  private void processJsonObject(JsonObject jsonObject) {
-    extractNodesAndLeavesFrom(jsonObject);
-    linkBuffer.addAll(jsonObject.keySet());
-  }
-
-  private void processJsonArray(JsonArray jsonArray) {
-    for (int j = 0; j < jsonArray.size(); j++) {
-      JsonElement item = jsonArray.get(j);
-
-      if (item.isJsonObject()) {
-        processJsonObject(item.getAsJsonObject());
-      } else if (item.isJsonPrimitive()) {
-        processLeafString(item.getAsString());
-      }
-    }
-  }
-
-  private void processLeafString(String leafString) {
-    leafPositions.add(leafString);
-    linkBuffer.add(leafString);
   }
 }
