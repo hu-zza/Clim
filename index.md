@@ -20,7 +20,10 @@ First of all, click on the badge of the current release:
 There are builders to make it quick and easy. The main steps:  
 
 - Building the structure of the menu
-- Building the parameter matcher *(optional)*
+- *Only for parametric menus*
+  - Defining the enum for parameter names
+  - Defining Parameter objects
+  - Building the parameter matcher
 - Building the menu with built components
 
 ### Building the structure of the menu
@@ -94,11 +97,27 @@ MenuStructure menuStructure =
     + Double-decker (it's a pseudo-leaf, a link to the node)  
   - Help
   - Exit
-  
-  
-### Building the parameter matcher *(optional)*
+
+### *Only for parametric menus*  
+Coming soon...  
 
 ### Building the menu with built components
+
+```java
+Menu menu =
+  new MenuBuilder()
+    .setMenuStructure(menuStructure)
+    .setClimOptions(UserInterface.NOMINAL, HeaderStyle.STANDARD)
+    .build();
+```
+
+## Using the menu
+
+The hu.zza.clim.Menu has the following public methods:
+  - chooseOption(String)
+  - listOptions()
+  - printLicense()
+  - printShortLicense()
 
 ## clim in action
 You can check the initialisation of **clim** in the project 'Shared Bills Splitter (Hyperskill)': [hu.zza.hyperskill.splitter.config](https://github.com/hu-zza/Shared_Bills_Splitter_-Hyperskill-/tree/master/src/main/java/hu/zza/hyperskill/splitter/config)
