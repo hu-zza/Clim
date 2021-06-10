@@ -113,9 +113,14 @@ Menu menu =
     .build();
 ```
 
+Building the *Flat Menu* or the *Double-decker* is as easy as this snippet shows.  
+After setting the built `hu.zza.clim.menu.MenuStructure`, you should specify the options.  
+In this case the menu is nominal, the user should type the whole name of the node / leaf.
+
+
 ## Using the menu
 
-The hu.zza.clim.Menu has the following public methods:
+The `hu.zza.clim.Menu` has the following public methods:
   - chooseOption(String)
   - listOptions()
   - printLicense()
