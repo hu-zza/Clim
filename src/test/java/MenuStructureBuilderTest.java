@@ -22,34 +22,74 @@
  */
 
 import hu.zza.clim.MenuStructureBuilder;
-import hu.zza.clim.menu.MenuStructure;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MenuStructureBuilderTest {
-  public static void main(String[] args) throws IOException {
-    Path structurePath = Path.of("src", "test", "resources", "MenuStructure.txt");
-
-
-    MenuStructure ms =
-        new MenuStructureBuilder()
-            .setRawMenuStructure(String.join("", Files.readAllLines(structurePath)))
-            .setLeaf("leaf1", a -> 0, "node2", "node3", "node1") // node2  pibling
-            .setLeaf("leaf2", a -> 1, "node3", "node4", "node1") // node4  hidden top
-            .setLeaf("leaf3", a -> 2, "node2", "node3", "node1") // node1  pibling
-            .setLeaf("leaf4", a -> 0, "root", "node1", "node2") // root   great-grandparent
-            .setLeaf("leaf5", a -> 1, "node2", "node3", "node1") // node3  sibling
-            .setLeaf("leaf6", a -> 2, "node4", "node7", "node9") // node9  hidden bottom
-            .setLeaf("leaf7", a -> 0, "root", "node3", "node1") // root   parent
-            .setLeaf("leaf8", a -> 1, "node2", "root", "node1") // root   great-grandparent
-            .setLeaf("leaf9", a -> 2, "root", "node3", "node10") // node10 first-cousin once removed
-            .setLeaf("leaf10", a -> 0, "node5") // node5  pibling
-            .setLeaf("leaf11", a -> 1, "node2", "node3", "root") // node3  visible bottom
-            .setLeaf("leaf12", a -> 2, "node2", "root", "node5") // node5  pibling
-            .build();
-
-    System.out.println(ms);
-
+  private static final Logger logger = Logger.getLogger("MenuStructureBuilderTest");
+  static {
+    logger.setLevel(Level.WARNING);
   }
+
+  private static final Path structurePath = Path.of("src", "test", "resources", "MenuStructure.txt");
+  private static final MenuStructureBuilder builder = new MenuStructureBuilder();
+  private static String rawMenuStructure;
+
+
+  @BeforeEach
+  void resetAll() {
+    builder.clear();
+    resetRawMenuStructure();
+  }
+
+  private static void resetRawMenuStructure() {
+    try {
+      rawMenuStructure = String.join("", Files.readAllLines(structurePath));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
+  void testMissingSettings() {
+    for (int i = 0; i < 7; i++) {
+      builder.clear();
+      if (i % 2 == 1) {
+        builder.setRawMenuStructure(rawMenuStructure);
+      }
+
+      if ((i>>1) % 2 == 1) {
+        builder.setInitialPosition("node2");
+      }
+
+      if ((i>>2) % 2 == 1) {
+        setLeaves();
+      }
+      Assertions.assertThrows(IllegalArgumentException.class, builder::build);
+      logger.info("#" + i + " iteration: OK");
+    }
+  }
+
+  private void setLeaves() {
+    builder
+        .setLeaf("leaf1", a -> 0, "node2", "node3", "node1")
+        .setLeaf("leaf2", a -> 1, "node3", "node4", "node1")
+        .setLeaf("leaf3", a -> 2, "node2", "node3", "node1")
+        .setLeaf("leaf4", a -> 0, "root", "node1", "node2")
+        .setLeaf("leaf5", a -> 1, "node2", "node3", "node1")
+        .setLeaf("leaf6", a -> 2, "node4", "node7", "node9")
+        .setLeaf("leaf7", a -> 0, "root", "node3", "node1")
+        .setLeaf("leaf8", a -> 1, "node2", "root", "node1")
+        .setLeaf("leaf9", a -> 2, "root", "node3", "node10")
+        .setLeaf("leaf10", a -> 0, "node5")
+        .setLeaf("leaf11", a -> 1, "node2", "node3", "root")
+        .setLeaf("leaf12", a -> 2, "node2", "root", "node5");
+  }
+
 }

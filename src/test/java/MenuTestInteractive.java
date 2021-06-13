@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.function.Function;
 
-public class MenuBuilderTestInteractive {
+public class MenuTestInteractive {
 
   private static boolean waitingForUserInput;
 
