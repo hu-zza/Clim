@@ -21,7 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.ClimException;
+package hu.zza.clim;import hu.zza.clim.ClimException;
 import hu.zza.clim.HeaderStyle;
 import hu.zza.clim.Menu;
 import hu.zza.clim.MenuBuilder;

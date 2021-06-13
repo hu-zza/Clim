@@ -21,7 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-public enum ParameterName implements hu.zza.clim.parameter.ParameterName {
+package hu.zza.clim;public enum ParameterName implements hu.zza.clim.parameter.ParameterName {
   COMMAND,
   NAME,
   VALUE,

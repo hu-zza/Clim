@@ -21,9 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import hu.zza.clim.ClimException;
-import hu.zza.clim.MenuStructureBuilder;
-import java.io.IOException;
+package hu.zza.clim;import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
