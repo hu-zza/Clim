@@ -25,30 +25,22 @@ import hu.zza.clim.MenuStructureBuilder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MenuStructureBuilderTest {
-  private static final Logger logger = Logger.getLogger("MenuStructureBuilderTest");
-  static {
-    logger.setLevel(Level.WARNING);
-  }
-
   private static final Path structurePath = Path.of("src", "test", "resources", "MenuStructure.txt");
   private static final MenuStructureBuilder builder = new MenuStructureBuilder();
   private static String rawMenuStructure;
 
-
   @BeforeEach
   void resetAll() {
     builder.clear();
-    resetRawMenuStructure();
+    resetRawMenuStructureString();
   }
 
-  private static void resetRawMenuStructure() {
+  private static void resetRawMenuStructureString() {
     try {
       rawMenuStructure = String.join("", Files.readAllLines(structurePath));
     } catch (IOException e) {
@@ -72,7 +64,6 @@ public class MenuStructureBuilderTest {
         setLeaves();
       }
       Assertions.assertThrows(IllegalArgumentException.class, builder::build);
-      logger.info("#" + i + " iteration: OK");
     }
   }
 
@@ -91,5 +82,29 @@ public class MenuStructureBuilderTest {
         .setLeaf("leaf11", a -> 1, "node2", "node3", "root")
         .setLeaf("leaf12", a -> 2, "node2", "root", "node5");
   }
+
+  @Test
+  void testWrongInitialPosition() {
+    setBuilderCompletely();
+    builder.setInitialPosition("NOWHERE");
+    Assertions.assertThrows(IllegalArgumentException.class, builder::build);
+  }
+
+  private void setBuilderCompletely() {
+    builder.setRawMenuStructure(rawMenuStructure);
+    builder.setInitialPosition("node3");
+    setLeaves();
+  }
+
+  @Test
+  void testWrongLeafLinks() {
+    setBuilderCompletely();
+    // missing links
+    Assertions.assertThrows(IllegalArgumentException.class, () -> builder.setLeaf("leaf3", a -> 2));
+    // not valid, throws @ build()
+    Assertions.assertDoesNotThrow(() -> builder.setLeaf("leaf3", a -> 2, "IN", "VALID"));
+    Assertions.assertThrows(IllegalArgumentException.class, builder::build);
+  }
+
 
 }

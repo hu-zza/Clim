@@ -34,6 +34,7 @@ import hu.zza.clim.menu.LeafPosition;
 import hu.zza.clim.menu.MenuEntry.Leaf;
 import hu.zza.clim.menu.MenuEntry.Node;
 import hu.zza.clim.menu.MenuStructure;
+import hu.zza.clim.menu.Message;
 import hu.zza.clim.menu.NodePosition;
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
@@ -58,6 +59,8 @@ public final class MenuStructureBuilder {
   private JsonObject rawMenuStructure = new JsonObject();
   private String initialPosition = "";
   private MenuStructure menuStructure = new MenuStructure();
+  private Map<String, NodePosition> nodeMap;
+  private Map<String, LeafPosition> leafMap;
 
   public MenuStructureBuilder setRawMenuStructure(String rawMenuStructure)
       throws JsonParseException {
@@ -80,9 +83,16 @@ public final class MenuStructureBuilder {
   public MenuStructureBuilder setLeaf(
       String name, Function<ProcessedInput, Integer> function, String... links) {
     Util.assertNonNull(Map.of("name", name, "function", function, "links", links));
+    checkLinksPresence(links);
     leafFunction.put(name, function);
     leafLinks.put(name, Arrays.asList(links));
     return this;
+  }
+
+  private void checkLinksPresence(String[] links) {
+    if (links.length == 0) {
+      throw new IllegalArgumentException(Message.INVALID_NONEMPTY_ARGUMENT.getMessage("links"));
+    }
   }
 
   public void clear() {
@@ -112,6 +122,7 @@ public final class MenuStructureBuilder {
     clearBuilt();
     findAllNodesAndLeaves();
     checkBeforeBuild();
+    buildNameMaps();
     buildStructure();
     menuStructure.setFinalized();
     return menuStructure;
@@ -184,16 +195,19 @@ public final class MenuStructureBuilder {
     }
   }
 
-  private void buildStructure() {
-    Map<String, NodePosition> nodeMap =
+  private void buildNameMaps() {
+    nodeMap =
         nodePositions.stream()
             .map(NodePosition::new)
             .collect(Collectors.toMap(Position::getName, Function.identity()));
 
-    Map<String, LeafPosition> leafMap =
+    leafMap =
         leafPositions.stream()
             .map(LeafPosition::new)
             .collect(Collectors.toMap(Position::getName, Function.identity()));
+  }
+
+  private void buildStructure() {
 
     menuStructure.setInitialPosition(nodeMap.get(initialPosition));
 
@@ -204,7 +218,7 @@ public final class MenuStructureBuilder {
                     nodeMap.get(e),
                     e,
                     nodeLinks.get(e).stream()
-                        .map(f -> nodeMap.containsKey(f) ? nodeMap.get(f) : leafMap.get(f))
+                        .map(getPositionByNameFunction())
                         .map(Position.class::cast)
                         .toArray(Position[]::new))));
 
@@ -216,8 +230,29 @@ public final class MenuStructureBuilder {
                     e,
                     leafFunction.get(e),
                     leafLinks.get(e).stream()
-                        .filter(nodePositions::contains)
-                        .map(nodeMap::get)
+                        .map(getNodePositionByNameFunction())
                         .toArray(NodePosition[]::new))));
+  }
+
+  private Function<String, Position> getPositionByNameFunction() {
+    return f -> {
+      if (nodeMap.containsKey(f)) {
+        return nodeMap.get(f);
+      } else if (leafMap.containsKey(f)) {
+        return leafMap.get(f);
+      } else {
+        throw new IllegalArgumentException();
+      }
+    };
+  }
+
+  private Function<String, NodePosition> getNodePositionByNameFunction() {
+    return f -> {
+      if (nodeMap.containsKey(f)) {
+        return nodeMap.get(f);
+      } else {
+        throw new IllegalArgumentException();
+      }
+    };
   }
 }
