@@ -23,8 +23,8 @@
 
 package hu.zza.clim.menu.component.in;
 
-import static hu.zza.clim.menu.Message.INVALID_POSITION;
-import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
+import static hu.zza.clim.menu.Message.INVALID_MENU_POSITION;
+import static hu.zza.clim.menu.Message.UNKNOWN_MENU_COMMAND;
 
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
@@ -42,7 +42,7 @@ public final class OrdinalInputProcessor implements InputProcessorService {
     try {
       return Integer.parseInt(input);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
+      throw new IllegalArgumentException(UNKNOWN_MENU_COMMAND.getMessage(input));
     }
   }
 
@@ -50,6 +50,6 @@ public final class OrdinalInputProcessor implements InputProcessorService {
     if (0 <= ordinal && ordinal < options.length) {
       return options[ordinal];
     }
-    throw new IllegalArgumentException(INVALID_POSITION.getMessage(ordinal));
+    throw new IllegalArgumentException(INVALID_MENU_POSITION.getMessage(ordinal));
   }
 }

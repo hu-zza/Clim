@@ -24,6 +24,10 @@
 package hu.zza.clim;
 
 import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
+import static hu.zza.clim.menu.Message.INVALID_INITIAL_POSITION;
+import static hu.zza.clim.menu.Message.INVALID_LEAF_POSITION;
+import static hu.zza.clim.menu.Message.INVALID_NODE_POSITION;
+import static hu.zza.clim.menu.Message.INVALID_POSITION;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -52,6 +56,8 @@ import java.util.stream.Collectors;
 public final class MenuStructureBuilder {
   private final Set<String> nodePositions = new HashSet<>();
   private final Set<String> leafPositions = new HashSet<>();
+  private final Map<String, NodePosition> nodeMap = new HashMap<>();
+  private final Map<String, LeafPosition> leafMap = new HashMap<>();
   private final ArrayList<String> linkBuffer = new ArrayList<>();
   private final Map<String, List<String>> nodeLinks = new HashMap<>();
   private final Map<String, List<String>> leafLinks = new HashMap<>();
@@ -59,27 +65,44 @@ public final class MenuStructureBuilder {
   private JsonObject rawMenuStructure = new JsonObject();
   private String initialPosition = "";
   private MenuStructure menuStructure = new MenuStructure();
-  private Map<String, NodePosition> nodeMap;
-  private Map<String, LeafPosition> leafMap;
 
+  /**
+   * @param rawMenuStructure
+   * @return
+   * @throws JsonParseException
+   */
   public MenuStructureBuilder setRawMenuStructure(String rawMenuStructure)
       throws JsonParseException {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
     return setRawMenuStructure(JsonParser.parseString(rawMenuStructure).getAsJsonObject());
   }
 
+  /**
+   * @param rawMenuStructure
+   * @return
+   */
   public MenuStructureBuilder setRawMenuStructure(JsonObject rawMenuStructure) {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
     this.rawMenuStructure = rawMenuStructure;
     return this;
   }
 
+  /**
+   * @param initialPosition
+   * @return
+   */
   public MenuStructureBuilder setInitialPosition(String initialPosition) {
     Util.assertNonNull("initialPosition", initialPosition);
     this.initialPosition = initialPosition;
     return this;
   }
 
+  /**
+   * @param name
+   * @param function
+   * @param links
+   * @return
+   */
   public MenuStructureBuilder setLeaf(
       String name, Function<ProcessedInput, Integer> function, String... links) {
     Util.assertNonNull(Map.of("name", name, "function", function, "links", links));
@@ -91,43 +114,51 @@ public final class MenuStructureBuilder {
 
   private void checkLinksPresence(String[] links) {
     if (links.length == 0) {
-      throw new IllegalArgumentException(Message.INVALID_NONEMPTY_ARGUMENT.getMessage("links"));
+      throw new ClimException(Message.INVALID_NONEMPTY_ARGUMENT.getMessage("links"));
     }
   }
 
+  /** */
   public void clear() {
     rawMenuStructure = new JsonObject();
     initialPosition = "";
-    leafLinks.clear();
     leafFunction.clear();
+    leafLinks.clear();
     clearBuilt();
   }
 
   private void clearBuilt() {
     nodePositions.clear();
     leafPositions.clear();
+    nodeMap.clear();
+    leafMap.clear();
     nodeLinks.clear();
     menuStructure = new MenuStructure();
   }
 
+  /** @return */
   public MenuStructure build() {
     try {
       return buildMenuStructure();
     } catch (Exception e) {
-      throw new IllegalArgumentException(INITIALIZATION_FAILED.getMessage(e.getMessage()), e);
+      throw new ClimException(INITIALIZATION_FAILED.getMessage(e.getMessage()), e);
     }
   }
 
   private MenuStructure buildMenuStructure() {
     clearBuilt();
     findAllNodesAndLeaves();
-    checkBeforeBuild();
-    buildNameMaps();
+    inferInitialPosition();
+    checkInitialPosition();
+    buildNameMapsFromNameSets();
     buildStructure();
-    menuStructure.setFinalized();
     return menuStructure;
   }
 
+  /**
+   * Process the {@code rawMenuStructure} and prepare objects for menu building.
+   * The prepared objects are nodePositions, nodeLinks, leafPositions.
+   */
   private void findAllNodesAndLeaves() {
     extractNodesAndLeavesFrom(rawMenuStructure);
     leafPositions.removeAll(nodePositions);
@@ -174,64 +205,54 @@ public final class MenuStructureBuilder {
     linkBuffer.add(leafString);
   }
 
-  private void checkBeforeBuild() {
-    checkNodes();
-    checkInitialPosition();
-  }
-
-  private void checkNodes() {
-    if (nodePositions.size() == 0) {
-      throw new IllegalStateException("There are no node positions.");
+  private void inferInitialPosition() {
+    if (nodePositions.size() == 1) {
+      initialPosition = nodePositions.toArray(new String[0])[0];
     }
   }
 
   private void checkInitialPosition() {
-    if (nodePositions.size() == 1) {
-      initialPosition = nodePositions.toArray(new String[0])[0];
-    }
-
     if (!nodePositions.contains(initialPosition)) {
-      throw new IllegalStateException("Initial position is invalid. No such node is there.");
+      throw new IllegalStateException(INVALID_INITIAL_POSITION.getMessage(initialPosition));
     }
   }
 
-  private void buildNameMaps() {
-    nodeMap =
+  /**
+   * Create real {@link Position} objects from String sets and store them in String-keyed maps.
+   */
+  private void buildNameMapsFromNameSets() {
+    nodeMap.putAll(
         nodePositions.stream()
             .map(NodePosition::new)
-            .collect(Collectors.toMap(Position::getName, Function.identity()));
+            .collect(Collectors.toMap(Position::getName, Function.identity())));
 
-    leafMap =
+    leafMap.putAll(
         leafPositions.stream()
             .map(LeafPosition::new)
-            .collect(Collectors.toMap(Position::getName, Function.identity()));
+            .collect(Collectors.toMap(Position::getName, Function.identity())));
   }
 
   private void buildStructure() {
-
     menuStructure.setInitialPosition(nodeMap.get(initialPosition));
+    createNodesAndAddToMenuStructure();
+    createLeavesAndAddToMenuStructure();
+    menuStructure.setFinalized();
+  }
 
+  private void createNodesAndAddToMenuStructure() {
     nodePositions.forEach(
-        e ->
-            menuStructure.put(
-                new Node(
-                    nodeMap.get(e),
-                    e,
-                    nodeLinks.get(e).stream()
-                        .map(getPositionByNameFunction())
-                        .map(Position.class::cast)
-                        .toArray(Position[]::new))));
+        e -> menuStructure.put(new Node(nodeMap.get(e), e, getLinksArrayByNodeName(e))));
+  }
 
-    leafPositions.forEach(
-        e ->
-            menuStructure.put(
-                new Leaf(
-                    leafMap.get(e),
-                    e,
-                    leafFunction.get(e),
-                    leafLinks.get(e).stream()
-                        .map(getNodePositionByNameFunction())
-                        .toArray(NodePosition[]::new))));
+  private Position[] getLinksArrayByNodeName(String key) {
+    if (nodeLinks.get(key) == null) {
+      throw new IllegalStateException(INVALID_NODE_POSITION.getMessage(key));
+    }
+
+    return nodeLinks.get(key).stream()
+        .map(getPositionByNameFunction())
+        .map(Position.class::cast)
+        .toArray(Position[]::new);
   }
 
   private Function<String, Position> getPositionByNameFunction() {
@@ -241,9 +262,26 @@ public final class MenuStructureBuilder {
       } else if (leafMap.containsKey(f)) {
         return leafMap.get(f);
       } else {
-        throw new IllegalArgumentException();
+        throw new IllegalStateException(INVALID_POSITION.getMessage(f));
       }
     };
+  }
+
+  private void createLeavesAndAddToMenuStructure() {
+    leafPositions.forEach(
+        e ->
+            menuStructure.put(
+                new Leaf(leafMap.get(e), e, leafFunction.get(e), getLinksArrayByLeafName(e))));
+  }
+
+  private NodePosition[] getLinksArrayByLeafName(String key) {
+    if (leafLinks.get(key) == null) {
+      throw new IllegalStateException(INVALID_LEAF_POSITION.getMessage(key));
+    }
+
+    return leafLinks.get(key).stream()
+        .map(getNodePositionByNameFunction())
+        .toArray(NodePosition[]::new);
   }
 
   private Function<String, NodePosition> getNodePositionByNameFunction() {
@@ -251,7 +289,7 @@ public final class MenuStructureBuilder {
       if (nodeMap.containsKey(f)) {
         return nodeMap.get(f);
       } else {
-        throw new IllegalArgumentException();
+        throw new IllegalStateException(INVALID_LEAF_POSITION.getMessage(f));
       }
     };
   }

@@ -23,28 +23,29 @@
 
 package hu.zza.clim.menu;
 
+import hu.zza.clim.ClimException;
 import java.util.Map;
 
 public abstract class Util {
 
-  public static void assertNonNull(String parameterName, Object parameter) {
-    assertNonNull(parameterName, parameter, Message.INVALID_NONNULL_ARGUMENT);
+  public static void assertNonNull(String variableName, Object variable) {
+    assertNonNull(variableName, variable, Message.INVALID_NONNULL_ARGUMENT);
   }
 
-  public static void assertNonNull(String parameterName, Object parameter, Message errorMessage) {
-    if (parameter == null) {
-      throw new IllegalArgumentException(errorMessage.getMessage(parameterName));
+  public static void assertNonNull(String variableName, Object variable, Message errorMessage) {
+    if (variable == null) {
+      throw new ClimException(errorMessage.getMessage(variableName));
     }
   }
 
-  public static void assertNonNull(Map<String, Object> parameters) {
-    assertNonNull(parameters, Message.INVALID_NONNULL_ARGUMENT);
+  public static void assertNonNull(Map<String, Object> variables) {
+    assertNonNull(variables, Message.INVALID_NONNULL_ARGUMENT);
   }
 
-  public static void assertNonNull(Map<String, Object> parameters, Message errorMessage) {
-    for (var entry : parameters.entrySet()) {
+  public static void assertNonNull(Map<String, Object> variables, Message errorMessage) {
+    for (var entry : variables.entrySet()) {
       if (entry.getValue() == null) {
-        throw new IllegalArgumentException(errorMessage.getMessage(entry.getKey()));
+        throw new ClimException(errorMessage.getMessage(entry.getKey()));
       }
     }
   }

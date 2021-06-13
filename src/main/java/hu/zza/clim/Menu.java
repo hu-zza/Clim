@@ -24,7 +24,7 @@
 package hu.zza.clim;
 
 import static hu.zza.clim.menu.Message.GNU_GPL;
-import static hu.zza.clim.menu.Message.INVALID_POSITION;
+import static hu.zza.clim.menu.Message.INVALID_MENU_POSITION;
 import static hu.zza.clim.menu.Message.PROCESSING_FAILED;
 import static hu.zza.clim.menu.Message.SHORT_LICENSE;
 
@@ -170,7 +170,7 @@ public final class Menu {
     if (Arrays.asList(options).contains(position)) {
       return position;
     }
-    throw new IllegalArgumentException(INVALID_POSITION.getMessage(position.getName()));
+    throw new IllegalArgumentException(INVALID_MENU_POSITION.getMessage(position.getName()));
   }
 
   /** Prints short license information about clim. */

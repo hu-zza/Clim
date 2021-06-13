@@ -23,7 +23,7 @@
 
 package hu.zza.clim.menu.component.in;
 
-import static hu.zza.clim.menu.Message.UNKNOWN_COMMAND;
+import static hu.zza.clim.menu.Message.UNKNOWN_MENU_COMMAND;
 
 import hu.zza.clim.menu.Position;
 import hu.zza.clim.menu.ProcessedInput;
@@ -40,6 +40,6 @@ public final class NominalInputProcessor implements InputProcessorService {
     if (Position.existsByName(input)) {
       return Position.getByName(input);
     }
-    throw new IllegalArgumentException(UNKNOWN_COMMAND.getMessage(input));
+    throw new IllegalArgumentException(UNKNOWN_MENU_COMMAND.getMessage(input));
   }
 }

@@ -21,6 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import hu.zza.clim.ClimException;
 import hu.zza.clim.MenuStructureBuilder;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -63,7 +64,7 @@ public class MenuStructureBuilderTest {
       if ((i>>2) % 2 == 1) {
         setLeaves();
       }
-      Assertions.assertThrows(IllegalArgumentException.class, builder::build);
+      Assertions.assertThrows(ClimException.class, builder::build);
     }
   }
 
@@ -87,7 +88,7 @@ public class MenuStructureBuilderTest {
   void testWrongInitialPosition() {
     setBuilderCompletely();
     builder.setInitialPosition("NOWHERE");
-    Assertions.assertThrows(IllegalArgumentException.class, builder::build);
+    Assertions.assertThrows(ClimException.class, builder::build);
   }
 
   private void setBuilderCompletely() {
@@ -97,14 +98,38 @@ public class MenuStructureBuilderTest {
   }
 
   @Test
+  void testMissingLeaf() {
+    builder.setRawMenuStructure(rawMenuStructure);
+    builder.setInitialPosition("node3");
+    builder
+        .setLeaf("leaf1", a -> 0, "node2", "node3", "node1")
+        .setLeaf("leaf2", a -> 1, "node3", "node4", "node1")
+        .setLeaf("leaf3", a -> 2, "node2", "node3", "node1")
+        .setLeaf("leaf4", a -> 0, "root", "node1", "node2")
+        .setLeaf("leaf5", a -> 1, "node2", "node3", "node1")
+        .setLeaf("leaf6", a -> 2, "node4", "node7", "node9")
+        .setLeaf("leaf7", a -> 0, "root", "node3", "node1")
+        //.setLeaf("leaf8", a -> 1, "node2", "root", "node1")
+        .setLeaf("leaf9", a -> 2, "root", "node3", "node10")
+        .setLeaf("leaf10", a -> 0, "node5")
+        .setLeaf("leaf11", a -> 1, "node2", "node3", "root")
+        .setLeaf("leaf12", a -> 2, "node2", "root", "node5");
+    Assertions.assertThrows(ClimException.class, builder::build);
+  }
+
+  @Test
+  void testWrongLeafName() {
+    setBuilderCompletely();
+    Assertions.assertDoesNotThrow(() -> builder.setLeaf("INVALID", a -> 0, "node1", "node2"));
+  }
+
+  @Test
   void testWrongLeafLinks() {
     setBuilderCompletely();
     // missing links
-    Assertions.assertThrows(IllegalArgumentException.class, () -> builder.setLeaf("leaf3", a -> 2));
+    Assertions.assertThrows(ClimException.class, () -> builder.setLeaf("leaf3", a -> 2));
     // not valid, throws @ build()
-    Assertions.assertDoesNotThrow(() -> builder.setLeaf("leaf3", a -> 2, "IN", "VALID"));
-    Assertions.assertThrows(IllegalArgumentException.class, builder::build);
+    Assertions.assertDoesNotThrow(() -> builder.setLeaf("leaf3", a -> 0, "INVALID"));
+    Assertions.assertThrows(ClimException.class, builder::build);
   }
-
-
 }

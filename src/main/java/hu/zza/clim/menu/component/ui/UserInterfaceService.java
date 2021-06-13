@@ -70,7 +70,7 @@ public abstract class UserInterfaceService {
 
   void printWarningIfEmpty(List<String> options) {
     if (options.isEmpty()) {
-      System.out.println(Message.NO_OPTIONS.getMessage());
+      System.out.println(Message.NO_MENU_OPTIONS.getMessage());
     }
   }
 }

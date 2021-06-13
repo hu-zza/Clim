@@ -23,7 +23,7 @@
 
 package hu.zza.clim.parameter;
 
-import static hu.zza.clim.menu.Message.INVALID_ARGUMENT;
+import static hu.zza.clim.menu.Message.INVALID_MENU_ARGUMENT;
 import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
 
 import hu.zza.clim.menu.Position;
@@ -131,7 +131,7 @@ public final class ParameterMatcher {
         }
       }
     } else {
-      throw new IllegalArgumentException(INVALID_ARGUMENT.getMessage());
+      throw new IllegalArgumentException(INVALID_MENU_ARGUMENT.getMessage());
     }
 
     ProcessedInput result = new ProcessedInput(commandPosition);
@@ -184,7 +184,7 @@ public final class ParameterMatcher {
         }
       }
     }
-    throw new IllegalArgumentException(INVALID_ARGUMENT.getMessage());
+    throw new IllegalArgumentException(INVALID_MENU_ARGUMENT.getMessage());
   }
 
   /**
