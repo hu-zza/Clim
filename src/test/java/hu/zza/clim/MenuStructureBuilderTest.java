@@ -23,21 +23,27 @@
 
 package hu.zza.clim;
 
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.RepetitionInfo;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class MenuStructureBuilderTest {
   private static final Path structurePath =
       Path.of("src", "test", "resources", "MenuStructure.txt");
   private static MenuStructureBuilder builder = new MenuStructureBuilder();
   private static String rawMenuStructure;
+
+  private static int testMissingSettingsCounter;
 
   @BeforeEach
   void resetAll() {
@@ -54,23 +60,28 @@ public class MenuStructureBuilderTest {
   }
 
 
-  @RepeatedTest(7)
-  @DisplayName("[batch] Build omitting (some) parts completely")
-  void testMissingSettings(RepetitionInfo repetitionInfo) {
-    int i = repetitionInfo.getCurrentRepetition() - 1; // range [0 - 6]
+  @ParameterizedTest(name = "[{index}]  rawStructure: {0}; initialPosition: {1}; leaves: {2}")
+  @MethodSource()
+  void testMissingSettings(boolean structure, boolean initial, boolean leaves) {
 
-    if (i % 2 == 1) {
+    if (structure) {
       builder.setRawMenuStructure(rawMenuStructure);
     }
 
-    if ((i >> 1) % 2 == 1) {
+    if (initial) {
       builder.setInitialPosition("node2");
     }
 
-    if ((i >> 2) % 2 == 1) {
+    if (leaves) {
       setLeaves();
     }
     Assertions.assertThrows(ClimException.class, builder::build);
+  }
+
+  static Stream<Arguments> testMissingSettings() {
+    return IntStream.rangeClosed(0, 6).mapToObj(
+        i -> arguments(i % 2 == 1, (i >> 1) % 2 == 1, (i >> 2) % 2 == 1)
+    );
   }
 
   private void setLeaves() {
