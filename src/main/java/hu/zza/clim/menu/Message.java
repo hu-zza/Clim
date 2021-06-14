@@ -59,12 +59,14 @@ public enum Message {
   GNU_GPL;
 
   private final String message;
+  private final int placeholdersCount;
 
-  final ResourceBundle resourceBundle = ResourceBundle.getBundle("MessageTemplate", Locale.ENGLISH);
+  private final ResourceBundle resourceBundle =
+      ResourceBundle.getBundle("MessageTemplate", Locale.ENGLISH);
 
   Message() {
-    this.message =
-        resourceBundle.containsKey(this.name()) ? resourceBundle.getString(this.name()) : "";
+    message = resourceBundle.containsKey(this.name()) ? resourceBundle.getString(this.name()) : "";
+    placeholdersCount = message.split("%s").length - 1;
   }
 
   /**
@@ -75,5 +77,9 @@ public enum Message {
    */
   public String getMessage(Object... context) {
     return String.format(message, context);
+  }
+
+  public int getPlaceholdersCount() {
+    return placeholdersCount;
   }
 }

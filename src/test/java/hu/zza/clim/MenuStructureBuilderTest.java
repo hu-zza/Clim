@@ -35,15 +35,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class MenuStructureBuilderTest {
   private static final Path structurePath =
       Path.of("src", "test", "resources", "MenuStructure.txt");
   private static MenuStructureBuilder builder = new MenuStructureBuilder();
   private static String rawMenuStructure;
-
-  private static int testMissingSettingsCounter;
 
   @BeforeEach
   void resetAll() {
@@ -100,11 +101,16 @@ public class MenuStructureBuilderTest {
         .setLeaf("leaf12", a -> 2, "node2", "root", "node5");
   }
 
-  @Test
-  void testWrongInitialPosition() {
+  @ParameterizedTest
+  @CsvSource({"node1, true", "NoDe1, false", "node9, true", "leaf3, false", "'', false"})
+  void testGoodAndWrongInitialPosition(String initialPosition, boolean isCorrect) {
     setBuilderCompletely();
-    builder.setInitialPosition("NOWHERE");
-    Assertions.assertThrows(ClimException.class, builder::build);
+    builder.setInitialPosition(initialPosition);
+    if (isCorrect) {
+      Assertions.assertDoesNotThrow(builder::build);
+    } else {
+      Assertions.assertThrows(ClimException.class, builder::build);
+    }
   }
 
   private void setBuilderCompletely() {
@@ -133,10 +139,12 @@ public class MenuStructureBuilderTest {
     Assertions.assertThrows(ClimException.class, builder::build);
   }
 
-  @Test
-  void testWrongLeafName() {
+  @ParameterizedTest
+  @EmptySource
+  @ValueSource(strings = {"node1", "true", "NoDe1", "leaf3", "node9", "leaf7", "leaf111", "\n", "\t"})
+  void testGoodAndWrongLeafName(String leafName) {
     setBuilderCompletely();
-    Assertions.assertDoesNotThrow(() -> builder.setLeaf("INVALID", a -> 0, "node1", "node2"));
+    Assertions.assertDoesNotThrow(() -> builder.setLeaf(leafName, a -> 0, "node1", "node2"));
   }
 
   @Test
