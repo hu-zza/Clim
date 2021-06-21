@@ -64,16 +64,18 @@ The keys of the JsonObject are the nodes, and the primitive values are leaves.
 If there is only one node (like in the snippet), this method can be omitted.
   
 `setLeaf` parameters are:  
-  - `java.lang.String` // the name of the leaf  
-  - `java.util.function.Function<hu.zza.clim.menu.ProcessedInput, java.lang.Integer>` // the functionality  
-  - `java.lang.String...` // one or more node name -> the possible forwarding destination(s)  
+  - `java.lang.String` name // the name of the leaf  
+  - `java.util.function.Function<hu.zza.clim.menu.ProcessedInput, java.lang.Integer>` function // the functionality  
+  - `java.lang.String...` links // one or more **node** name -> the possible forwarding destination(s)  
 
 If the user choose a leaf, *clim* calls its function (with the processed input),  
 and in according to the functions result (returning integer), *clim* chooses  
 the n-th forwarding node and navigates to it.  
 
-In the code snippet *Date* and *Time* leaves' lambda returns with zero,  
+In the code snippet *Date* and *Time* leaves' lambdas (after `println`) return with zero,  
 so *clim* chooses the one and only element from the forwarding list, *Flat Menu*.  
+
+A bit more complex example:
   
 ```java
 import java.time.*;
@@ -99,6 +101,18 @@ MenuStructure menuStructure =
     + Double-decker (it's a pseudo-leaf, a link to the node)  
   - Help
   - Exit
+
+Our initial position is the *Double-decker* node, and we have three choices:  
+*Date & Time*, *Help*, *Exit*  
+The last two are leaves and set with function references. Without examining *Console::help* and *Console::exit*  
+we can assume this two do their job and return with 0. (So the menu stays at the initial position after them.)  
+However *Date & Time* is a node. If we choose this one, the menu navigates to it without any extra job.  
+In this case there is three additional choice:  
+*Date*, *Time*, *Double-decker*  
+The first one prints the date and returns with 0. So the menu navigates to *Double-decker*.  
+The second one prints the time and returns with 1. So the menu navigates to *Date & Time*.  
+The last one is a bit odd: Because we have a node with the exact same name (Double-decker),  
+this will be autoconfigured.  
 
 ### *Only for parametric menus*  
 Coming soon...  
