@@ -5,7 +5,7 @@ Please note, every release are alpha, so using this library will be sometimes fu
 *(...or annoying.)*  
 
 Well, I'll try my best *(and every contribution is appreciated)*,  
-so some day **clim** will be as good  as I hope it will.  
+so some day **clim** will be as good as I hope it will.  
   
   
 ## Import clim
@@ -54,6 +54,8 @@ The code snippet above represents a very basic menu: one *node* and four *leaves
 **Please note, in *clim* a leaf is not a node:**  
 *Nodes* are "walkable" points without functionality.  
 *Leaves* are function representations without "real" position.  
+In summary, nodes and leaves are two distinct group and  
+every element in the menu structure must belong to one of them.  
   
 `setRawMenuStructure` accepts either a `com.google.gson.JsonObject` or a `java.lang.String`.  
 (The String should be a valid JSON text which is processable by `com.google.gson.JsonParser`.)  
@@ -64,17 +66,27 @@ The keys of the JsonObject are the nodes, and the primitive values are leaves.
 If there is only one node (like in the snippet), this method can be omitted.
   
 `setLeaf` parameters are:  
-  - `java.lang.String` name // the name of the leaf  
-  - `java.util.function.Function<hu.zza.clim.menu.ProcessedInput, java.lang.Integer>` function // the functionality  
-  - `java.lang.String...` links // one or more **node** name -> the possible forwarding destination(s)  
+  - `java.lang.String` **name** // the name of the leaf  
+  - `java.util.function.Function<hu.zza.clim.menu.ProcessedInput, java.lang.Integer>` **function** // the functionality  
+  - `java.lang.String...` **links** // one or more **node** name -> the possible forwarding destination(s)  
 
 If the user choose a leaf, *clim* calls its function (with the processed input),  
-and in according to the functions result (returning integer), *clim* chooses  
-the n-th forwarding node and navigates to it.  
+and in according to the result of the function (returning integer),  
+*clim* chooses the n-th forwarding node and navigates to it.  
 
 In the code snippet *Date* and *Time* leaves' lambdas (after `println`) return with zero,  
 so *clim* chooses the one and only element from the forwarding list, *Flat Menu*.  
-
+  
+Without examining *Console::help* and *Console::exit* we can assume this two do their job  
+and return with 0. (So the menu will navigate to the first *(index: 0)* node from the nodes  
+set by *links* argument at function `setLeaf`. This is the node *Flat Menu* in both cases,  
+in other words the menu stays at the current, initial position.)  
+  
+ Well, in this short example every *links* array contains only one element, *Flat Menu*.  
+ This is only for simplicity, but there is a leaf with two link:  
+ `.setLeaf("Offer", e -> LocalDate.now().getDayOfMonth() % 2, "Offer for even days", "Offer for odd days")`  
+ As you can see, the lambda has no side effect, only chooses the proper node.  
+  
 A bit more complex example:
   
 ```java
@@ -98,7 +110,7 @@ MenuStructure menuStructure =
   - `Date & Time`
     + Date
     + Time
-    + Double-decker (it's a pseudo-leaf, a link to the node)  
+    + Double-decker *(it's a pseudo-leaf, a link to the node)*  
   - Help
   - Exit
 
@@ -107,12 +119,9 @@ Our initial position is the node *Double-decker*, and we have three choices:
 - Help
 - Exit
     
-The last two are leaves and set with function references. Without examining *Console::help* and *Console::exit*  
-we can assume this two do their job and return with 0. (So the menu will navigate to the first *(index: 0)* node  
-from the nodes set by links argument at function `setLeaf`. This is the node *Double-decker* in both cases,  
-in other words the menu stays at the current, initial position.)  
-  
+The last two are leaves and set with function references. It's OK.  
 However *Date & Time* is a node. If we choose this one, the menu navigates to it without any extra job.  
+  
 In this case there is three additional choice:  
 - **Date** *(links: "Double-decker" and "Date & Time" by `setLeaf`)*
 - **Time** *(links: "Double-decker" and "Date & Time" by `setLeaf`)*
