@@ -90,8 +90,8 @@ MenuStructure menuStructure =
         .setInitialPosition("Double-decker")
         .setLeaf("Date", e -> {System.out.println(LocalDate.now()); return 0;}, "Double-decker", "Date & Time")
         .setLeaf("Time", e -> {System.out.println(LocalTime.now()); return 1;}, "Double-decker", "Date & Time")
-        .setLeaf("Help", Console::help, "Flat Menu")
-        .setLeaf("Exit", Console::exit, "Flat Menu")
+        .setLeaf("Help", Console::help, "Double-decker")
+        .setLeaf("Exit", Console::exit, "Double-decker")
         .build();
 ```  
 * `Double-decker`
@@ -102,17 +102,27 @@ MenuStructure menuStructure =
   - Help
   - Exit
 
-Our initial position is the *Double-decker* node, and we have three choices:  
-*Date & Time*, *Help*, *Exit*  
+Our initial position is the node *Double-decker*, and we have three choices:  
+- Date & Time
+- Help
+- Exit
+    
 The last two are leaves and set with function references. Without examining *Console::help* and *Console::exit*  
-we can assume this two do their job and return with 0. (So the menu stays at the initial position after them.)  
+we can assume this two do their job and return with 0. (So the menu will navigate to the first *(index: 0)* node  
+from the nodes set by links argument at function `setLeaf`. This is the node *Double-decker* in both cases,  
+in other words the menu stays at the current, initial position.)  
+  
 However *Date & Time* is a node. If we choose this one, the menu navigates to it without any extra job.  
 In this case there is three additional choice:  
-*Date*, *Time*, *Double-decker*  
+- **Date** *(links: "Double-decker" and "Date & Time" by `setLeaf`)*
+- **Time** *(links: "Double-decker" and "Date & Time" by `setLeaf`)*
+- **Double-decker** *(The `setLeaf` function isn't called with this leaf.)*
+  
 The first one prints the date and returns with 0. So the menu navigates to *Double-decker*.  
 The second one prints the time and returns with 1. So the menu navigates to *Date & Time*.  
 The last one is a bit odd: Because we have a node with the exact same name (Double-decker),  
-this will be autoconfigured.  
+this will be autoconfigured. (Note: Without a node with identical name we got exception,  
+because calling `setLeaf` is mandatory for all non-autoconfigured leaves.) 
 
 ### *Only for parametric menus*  
 Coming soon...  
