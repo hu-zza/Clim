@@ -26,8 +26,11 @@ package hu.zza.clim;
 import static hu.zza.clim.menu.Message.INITIALIZATION_FAILED;
 import static hu.zza.clim.menu.Message.INVALID_INITIAL_POSITION;
 import static hu.zza.clim.menu.Message.INVALID_LEAF_POSITION;
+import static hu.zza.clim.menu.Message.INVALID_LINK;
 import static hu.zza.clim.menu.Message.INVALID_NODE_POSITION;
 import static hu.zza.clim.menu.Message.INVALID_POSITION;
+import static hu.zza.clim.menu.Message.LEAF_NAME_UNKNOWN;
+import static hu.zza.clim.menu.Message.NODE_NAME_UNKNOWN;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -45,6 +48,7 @@ import hu.zza.clim.menu.ProcessedInput;
 import hu.zza.clim.menu.Util;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -92,6 +96,7 @@ public final class MenuStructureBuilder {
   public MenuStructureBuilder setLeaf(
       String name, Function<ProcessedInput, Integer> function, String... links) {
     Util.assertNonNull(List.of("name", "function", "links"), name, function, links);
+    Util.assertElementsNonNull("links", links);
     checkLinksPresence(links);
     leafFunction.put(name, function);
     leafLinks.put(name, Arrays.asList(links));
@@ -220,14 +225,33 @@ public final class MenuStructureBuilder {
   }
 
   private void checkLeafSettings() {
-    checkLeafSettingsNames();
+    checkSetLeafNames();
+    checkSetLeafLinks();
   }
 
-  private void checkLeafSettingsNames() {
+  private void checkSetLeafNames() {
     Set<String> leafNamesFromSettings = new HashSet<>(leafLinks.keySet());
     leafNamesFromSettings.removeAll(leafPositions);
     if (leafNamesFromSettings.size() != 0) {
-      throw new ClimException("...");
+      throw new IllegalStateException(
+          LEAF_NAME_UNKNOWN.getMessage(Arrays.toString(leafNamesFromSettings.toArray())));
+    }
+  }
+
+  private void checkSetLeafLinks() {
+    Set<String> links =
+        leafLinks.keySet().stream()
+            .map(leafLinks::get)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+
+    links.removeAll(nodePositions);
+
+    if (links.size() != 0) {
+      throw new IllegalStateException(
+          INVALID_LINK.getMessage(
+              NODE_NAME_UNKNOWN.getMessage(Arrays.toString(links.toArray()))
+          ));
     }
   }
 

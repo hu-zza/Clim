@@ -23,6 +23,8 @@
 
 package hu.zza.clim.menu;
 
+import static hu.zza.clim.menu.Message.INVALID_NULL_ELEMENT;
+
 import hu.zza.clim.ClimException;
 import java.util.List;
 
@@ -47,6 +49,19 @@ public abstract class Util {
     for (int i = 0; i < variableNames.size(); i++) {
       if (variables[i] == null) {
         throw new ClimException(errorMessage.getMessage(variableNames.get(i)));
+      }
+    }
+  }
+
+  public static void assertElementsNonNull(String variableName, Object[] array) {
+    assertElementsNonNull(variableName, array, INVALID_NULL_ELEMENT);
+  }
+
+  public static void assertElementsNonNull(
+      String variableName, Object[] array, Message errorMessage) {
+    for (var e : array) {
+      if (e == null) {
+        throw new ClimException(errorMessage.getMessage(variableName));
       }
     }
   }

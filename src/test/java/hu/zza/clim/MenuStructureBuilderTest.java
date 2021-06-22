@@ -36,7 +36,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -137,12 +136,12 @@ public class MenuStructureBuilderTest {
    *     MenuStructureBuilder#setInitialPosition(String)}
    * @param isCorrect the validity of parameter initialPosition
    */
-  @DisplayName("testGoodAndWrongInitialPosition")
+  @DisplayName("testInitialPositionSetting")
   @ParameterizedTest(name = "{displayName} [{index}] {arguments}")
   @CsvSource({"node1, true", "NoDe1, false", "node9, true", "leaf3, false", "'', false"})
-  void testGoodAndWrongInitialPosition(String initialPosition, boolean isCorrect) {
+  void testInitialPositionSetting(String initialPosition, boolean isCorrect) {
     setBuilderCompletely();
-    builder.setInitialPosition(initialPosition);
+    Assertions.assertDoesNotThrow(() -> builder.setInitialPosition(initialPosition));
     if (isCorrect) {
       Assertions.assertDoesNotThrow(builder::build);
     } else {
@@ -180,11 +179,14 @@ public class MenuStructureBuilderTest {
 
   /**
    * Test {@link MenuStructureBuilder#setLeaf(String, Function, String...)} with different leaf
-   * names. It shouldn't throw exception, wrong parameters are simply omitted. How
+   * names. It shouldn't throw exception at setting, wrong parameters are simply omitted (except
+   * null). However, at build it should throw.
    *
    * @param leafName name to set with setLeaf()
+   * @param throwAtSet assertion at setLeaf()
+   * @param throwAtBuild assertion at build()
    */
-  @DisplayName("testGoodAndWrongLeafName")
+  @DisplayName("testLeafNameSetting")
   @ParameterizedTest(name = "{displayName} [{index}] {arguments}")
   @CsvSource({
     "node1, false, true",
@@ -197,7 +199,7 @@ public class MenuStructureBuilderTest {
     "'', false, true",
     ", true, true"
   })
-  void testGoodAndWrongLeafName(String leafName, boolean throwAtSet, boolean throwAtBuild) {
+  void testLeafNameSetting(String leafName, boolean throwAtSet, boolean throwAtBuild) {
     setBuilderCompletely();
     if (throwAtSet) {
       Assertions.assertThrows(
@@ -213,13 +215,38 @@ public class MenuStructureBuilderTest {
     }
   }
 
-  @Test
-  void testWrongLeafLinks() {
+  /**
+   * Test {@link MenuStructureBuilder#setLeaf(String, Function, String...)} with different leaf
+   * links. It shouldn't throw exception at setting, wrong parameters are simply omitted (except
+   * null). However, at build it should throw.
+   *
+   * @param links links to set with setLeaf()
+   * @param throwAtSet assertion at setLeaf()
+   * @param throwAtBuild assertion at build()
+   */
+  @DisplayName("testLeafLinksSettings")
+  @ParameterizedTest(name = "{displayName} [{index}] {arguments}")
+  @CsvSource({
+    ", true, true",
+    "'', false, true",
+    "leaf3, false, true",
+    "leaf1, false, true",
+    "node3, false, false",
+    "node1, false, false"
+  })
+  void testLeafLinksSettings(String links, boolean throwAtSet, boolean throwAtBuild) {
     setBuilderCompletely();
-    // missing links
-    Assertions.assertThrows(ClimException.class, () -> builder.setLeaf("leaf3", a -> 2));
-    // not valid, throws @ build()
-    Assertions.assertDoesNotThrow(() -> builder.setLeaf("leaf3", a -> 0, "INVALID"));
-    Assertions.assertThrows(ClimException.class, builder::build);
+
+    if (throwAtSet) {
+      Assertions.assertThrows(ClimException.class, () -> builder.setLeaf("leaf1", a -> 0, links));
+    } else {
+      Assertions.assertDoesNotThrow(() -> builder.setLeaf("leaf1", a -> 0, links));
+
+      if (throwAtBuild) {
+        Assertions.assertThrows(ClimException.class, () -> builder.build());
+      } else {
+        Assertions.assertDoesNotThrow(() -> builder.build());
+      }
+    }
   }
 }
