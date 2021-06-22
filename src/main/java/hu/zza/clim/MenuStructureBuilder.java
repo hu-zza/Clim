@@ -91,7 +91,7 @@ public final class MenuStructureBuilder {
 
   public MenuStructureBuilder setLeaf(
       String name, Function<ProcessedInput, Integer> function, String... links) {
-    Util.assertNonNull(Map.of("name", name, "function", function, "links", links));
+    Util.assertNonNull(List.of("name", "function", "links"), name, function, links);
     checkLinksPresence(links);
     leafFunction.put(name, function);
     leafLinks.put(name, Arrays.asList(links));
@@ -139,6 +139,7 @@ public final class MenuStructureBuilder {
     inferInitialPosition();
     checkInitialPosition();
     buildNameMapsFromNameSets();
+    checkLeafSettings();
     buildStructure();
     return menuStructure;
   }
@@ -216,6 +217,18 @@ public final class MenuStructureBuilder {
         leafPositions.stream()
             .map(LeafPosition::new)
             .collect(Collectors.toMap(Position::getName, Function.identity())));
+  }
+
+  private void checkLeafSettings() {
+    checkLeafSettingsNames();
+  }
+
+  private void checkLeafSettingsNames() {
+    Set<String> leafNamesFromSettings = new HashSet<>(leafLinks.keySet());
+    leafNamesFromSettings.removeAll(leafPositions);
+    if (leafNamesFromSettings.size() != 0) {
+      throw new ClimException("...");
+    }
   }
 
   private void buildStructure() {

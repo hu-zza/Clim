@@ -24,7 +24,7 @@
 package hu.zza.clim.menu;
 
 import hu.zza.clim.ClimException;
-import java.util.Map;
+import java.util.List;
 
 public abstract class Util {
 
@@ -38,14 +38,15 @@ public abstract class Util {
     }
   }
 
-  public static void assertNonNull(Map<String, Object> variables) {
-    assertNonNull(variables, Message.INVALID_NONNULL_ARGUMENT);
+  public static void assertNonNull(List<String> variableNames, Object... variables) {
+    assertNonNull(Message.INVALID_NONNULL_ARGUMENT, variableNames, variables);
   }
 
-  public static void assertNonNull(Map<String, Object> variables, Message errorMessage) {
-    for (var entry : variables.entrySet()) {
-      if (entry.getValue() == null) {
-        throw new ClimException(errorMessage.getMessage(entry.getKey()));
+  public static void assertNonNull(
+      Message errorMessage, List<String> variableNames, Object... variables) {
+    for (int i = 0; i < variableNames.size(); i++) {
+      if (variables[i] == null) {
+        throw new ClimException(errorMessage.getMessage(variableNames.get(i)));
       }
     }
   }

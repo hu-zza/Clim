@@ -28,17 +28,19 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 public class MenuStructureBuilderTest {
   private static final Path structurePath =
@@ -60,8 +62,45 @@ public class MenuStructureBuilderTest {
     }
   }
 
+  /** Sets {@link MenuStructureBuilder} completely and correctly. */
+  private void setBuilderCompletely() {
+    builder.setRawMenuStructure(rawMenuStructure);
+    builder.setInitialPosition("node3");
+    setAllLeaf();
+  }
 
-  @ParameterizedTest(name = "[{index}]  rawStructure: {0}; initialPosition: {1}; leaves: {2}")
+  /** Set all leaves correctly. */
+  private void setAllLeaf() {
+    setLeaves(
+        "leaf1", "leaf2", "leaf3", "leaf4", "leaf5", "leaf6", "leaf7", "leaf8", "leaf9", "leaf10",
+        "leaf11", "leaf12");
+  }
+
+  private void setLeaves(String... leafNames) {
+    for (var name : leafNames) {
+      setOneLeaf(name);
+    }
+  }
+
+  private void setOneLeaf(String leafName) {
+    builder.setLeaf(leafName, a -> 0, "node1", "node2");
+  }
+
+  /**
+   * Test {@link MenuStructureBuilder#build()} with completely missing components. The build should
+   * fail if any of the three components is missing. (There are more than one node, so set initial
+   * position is obligatory.)
+   *
+   * @param structure rawMenuStructure is set with {@link
+   *     MenuStructureBuilder#setRawMenuStructure(String)}
+   * @param initial initial position is set with {@link
+   *     MenuStructureBuilder#setInitialPosition(String)}
+   * @param leaves leaves are set with {@link MenuStructureBuilder#setLeaf(String, Function,
+   *     String...)}
+   */
+  @DisplayName("testMissingSettings")
+  @ParameterizedTest(
+      name = "{displayName} [{index}]  rawStructure: {0}; initialPosition: {1}; leaves: {2}")
   @MethodSource()
   void testMissingSettings(boolean structure, boolean initial, boolean leaves) {
 
@@ -74,34 +113,32 @@ public class MenuStructureBuilderTest {
     }
 
     if (leaves) {
-      setLeaves();
+      setAllLeaf();
     }
     Assertions.assertThrows(ClimException.class, builder::build);
   }
 
+  /**
+   * A simple permutation generator for boolean parameters.
+   *
+   * @return A boolean pattern.
+   */
   static Stream<Arguments> testMissingSettings() {
-    return IntStream.rangeClosed(0, 6).mapToObj(
-        i -> arguments(i % 2 == 1, (i >> 1) % 2 == 1, (i >> 2) % 2 == 1)
-    );
+    return IntStream.rangeClosed(0, 6)
+        .mapToObj(i -> arguments(i % 2 == 1, (i >> 1) % 2 == 1, (i >> 2) % 2 == 1));
   }
 
-  private void setLeaves() {
-    builder
-        .setLeaf("leaf1", a -> 0, "node2", "node3", "node1")
-        .setLeaf("leaf2", a -> 1, "node3", "node4", "node1")
-        .setLeaf("leaf3", a -> 2, "node2", "node3", "node1")
-        .setLeaf("leaf4", a -> 0, "root", "node1", "node2")
-        .setLeaf("leaf5", a -> 1, "node2", "node3", "node1")
-        .setLeaf("leaf6", a -> 2, "node4", "node7", "node9")
-        .setLeaf("leaf7", a -> 0, "root", "node3", "node1")
-        .setLeaf("leaf8", a -> 1, "node2", "root", "node1")
-        .setLeaf("leaf9", a -> 2, "root", "node3", "node10")
-        .setLeaf("leaf10", a -> 0, "node5")
-        .setLeaf("leaf11", a -> 1, "node2", "node3", "root")
-        .setLeaf("leaf12", a -> 2, "node2", "root", "node5");
-  }
-
-  @ParameterizedTest
+  /**
+   * Test {@link MenuStructureBuilder#build()} with various initial positions. The method should
+   * throw exception, if the initial position is not equal with a name of a node. Null is excluded
+   * from test values, because we got exception earlier than building.
+   *
+   * @param initialPosition the position to set up with {@link
+   *     MenuStructureBuilder#setInitialPosition(String)}
+   * @param isCorrect the validity of parameter initialPosition
+   */
+  @DisplayName("testGoodAndWrongInitialPosition")
+  @ParameterizedTest(name = "{displayName} [{index}] {arguments}")
   @CsvSource({"node1, true", "NoDe1, false", "node9, true", "leaf3, false", "'', false"})
   void testGoodAndWrongInitialPosition(String initialPosition, boolean isCorrect) {
     setBuilderCompletely();
@@ -113,38 +150,67 @@ public class MenuStructureBuilderTest {
     }
   }
 
-  private void setBuilderCompletely() {
+  /**
+   * Tests {@link MenuStructureBuilder#build()} with one missing leaf setting. Build() should throw
+   * exception, because setting up every leaf is obligatory. (Except pseudo-leaves.)
+   */
+  @DisplayName("testMissingLeafSettings")
+  @ParameterizedTest(name = "{displayName} [{index}] {arguments}")
+  @MethodSource
+  void testMissingLeafSettings(List<String> leavesToSet) {
     builder.setRawMenuStructure(rawMenuStructure);
     builder.setInitialPosition("node3");
-    setLeaves();
-  }
-
-  @Test
-  void testMissingLeaf() {
-    builder.setRawMenuStructure(rawMenuStructure);
-    builder.setInitialPosition("node3");
-    builder
-        .setLeaf("leaf1", a -> 0, "node2", "node3", "node1")
-        .setLeaf("leaf2", a -> 1, "node3", "node4", "node1")
-        .setLeaf("leaf3", a -> 2, "node2", "node3", "node1")
-        .setLeaf("leaf4", a -> 0, "root", "node1", "node2")
-        .setLeaf("leaf5", a -> 1, "node2", "node3", "node1")
-        .setLeaf("leaf6", a -> 2, "node4", "node7", "node9")
-        .setLeaf("leaf7", a -> 0, "root", "node3", "node1")
-        // .setLeaf("leaf8", a -> 1, "node2", "root", "node1")
-        .setLeaf("leaf9", a -> 2, "root", "node3", "node10")
-        .setLeaf("leaf10", a -> 0, "node5")
-        .setLeaf("leaf11", a -> 1, "node2", "node3", "root")
-        .setLeaf("leaf12", a -> 2, "node2", "root", "node5");
+    setLeaves(leavesToSet.toArray(new String[0]));
     Assertions.assertThrows(ClimException.class, builder::build);
   }
 
-  @ParameterizedTest
-  @EmptySource
-  @ValueSource(strings = {"node1", "true", "NoDe1", "leaf3", "node9", "leaf7", "leaf111", "\n", "\t"})
-  void testGoodAndWrongLeafName(String leafName) {
+  private static Stream<List<String>> testMissingLeafSettings() {
+    return IntStream.range(0, 12).mapToObj(MenuStructureBuilderTest::returnAllLeafNameExceptNth);
+  }
+
+  private static List<String> returnAllLeafNameExceptNth(int i) {
+    List<String> all =
+        new ArrayList<>(
+            List.of(
+                "leaf1", "leaf2", "leaf3", "leaf4", "leaf5", "leaf6", "leaf7", "leaf8", "leaf9",
+                "leaf10", "leaf11", "leaf12"));
+    all.remove(i);
+    return all;
+  }
+
+  /**
+   * Test {@link MenuStructureBuilder#setLeaf(String, Function, String...)} with different leaf
+   * names. It shouldn't throw exception, wrong parameters are simply omitted. How
+   *
+   * @param leafName name to set with setLeaf()
+   */
+  @DisplayName("testGoodAndWrongLeafName")
+  @ParameterizedTest(name = "{displayName} [{index}] {arguments}")
+  @CsvSource({
+    "node1, false, true",
+    "NoDe1, false, true",
+    "leaf3, false, false",
+    "leAF3, false, true",
+    "node111, false, true",
+    "'\n', false, true",
+    "'\t', false, true",
+    "'', false, true",
+    ", true, true"
+  })
+  void testGoodAndWrongLeafName(String leafName, boolean throwAtSet, boolean throwAtBuild) {
     setBuilderCompletely();
-    Assertions.assertDoesNotThrow(() -> builder.setLeaf(leafName, a -> 0, "node1", "node2"));
+    if (throwAtSet) {
+      Assertions.assertThrows(
+          ClimException.class, () -> builder.setLeaf(leafName, a -> 0, "node1", "node2"));
+    } else {
+      Assertions.assertDoesNotThrow(() -> builder.setLeaf(leafName, a -> 0, "node1", "node2"));
+
+      if (throwAtBuild) {
+        Assertions.assertThrows(ClimException.class, () -> builder.build());
+      } else {
+        Assertions.assertDoesNotThrow(() -> builder.build());
+      }
+    }
   }
 
   @Test

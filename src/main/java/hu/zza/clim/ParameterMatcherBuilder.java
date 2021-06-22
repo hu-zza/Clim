@@ -65,15 +65,11 @@ public final class ParameterMatcherBuilder {
       List<Parameter> parameters) {
 
     Util.assertNonNull(
-        Map.of(
-            "leafName",
-            leafName,
-            "delimiter",
-            delimiter,
-            "parameterNames",
-            parameterNames,
-            "parameters",
-            parameters));
+        List.of("leafName", "delimiter", "parameterNames", "parameters"),
+        leafName,
+        delimiter,
+        parameterNames,
+        parameters);
 
     Position position = Position.getByName(leafName);
 
