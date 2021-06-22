@@ -48,4 +48,5 @@ test {
 
 javadoc {
     exclude "**/menu/**"
+    setDestinationDir(new File("${project.projectDir}/javadoc/"))
 }
