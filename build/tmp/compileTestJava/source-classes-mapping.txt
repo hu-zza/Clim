@@ -1,0 +1,6 @@
+hu/zza/clim/MenuStructureBuilderTest.java
+ hu.zza.clim.MenuStructureBuilderTest
+hu/zza/clim/ParameterName.java
+ hu.zza.clim.ParameterName
+hu/zza/clim/MenuTestInteractive.java
+ hu.zza.clim.MenuTestInteractive

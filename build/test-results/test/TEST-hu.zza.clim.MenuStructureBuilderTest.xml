@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="hu.zza.clim.MenuStructureBuilderTest" tests="24" skipped="0" failures="0" errors="0" timestamp="2021-06-22T15:37:24" hostname="20200202" time="0.176">
+  <properties/>
+  <testcase name="[1]  rawStructure: false; initialPosition: false; leaves: false" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.05"/>
+  <testcase name="[2]  rawStructure: true; initialPosition: false; leaves: false" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.014"/>
+  <testcase name="[3]  rawStructure: false; initialPosition: true; leaves: false" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[4]  rawStructure: true; initialPosition: true; leaves: false" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.008"/>
+  <testcase name="[5]  rawStructure: false; initialPosition: false; leaves: true" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.004"/>
+  <testcase name="[6]  rawStructure: true; initialPosition: false; leaves: true" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[7]  rawStructure: false; initialPosition: true; leaves: true" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[1] node1, true" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.003"/>
+  <testcase name="[2] NoDe1, false" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[3] node9, true" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.001"/>
+  <testcase name="[4] leaf3, false" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[5] , false" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[1] " classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[2] node1" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.001"/>
+  <testcase name="[3] true" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.001"/>
+  <testcase name="[4] NoDe1" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[5] leaf3" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[6] node9" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.001"/>
+  <testcase name="[7] leaf7" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.001"/>
+  <testcase name="[8] leaf111" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.001"/>
+  <testcase name="[9] &#10;" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.002"/>
+  <testcase name="[10] &#9;" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.001"/>
+  <testcase name="testMissingLeaf()" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.005"/>
+  <testcase name="testWrongLeafLinks()" classname="hu.zza.clim.MenuStructureBuilderTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
