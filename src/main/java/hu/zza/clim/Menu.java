@@ -47,7 +47,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/** Represents the menu that the user can interact with: navigation, function calls, etc. */
+/**
+ * Represents the menu that the user can interact with: navigation, function calls, etc.
+ *
+ * @since 0.1
+ */
 public final class Menu {
 
   private static final List<String> licenseCommands =
@@ -163,7 +167,6 @@ public final class Menu {
     Position selected = returnValidatedPositionOrThrow(processedInput.getPosition());
     position = menuStructure.get(selected).select(processedInput);
   }
-
 
   private Position returnValidatedPositionOrThrow(Position position) {
     refreshOptions();

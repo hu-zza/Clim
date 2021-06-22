@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+/** Utility class for creating {@link Parameter} instances and working with them. @since 0.1 */
 public interface Parameters {
   /**
    * Returns a concrete, non-parser {@link Parameter}.
    *
    * @param regex the regex pattern for value extraction from the raw input
    * @return the concrete, non-parser {@link Parameter}
+   * @since 0.1
    */
   static Parameter of(String regex) {
     return new Parameter(regex, null, null);
@@ -46,6 +48,7 @@ public interface Parameters {
    *     Parameter}
    * @param defaultValueSupplier the source of the value of the {@link Parameter} if it is null
    * @return the optional, parser {@link Parameter}
+   * @since 0.1
    */
   static Parameter of(
       String regex, UnaryOperator<String> parsingOperator, Supplier<String> defaultValueSupplier) {
@@ -59,6 +62,7 @@ public interface Parameters {
    * @param parsingOperator the preprocessor before saving the extracted as the value of the {@link
    *     Parameter}
    * @return the concrete, parser {@link Parameter}
+   * @since 0.1
    */
   static Parameter of(String regex, UnaryOperator<String> parsingOperator) {
     return new Parameter(regex, parsingOperator, null);
@@ -72,6 +76,7 @@ public interface Parameters {
    * @param regex the regex pattern for value extraction from the raw input
    * @param defaultValue the {@link String} value of the {@link Parameter} if its value is null
    * @return the optional, non-parser {@link Parameter}
+   * @since 0.1
    */
   static Parameter of(String regex, String defaultValue) {
     return new Parameter(regex, null, () -> defaultValue);
@@ -83,19 +88,22 @@ public interface Parameters {
    * @param regex the regex pattern for value extraction from the raw input
    * @param defaultValueSupplier the source of the value of the {@link Parameter} if it is null
    * @return the optional, non-parser {@link Parameter}
+   * @since 0.1
    */
   static Parameter of(String regex, Supplier<String> defaultValueSupplier) {
     return new Parameter(regex, null, defaultValueSupplier);
   }
 
   /**
-   * Creates a {@link ParameterPattern}. A {@link ParameterPattern} object has only {@code *
-   * delimiter}, but no regex. The reason is that every {@link Parameter} has its own, so only a *
+   * Creates a {@link ParameterPattern}. A {@link ParameterPattern} object has only {@code
+   * delimiter}, but no regex. The reason is that every {@link Parameter} has its own, so only a
    * delimiter is needed to concatenate them.
    *
    * @param delimiter character sequence delimiter
+   * @param parameterNames the names of parameters
    * @param parameters {@link ParameterName} and {@link Parameter} bindings in sequential order
    * @return a {@link ParameterPattern} object
+   * @since 0.1
    */
   static ParameterPattern makePattern(
       String delimiter, List<ParameterName> parameterNames, List<Parameter> parameters) {

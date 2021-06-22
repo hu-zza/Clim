@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Represents a complex pattern of {@link Parameter parameters} that is used for evaluating user
  * input.
+ * @since 0.1
  */
 public final class ParameterPattern {
 
@@ -50,6 +51,7 @@ public final class ParameterPattern {
    * @param delimiter character sequence delimiter
    * @param parameterNames names of {@link Parameter parameters} in sequential order
    * @param parameters {@link Parameter} objects
+   * @since 0.1
    */
   public ParameterPattern(
       String delimiter, List<ParameterName> parameterNames, List<Parameter> parameters) {

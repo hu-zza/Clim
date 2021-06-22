@@ -25,7 +25,9 @@ package hu.zza.clim;
 
 import hu.zza.clim.parameter.ParameterMatcher;
 
-/** Represents the {@link Menu} main behavior and controlling capabilities. */
+/** Represents the {@link Menu} main behavior and controlling capabilities.
+ * @since 0.1
+ */
 public enum UserInterface implements ClimOption {
   /** Simple menu, navigating with nominals (names of options). */
   NOMINAL,

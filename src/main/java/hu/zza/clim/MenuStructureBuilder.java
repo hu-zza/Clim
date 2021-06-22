@@ -53,6 +53,11 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Builder class for {@link MenuStructure}.
+ *
+ * @since 0.1
+ */
 public final class MenuStructureBuilder {
   private final Set<String> nodePositions = new HashSet<>();
   private final Set<String> leafPositions = new HashSet<>();
@@ -66,43 +71,24 @@ public final class MenuStructureBuilder {
   private String initialPosition = "";
   private MenuStructure menuStructure = new MenuStructure();
 
-  /**
-   * @param rawMenuStructure
-   * @return
-   * @throws JsonParseException
-   */
   public MenuStructureBuilder setRawMenuStructure(String rawMenuStructure)
       throws JsonParseException {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
     return setRawMenuStructure(JsonParser.parseString(rawMenuStructure).getAsJsonObject());
   }
 
-  /**
-   * @param rawMenuStructure
-   * @return
-   */
   public MenuStructureBuilder setRawMenuStructure(JsonObject rawMenuStructure) {
     Util.assertNonNull("rawMenuStructure", rawMenuStructure);
     this.rawMenuStructure = rawMenuStructure;
     return this;
   }
 
-  /**
-   * @param initialPosition
-   * @return
-   */
   public MenuStructureBuilder setInitialPosition(String initialPosition) {
     Util.assertNonNull("initialPosition", initialPosition);
     this.initialPosition = initialPosition;
     return this;
   }
 
-  /**
-   * @param name
-   * @param function
-   * @param links
-   * @return
-   */
   public MenuStructureBuilder setLeaf(
       String name, Function<ProcessedInput, Integer> function, String... links) {
     Util.assertNonNull(Map.of("name", name, "function", function, "links", links));
@@ -118,7 +104,6 @@ public final class MenuStructureBuilder {
     }
   }
 
-  /** */
   public void clear() {
     rawMenuStructure = new JsonObject();
     initialPosition = "";
@@ -136,7 +121,10 @@ public final class MenuStructureBuilder {
     menuStructure = new MenuStructure();
   }
 
-  /** @return */
+  /**
+   * @return a {@link MenuStructure} object
+   * @since 0.1
+   */
   public MenuStructure build() {
     try {
       return buildMenuStructure();
@@ -156,8 +144,8 @@ public final class MenuStructureBuilder {
   }
 
   /**
-   * Process the {@code rawMenuStructure} and prepare objects for menu building.
-   * The prepared objects are nodePositions, nodeLinks, leafPositions.
+   * Process the {@code rawMenuStructure} and prepare objects for menu building. The prepared
+   * objects are nodePositions, nodeLinks, leafPositions.
    */
   private void findAllNodesAndLeaves() {
     extractNodesAndLeavesFrom(rawMenuStructure);
@@ -217,9 +205,7 @@ public final class MenuStructureBuilder {
     }
   }
 
-  /**
-   * Create real {@link Position} objects from String sets and store them in String-keyed maps.
-   */
+  /** Create real {@link Position} objects from String sets and store them in String-keyed maps. */
   private void buildNameMapsFromNameSets() {
     nodeMap.putAll(
         nodePositions.stream()

@@ -31,6 +31,11 @@ import hu.zza.clim.parameter.ParameterMatcher;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Builder class for {@link Menu}.
+ *
+ * @since 0.1
+ */
 public final class MenuBuilder {
   private static final List<UserInterface> hasParameterMatcherDependency =
       List.of(UserInterface.PARAMETRIC);

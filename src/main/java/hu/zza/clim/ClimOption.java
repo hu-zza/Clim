@@ -30,6 +30,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Provides a common interface for various enums used to setup {@link hu.zza.clim.Menu} at building.
+ *
+ * @since 0.1
+ */
 public interface ClimOption {
   Map<Class<? extends ClimOption>, ? extends ClimOption> DEFAULT_VALUES =
       Map.of(

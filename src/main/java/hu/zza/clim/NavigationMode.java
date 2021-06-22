@@ -23,6 +23,11 @@
 
 package hu.zza.clim;
 
+/**
+ * Not implemented.
+ *
+ * @since 0.1
+ */
 public enum NavigationMode implements ClimOption {
   STANDARD,
   ARROWS,

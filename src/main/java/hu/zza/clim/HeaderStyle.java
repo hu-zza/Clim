@@ -23,6 +23,11 @@
 
 package hu.zza.clim;
 
+/**
+ * Formatting patterns for menu headers.
+ *
+ * @since 0.1
+ */
 public enum HeaderStyle implements ClimOption {
   HIDDEN,
   STANDARD,

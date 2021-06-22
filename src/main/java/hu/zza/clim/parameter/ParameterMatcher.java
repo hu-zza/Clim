@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 /**
  * {@link ParameterMatcher} executes text processing based on the given {@link ParameterPattern
  * patterns}.
+ * @since 0.1
  */
 public final class ParameterMatcher {
 
@@ -55,6 +56,7 @@ public final class ParameterMatcher {
    *
    * @param commandRegex same as {@code regex} in {@link Pattern#compile(String)}
    * @param patternMap {@link Map} of {@link Position} - {@link ParameterPattern} bindings
+   * @since 0.1
    */
   public ParameterMatcher(String commandRegex, Map<Position, ParameterPattern> patternMap) {
     this(commandRegex, 0, patternMap);
@@ -69,6 +71,7 @@ public final class ParameterMatcher {
    * @param commandRegex same as {@code regex} in {@link Pattern#compile(String, int)}
    * @param flags same as {@code flags} in {@link Pattern#compile(String, int)}
    * @param patternMap {@link Map} of {@link Position} - {@link ParameterPattern} bindings
+   * @since 0.1
    */
   public ParameterMatcher(
       String commandRegex, int flags, Map<Position, ParameterPattern> patternMap) {
@@ -90,15 +93,18 @@ public final class ParameterMatcher {
    *
    * @param position the key {@link Position} looking for
    * @return true if {@code patternMap} contains it
+   * @since 0.1
    */
   public boolean containsKeyInPatternMap(Position position) {
     return patternMap.containsKey(position);
   }
 
   /**
-   * .......
+   * Processes the given {@link String} and returns a {@link ProcessedInput} object.
    *
-   * @return a {@link Map} object with {@link ParameterName} - {@link Parameter} bindings
+   * @param text the input {@link String} for processing
+   * @return the processed input in the form of a {@link ProcessedInput} object
+   * @since 0.1
    */
   public ProcessedInput processText(String text) {
     Util.assertNonNull("text", text);
@@ -193,6 +199,7 @@ public final class ParameterMatcher {
    * @param n upper boundary for the generation (excluded)
    * @param r size of a generated set
    * @return combinations in lexicographic order
+   * @since 0.1
    */
   private List<int[]> generateCombinations(int n, int r) {
     List<int[]> combinations = new ArrayList<>();

@@ -23,6 +23,10 @@
 
 package hu.zza.clim;
 
+/**
+ * General exception class.
+ * @since 0.1
+ */
 public class ClimException extends RuntimeException {
 
   public ClimException() {

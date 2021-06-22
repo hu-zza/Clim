@@ -27,10 +27,17 @@ import static hu.zza.clim.menu.Message.INVALID_NONEMPTY_ARGUMENT;
 
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-
-/** Represents a single parameter which can be concrete or optional. */
+/**
+ * Represents a specific parameter (processed input value container), but it is nameless
+ * ( = reusable). A parameter can be concrete or optional.
+ * @since 0.1
+ */
 public final class Parameter implements Cloneable {
 
+  /**
+   * Null-safe representation of a completely empty {@link Parameter}.
+   * @since 0.1
+   */
   public static final Parameter NULL = new Parameter("()", null, null);
 
   static {
@@ -75,6 +82,7 @@ public final class Parameter implements Cloneable {
    * Returns the {@link Parameter parameters} value as a {@link String}.
    *
    * @return the {@link Parameter parameters} value as a {@link String}
+   * @since 0.1
    */
   public String getValue() {
     return value;
@@ -93,6 +101,7 @@ public final class Parameter implements Cloneable {
    *
    * @return a {@link String}: The value of the {@link Parameter} / by the {@code
    *     defaultValueSupplier} / "".
+   * @since 0.1
    */
   public String getOrDefault() {
     return value != null ? value : defaultValueSupplier != null ? defaultValueSupplier.get() : "";
@@ -103,6 +112,7 @@ public final class Parameter implements Cloneable {
    *
    * @param parsingOperator the {@link UnaryOperator} to use
    * @return a {@link Parameter} based on this instance with the specified {@code parsingOperator}
+   * @since 0.1
    */
   public Parameter with(UnaryOperator<String> parsingOperator) {
     return new Parameter(regex, parsingOperator, defaultValueSupplier);
@@ -115,6 +125,7 @@ public final class Parameter implements Cloneable {
    *
    * @param defaultValue the {@link String} to use
    * @return a {@link Parameter} based on this instance with the specified {@code defaultValue}
+   * @since 0.1
    */
   public Parameter with(String defaultValue) {
     return new Parameter(regex, parsingOperator, () -> defaultValue);
@@ -126,11 +137,17 @@ public final class Parameter implements Cloneable {
    * @param defaultValueSupplier the {@link Supplier} to use
    * @return a {@link Parameter} based on this instance with the specified {@code
    *     defaultValueSupplier}
+   * @since 0.1
    */
   public Parameter with(Supplier<String> defaultValueSupplier) {
     return new Parameter(regex, parsingOperator, defaultValueSupplier);
   }
 
+  /**
+   * Returns a copy of this {@link Parameter}.
+   * @return A non-null copy of the {@link Parameter}.
+   * @since 0.1
+   */
   @Override
   protected Parameter clone() {
     try {
