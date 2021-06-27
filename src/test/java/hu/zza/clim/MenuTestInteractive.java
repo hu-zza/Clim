@@ -21,21 +21,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package hu.zza.clim;import hu.zza.clim.ClimException;
-import hu.zza.clim.HeaderStyle;
-import hu.zza.clim.Menu;
-import hu.zza.clim.MenuBuilder;
-import hu.zza.clim.MenuStructureBuilder;
-import hu.zza.clim.NavigationMode;
-import hu.zza.clim.ParameterMatcherBuilder;
-import hu.zza.clim.UserInterface;
+package hu.zza.clim;
+
 import hu.zza.clim.menu.ProcessedInput;
 import hu.zza.clim.parameter.Parameter;
 import hu.zza.clim.parameter.Parameters;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class MenuTestInteractive {
@@ -88,9 +86,16 @@ public class MenuTestInteractive {
                   List.of(constantParameter, wordParameter))
               .build();
 
+      Map<String, Consumer<String>> fallbackMap =
+          Map.of(
+              "node3", e -> System.out.println(e + "???"),
+              "node4", e -> System.out.println(LocalTime.now()),
+              "node1", e -> System.out.println(LocalDate.now()));
+
       menu =
           new MenuBuilder()
               .setMenuStructure(menuStructure)
+              .setFallbackMap(fallbackMap)
               .setParameterMatcher(parameterMatcher)
               .setClimOptions(UserInterface.NOMINAL, HeaderStyle.STANDARD, NavigationMode.ARROWS)
               .build();

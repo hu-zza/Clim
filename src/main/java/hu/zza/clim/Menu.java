@@ -43,8 +43,10 @@ import hu.zza.clim.parameter.ParameterMatcher;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -72,13 +74,15 @@ public final class Menu {
   private final MenuStructure menuStructure;
   private final UserInterfaceService userInterfaceService;
   private final InputProcessorService inputProcessorService;
+  private final Map<String, Consumer<String>> fallbackMap = new HashMap<>();
   private final Deque<NodePosition> positionHistory = new ArrayDeque<>();
   private NodePosition position;
   private Position[] options;
 
-  Menu(MenuStructure menuStructure, ParameterMatcher parameterMatcher, ClimOption... climOptions) {
+  Menu(MenuStructure menuStructure, Map<String, Consumer<String>> fallbackMap, ParameterMatcher parameterMatcher, ClimOption... climOptions) {
 
     this.menuStructure = menuStructure;
+    this.fallbackMap.putAll(fallbackMap);
     Map<Class<? extends ClimOption>, ClimOption> optionsMap =
         ClimOption.getClimOptionMap(climOptions);
 
@@ -157,9 +161,9 @@ public final class Menu {
     try {
       chooseOptionByProcessedInput(
           inputProcessorService.processInputRelatedToOptions(input, options));
-    } catch (Exception e) {
+    } catch (Exception exception) {
       positionHistory.pollFirst();
-      throw new ClimException(PROCESSING_FAILED.getMessage(input), e);
+      fallBack(input, exception);
     }
   }
 
@@ -174,6 +178,14 @@ public final class Menu {
       return position;
     }
     throw new IllegalArgumentException(INVALID_MENU_POSITION.getMessage(position.getName()));
+  }
+
+  private void fallBack(String input, Exception exception) {
+    if (fallbackMap.containsKey(position.getName())) {
+      fallbackMap.get(position.getName()).accept(input);
+      return;
+    }
+    throw new ClimException(PROCESSING_FAILED.getMessage(input), exception);
   }
 
   /** Prints short license information about clim. */

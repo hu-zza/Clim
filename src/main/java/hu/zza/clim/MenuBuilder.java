@@ -29,7 +29,10 @@ import hu.zza.clim.menu.MenuStructure;
 import hu.zza.clim.menu.Util;
 import hu.zza.clim.parameter.ParameterMatcher;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Builder class for {@link Menu}.
@@ -41,6 +44,7 @@ public final class MenuBuilder {
       List.of(UserInterface.PARAMETRIC);
 
   private MenuStructure menuStructure = new MenuStructure();
+  private final Map<String, Consumer<String>> fallbackMap = new HashMap<>();
   private ParameterMatcher parameterMatcher;
   private ClimOption[] climOptions = new ClimOption[0];
 
@@ -54,7 +58,7 @@ public final class MenuBuilder {
 
   private Menu buildMenu() {
     checkParametersBeforeBuild();
-    return new Menu(menuStructure, parameterMatcher, climOptions);
+    return new Menu(menuStructure, fallbackMap, parameterMatcher, climOptions);
   }
 
   private void checkParametersBeforeBuild() {
@@ -88,6 +92,13 @@ public final class MenuBuilder {
     return this;
   }
 
+  public MenuBuilder setFallbackMap(Map<String, Consumer<String>> fallbackMap) {
+    Util.assertNonNull("fallbackMap", fallbackMap);
+    this.fallbackMap.clear();
+    this.fallbackMap.putAll(fallbackMap);
+    return this;
+  }
+
   public MenuBuilder setParameterMatcher(ParameterMatcher parameterMatcher) {
     Util.assertNonNull("parameterMatcher", parameterMatcher);
     this.parameterMatcher = parameterMatcher;
@@ -102,6 +113,7 @@ public final class MenuBuilder {
 
   public MenuBuilder clear() {
     menuStructure = new MenuStructure();
+    fallbackMap.clear();
     parameterMatcher = null;
     climOptions = new ClimOption[0];
     return this;
