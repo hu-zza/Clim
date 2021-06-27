@@ -79,7 +79,11 @@ public final class Menu {
   private NodePosition position;
   private Position[] options;
 
-  Menu(MenuStructure menuStructure, Map<String, Consumer<String>> fallbackMap, ParameterMatcher parameterMatcher, ClimOption... climOptions) {
+  Menu(
+      MenuStructure menuStructure,
+      Map<String, Consumer<String>> fallbackMap,
+      ParameterMatcher parameterMatcher,
+      ClimOption... climOptions) {
 
     this.menuStructure = menuStructure;
     this.fallbackMap.putAll(fallbackMap);
@@ -105,6 +109,26 @@ public final class Menu {
 
   private void refreshOptions() {
     options = menuStructure.get(position).getLinks();
+  }
+
+  /**
+   * Returns with the current position as a String.
+   *
+   * @return current position as String.
+   * @since 0.3.2
+   */
+  public String getPosition() {
+    return position.getName();
+  }
+
+  /**
+   * Returns with the available options from the current position of the {@link Menu}.
+   *
+   * @return available options as a string list
+   * @since 0.3.2
+   */
+  public List<String> getOptions() {
+    return Arrays.stream(options).map(Position::getName).collect(Collectors.toList());
   }
 
   /** Prints the available options from the current position of the {@link Menu}. */
