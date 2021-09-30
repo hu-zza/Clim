@@ -41,9 +41,9 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    testLogging {
-        events 'passed', 'skipped', 'failed'
-    }
+//    testLogging {
+//        events 'passed', 'skipped', 'failed'
+//    }
 }
 
 javadoc {
